@@ -1,0 +1,3 @@
+G:\KSP Modding\plugin\NearFutureElectrical\NearFuture\obj\Release\NearFutureElectrical.csprojResolveAssemblyReference.cache
+G:\Games\Steam\SteamApps\common\Kerbal Space Program\GameData\NearFuture\Plugins\NearFutureElectrical.dll
+G:\KSP Modding\plugin\NearFutureElectrical\NearFuture\obj\Release\NearFutureElectrical.dll

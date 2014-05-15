@@ -1,0 +1,31 @@
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\bin\Release\ClassLibrary1.dll
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\bin\Release\ClassLibrary1.pdb
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\bin\Release\Assembly-CSharp.dll
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\bin\Release\UnityEngine.dll
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\bin\Release\Mono.Cecil.dll
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\bin\Release\Assembly-CSharp-firstpass.dll
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\bin\Release\Mono.Security.dll
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\obj\Release\ClassLibrary1.dll
+C:\Users\Chris\AppData\Local\Temporary Projects\ClassLibrary1\obj\Release\ClassLibrary1.pdb
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\bin\Release\NearFuture.dll
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\bin\Release\NearFuture.pdb
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\bin\Release\Assembly-CSharp.dll
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\bin\Release\UnityEngine.dll
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\bin\Release\Mono.Cecil.dll
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\bin\Release\Assembly-CSharp-firstpass.dll
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\bin\Release\Mono.Security.dll
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\obj\Release\ResolveAssemblyReference.cache
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\obj\Release\NearFuture.dll
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\obj\Release\NearFuture.pdb
+E:\Documents\Documents\ksp\plugin\NearFuture\NearFuture\bin\Release\TDx.TDxInput.dll
+C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program\GameData\NearFuture\NearFuture.dll
+C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program\GameData\NearFuture\NearFuture.pdb
+F:\ksp plugin\plugin\NearFuture\NearFuture\obj\Release\NearFuture.dll
+C:\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\GameData\NearFuture\Plugins\NearFuture.dll
+G:\Games\Steam\SteamApps\common\Kerbal Space Program\GameData\NearFuture\Plugins\NearFuture.dll
+I:\ksp plugin\plugin\NearFuture\NearFuture\obj\Release\NearFuture.dll
+F:\ksp plugin\plugin\NearFuture\NearFuture\obj\Release\NearFuture.csprojResolveAssemblyReference.cache
+I:\ksp plugin\plugin\NearFuture\NearFuture\obj\Release\NearFuture.csprojResolveAssemblyReference.cache
+J:\ksp plugin\plugin\NearFuture\NearFuture\obj\Release\NearFuture.csprojResolveAssemblyReference.cache
+J:\ksp plugin\plugin\NearFuture\NearFuture\obj\Release\NearFuture.dll
