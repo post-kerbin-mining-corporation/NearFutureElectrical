@@ -710,7 +710,7 @@ namespace NearFutureElectrical
         // Finds time remaining at current fuel burn rates
         string FindTimeRemaining(double rate)
         {
-            if (rate <= 0.0000001d)
+            if (rate <= 0.000000001d)
             {
                 rate = BurnRate;
             }

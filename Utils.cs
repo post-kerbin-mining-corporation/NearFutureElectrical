@@ -51,14 +51,21 @@ namespace NearFutureElectrical
         public static string FormatTimeString(double seconds)
         {
             double dayLength;
+            double yearLength;
             double rem;
             if (GameSettings.KERBIN_TIME)
+            {
                 dayLength = 6d;
+                yearLength = 426d;
+            }
             else
+            {
                 dayLength = 24d;
+                yearLength = 365d;
+            }
 
-            int years = (int)(seconds / (3600.0d * dayLength * 365.0d));
-            rem = seconds % (3600.0d * dayLength * 365.0d);
+            int years = (int)(seconds / (3600.0d * dayLength * yearLength));
+            rem = seconds % (3600.0d * dayLength * yearLength);
             int days = (int) (rem / (3600.0d * dayLength));
             rem = rem % (3600.0d * dayLength);
             int hours = (int)(rem / (3600.0d));
