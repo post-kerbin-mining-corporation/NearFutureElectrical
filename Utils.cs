@@ -80,13 +80,13 @@ namespace NearFutureElectrical
             {
                 result += years.ToString() + "y ";
                 result += days.ToString() + "d ";
-                result += hours.ToString() + "h";
+                result += hours.ToString() + "h ";
                 result += minutes.ToString() + "m";
             }else if ( days > 0)
             {
                 result += days.ToString() + "d ";
-                result += hours.ToString() + "h";
-                result += minutes.ToString() + "m";
+                result += hours.ToString() + "h ";
+                result += minutes.ToString() + "m ";
                 result += secs.ToString() + "s";
             } else if ( hours > 0)
             {

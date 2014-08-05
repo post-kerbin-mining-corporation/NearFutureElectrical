@@ -23,5 +23,9 @@ namespace NearFutureElectrical
             // Load resources up
             Resources.LoadResources();
         }
+
+        
     }
+
+
 }

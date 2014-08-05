@@ -89,8 +89,11 @@ namespace NearFutureElectrical
 
         // Amount of power dissipated w/ pressure in ideal conditions
         [KSPField(isPersistant = false)]
-        public FloatCurve PressureCurve;
-        
+        public FloatCurve PressureCurve= new FloatCurve();
+        // Amount of power dissipated w/ velocity in ideal conditions
+        [KSPField(isPersistant = false)]
+        public FloatCurve VelocityCurve = new FloatCurve();
+
         // Fairings
         // Editor Toggle
         [KSPEvent(guiName = "Toggle Reactor Fairing", guiActive = false, guiActiveEditor = false)]
@@ -120,7 +123,9 @@ namespace NearFutureElectrical
         private VInfoBox infoBox;
         private List<FissionRadiator> radiators;
         private FissionGeneratorAnimator generatorAnimation;
-        
+
+        private FloatCurve WindCurve = new FloatCurve();
+
         // ACTIONS
         // -------
         [KSPEvent(guiActive = true, guiName = "Startup Reactor", active = true)]
@@ -135,19 +140,14 @@ namespace NearFutureElectrical
             Enabled = false;
         }
 
-        [KSPEvent(guiActive = true, guiName = "Jettison Fairing", active = false)]
-        public void JettisonFairing()
-        {
-            
-        }
-
         /// UI ACTIONS
         /// --------------------
         /// Toggle control panel
         [KSPEvent(guiActive = true, guiName = "Toggle Reactor Control", active = true)]
         public void ShowReactorControl()
         {
-            showWindow = !showWindow;
+            FissionGeneratorUI.ToggleWindow();
+            
         }
 
         // Deploy all radiators attached to this reactor
@@ -225,166 +225,43 @@ namespace NearFutureElectrical
         // Info for ui
         public override string GetInfo()
         {
+            StringBuilder str = new StringBuilder();
+            
             return String.Format("Maximum Power: {0:F2} Ec/s", PowerGenerationMaximum) + "\n" +
                 String.Format("Required Radiator Power: {0:F2} kW", ThermalPower) + "\n" +
                 "Estimated Core Life: " + FindTimeRemaining(BurnRate);
         }
 
        
-        // GUI VARS
-        // ---------- 
-        public Rect windowPos = new Rect(200f,200f,500f,200f);
-        int windowID = new System.Random().Next();
-        bool showWindow = false;
-        bool initStyles = false;
 
-        // styles
-        GUIStyle progressBarBG;
-
-        GUIStyle gui_bg;
-        GUIStyle gui_header;
-        GUIStyle gui_window;
-
-        GUIStyle gui_btn_shutdown;
-        GUIStyle gui_btn_start;
-        // Set up the GUI styles
-        private void InitStyles()
+        public double CoreTemperatureRatio
         {
-            gui_window = new GUIStyle(HighLogic.Skin.window);
-            gui_header = new GUIStyle(HighLogic.Skin.label);
-            gui_header.fontStyle = FontStyle.Bold;
-            gui_header.alignment = TextAnchor.MiddleCenter;
-            gui_header.stretchWidth = true;
-            gui_bg = new GUIStyle(HighLogic.Skin.textArea);
-            gui_bg.active = gui_bg.hover = gui_bg.normal;
+            get { return coreTemperatureRatio; }
+        }   
+        public bool isHighlighted = false;
+        public Color oldHighlight;
 
-            gui_btn_shutdown = new GUIStyle(HighLogic.Skin.button);
-            gui_btn_shutdown.wordWrap = true;
-            gui_btn_shutdown.normal.textColor = XKCDColors.RedOrange;
-            gui_btn_shutdown.alignment = TextAnchor.MiddleCenter;
-
-            gui_btn_start = new GUIStyle(gui_btn_shutdown);
-            gui_btn_start.normal.textColor = XKCDColors.Green;
-
-            progressBarBG = new GUIStyle(HighLogic.Skin.textField);
-            progressBarBG.active = progressBarBG.hover = progressBarBG.normal;
-
-            windowPos = new Rect(200f, 200f, 520f, 200f);
-
-            initStyles = true;
-        }
-
-        // Draw the GUI
-        private void DrawGUI()
+        public void ToggleHighlight()
         {
-            //Debug.Log("NFPP: Start Reactor UI Draw");
-            if (this.vessel != null && this.vessel == FlightGlobals.ActiveVessel)
+            if (isHighlighted)
             {
-                if (!initStyles)
-                    InitStyles();
-
-                if (showWindow)
-                {
-                   // Debug.Log(windowPos.ToString());
-                    windowPos = GUI.Window(windowID, windowPos, Window, this.part.partInfo.title + " Control Panel", gui_window);
-                }
+                isHighlighted = false;
+                part.SetHighlightColor(oldHighlight);
+                part.SetHighlightType(Part.HighlightType.OnMouseOver);
             }
-            //Debug.Log("NFPP: Stop Reactor UI Draw");
+            else
+            {
+                oldHighlight = part.highlightColor;
+                isHighlighted = true;
+                part.SetHighlightType(Part.HighlightType.AlwaysOn);
+                part.SetHighlightColor(XKCDColors.RedOrange);
+            }
+            
+            part.SetHighlightColor(XKCDColors.RedOrange);
+
+
         }
 
-        // GUI function for the window
-        private void Window(int windowId)
-        {
-            GUI.skin = HighLogic.Skin;
-
-            DrawReactor();
-            GUI.DragWindow();
-        }
-
-        private void DrawReactor()
-        {
-
-            GUI.enabled = true;
-
-            GUI.BeginGroup(new Rect(10f, 30f, 500f, 150f), gui_bg);
-
-            GUI.BeginGroup(new Rect(10f, 0f, 100f, 100f));
-            GUI.enabled = true;
-            GUI.Label(new Rect(0f, 0f, 80f, 30f), "Reactor", gui_header);
-            // Start and shutdown buttons
-            if (Enabled)
-                GUI.enabled = false;
-
-            if (GUI.Button(new Rect(0f, 25f, 40f, 30f), "ON", gui_btn_start))
-                Enabled = true;
-
-            GUI.enabled = true;
-
-            if (!Enabled)
-                GUI.enabled = false;
-
-            if (GUI.Button(new Rect(40f, 25f, 40f, 30f), "OFF", gui_btn_shutdown))
-                Enabled = false;
-
-
-            GUI.EndGroup();
-
-            // Safety buttons
-            GUI.BeginGroup(new Rect(10f, 80f, 100f, 100f));
-            GUI.enabled = true;
-            GUI.Label(new Rect(0f, 0f, 80f, 30f), "Safety Limit", gui_header);
-            if (SafetyLimit)
-                GUI.enabled = false;
-
-            if (GUI.Button(new Rect(0f, 25f, 40f, 30f), "ON", gui_btn_start))
-                SafetyLimit = true;
-
-            GUI.enabled = true;
-
-            if (!SafetyLimit)
-                GUI.enabled = false;
-
-            if (GUI.Button(new Rect(40f, 25f, 40f, 30f), "OFF", gui_btn_shutdown))
-                SafetyLimit = false;
-
-
-            GUI.EndGroup();
-
-            GUI.enabled = true;
-
-            // Power slider
-            GUI.BeginGroup(new Rect(120f, 15f, 380f, 60f));
-            GUI.Label(new Rect(0f, 0f, 100f, 25f), "Reactor Power ");
-            CurrentPowerPercent = GUI.HorizontalSlider(new Rect(100f, 5f, 200f, 25f), CurrentPowerPercent, MinPowerPercent, 1.0f);
-            GUI.Label(new Rect(310f, 0f, 100f, 20f), String.Format("{0:F0}%", CurrentPowerPercent * 100f));
-            GUI.EndGroup();
-            // Thermal Power    
-            GUI.BeginGroup(new Rect(120f, 45f, 380f, 60f));
-            GUI.Label(new Rect(0f, 0f, 100f, 25f), "Thermal Power ");
-            GUI.Box(new Rect(100f, 5f, 200f, 12f), "", HighLogic.Skin.horizontalSlider);
-            GUI.color = XKCDColors.Orangeish;
-            GUI.DrawTexture(new Rect(105f, 7f, (currentThermalPower / ThermalPower) * 190f, 5f), Resources.gui_progressbar);
-            GUI.color = Color.white;
-            GUI.Label(new Rect(310f, 0f, 100f, 20f), String.Format("{0:F0} W", currentThermalPower));
-            GUI.EndGroup();
-            // Core temp
-            GUI.BeginGroup(new Rect(120f, 75f, 380f, 60f));
-            GUI.Label(new Rect(0f, 0f, 100f, 25f), "Core Temp. ");
-            GUI.Box(new Rect(100f, 5f, 200f, 12f), "", HighLogic.Skin.horizontalSlider);
-            GUI.color = Color.Lerp(XKCDColors.Green, XKCDColors.RedOrange, CurrentCoreTemperature / MeltdownCoreTemperature);
-            GUI.DrawTexture(new Rect(105f, 7f, (CurrentCoreTemperature / MeltdownCoreTemperature) * 190f, 5f), Resources.gui_progressbar);
-            GUI.color = Color.white;
-            GUI.Label(new Rect(310f, 0f, 100f, 20f), String.Format("{0:F0} K", CurrentCoreTemperature));
-            GUI.EndGroup();
-            // Fuel 
-            GUI.BeginGroup(new Rect(120f, 105f, 380f, 60f));
-            GUI.Label(new Rect(0f, 0f, 300f, 25f), "Core Lifetime (Current): " + FindTimeRemaining(BurnRate * coreTemperatureRatio));
-            GUI.Label(new Rect(0f, 24f, 300f, 25f), "Core Lifetime (Full Power): " + FindTimeRemaining(BurnRate));
-
-            GUI.color = Color.white;
-            GUI.EndGroup();
-            GUI.EndGroup();
-        }
 
         public override void OnLoad(ConfigNode node)
         {
@@ -400,14 +277,13 @@ namespace NearFutureElectrical
             else 
                 Debug.Log("NFT: Fission Reactor: Staging Icon Disabled!");
 
-            PressureCurve = new FloatCurve();
-            PressureCurve.Add(0f, 0f);
-            PressureCurve.Add(1f, 2f);
-
-            
-
             if (state != StartState.Editor)
             {
+                WindCurve = new FloatCurve();
+                WindCurve.Add(0f, 0f);
+                WindCurve.Add(1000f, 20f);
+                WindCurve.Add(200000f, 0f);
+
                 if (UseStagingIcon)
                 {
                     infoBox = this.part.stackIcon.DisplayInfo();
@@ -424,8 +300,7 @@ namespace NearFutureElectrical
 
                 if (UseForcedActivation)
                     this.part.force_activate();
-                RenderingManager.AddToPostDrawQueue(0, DrawGUI);
-
+   
                 FuelUpdate();
             }
 
@@ -495,7 +370,7 @@ namespace NearFutureElectrical
 
             return wattsDissip;
         }
-
+        
         private void LogItAll()
         {
             Debug.Log(
@@ -535,7 +410,9 @@ namespace NearFutureElectrical
             {
                 //Debug.Log("NFPP: Debugging Pressure Curves... " + PressureCurve.maxTime.ToString() + " and " + PressureCurve.minTime.ToString() );
                 float pressure = (float)FlightGlobals.getStaticPressure(vessel.transform.position);
-                wattsConvected = PressureCurve.Evaluate(pressure);
+                double velocity = vessel.srfSpeed;
+                // v*const*
+                wattsConvected = PressureCurve.Evaluate(pressure) * VelocityCurve.Evaluate((float)velocity+WindCurve.Evaluate((float)vessel.terrainAltitude))*(part.mass);
             }
             if (Enabled)
             {
@@ -708,7 +585,7 @@ namespace NearFutureElectrical
             return fissionContainers;
         }
         // Finds time remaining at current fuel burn rates
-        string FindTimeRemaining(double rate)
+        public string FindTimeRemaining(double rate)
         {
             if (rate <= 0.000000001d)
             {

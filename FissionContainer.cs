@@ -38,7 +38,8 @@ namespace NearFutureElectrical
             double fuelAvailable = this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount;
             double wasteSpaceAvailable = this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).maxAmount - this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount;
 
-            if (fuelAvailable > amt && wasteSpaceAvailable > amt)
+            // waste is limiting
+            if (fuelAvailable > 0.0d || wasteSpaceAvailable > 0.0d)
             {
                 Debug.Log("NFPP: Container has enough fuel");
                 return true;
@@ -68,13 +69,27 @@ namespace NearFutureElectrical
         // Refuel from this module
         public void RefuelReactorFromContainer(FissionGenerator reactor, double amt)
         {
+            double fuelAvailable = this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount;
+            double wasteSpaceAvailable = this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).maxAmount - this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount;
+
+            double adjAmt = amt;
+            if (wasteSpaceAvailable < fuelAvailable)
+            {
+                // waste limited
+                adjAmt = wasteSpaceAvailable;
+            }
+            else
+            {
+                // fuel limited
+                adjAmt = fuelAvailable;
+            }
 
             //Debug.Log("NFPP: FissionContainer has enough fuel and waste space");
-            this.part.RequestResource(fuelName, amt);
-            this.part.RequestResource(depletedName, -amt);
+            this.part.RequestResource(fuelName, adjAmt);
+            this.part.RequestResource(depletedName, -adjAmt);
 
-            reactor.part.RequestResource(fuelName, -amt);
-            reactor.part.RequestResource(depletedName, amt);
+            reactor.part.RequestResource(fuelName, -adjAmt);
+            reactor.part.RequestResource(depletedName, adjAmt);
 
             if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount <= 0 ||
                       ((this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).maxAmount - this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount) <= 0))

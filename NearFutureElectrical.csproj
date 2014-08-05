@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NearFutureElectrical</RootNamespace>
     <AssemblyName>NearFutureElectrical</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>G:\Games\Steam\SteamApps\common\Kerbal Space Program\GameData\NearFuture\Plugins\</OutputPath>
+    <OutputPath>..\..\..\..\Games\Steam\SteamApps\common\Kerbal Space Program\GameData\NearFutureElectrical\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -56,6 +57,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DischargeCapacitorUI.cs" />
+    <Compile Include="FissionGeneratorUI.cs" />
     <Compile Include="FissionRadiator.cs" />
     <Compile Include="FissionReprocessor.cs" />
     <Compile Include="NearFuture.cs" />

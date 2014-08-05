@@ -195,7 +195,11 @@ namespace NearFutureElectrical
                         if (wasteRefined >= 0d)
                         {
                             workContainer.part.RequestResource(fuelName, -wasteRefined * RecycleEfficiency);
-
+                            if (workContainer.Expended && (workContainer.part.Resources.Get( PartResourceLibrary.Instance.GetDefinition(fuelName).id).maxAmount - 
+                                workContainer.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount) > 0.0d)
+                            {
+                                workContainer.Expended = false;
+                            }
                         }
                         else
                         {

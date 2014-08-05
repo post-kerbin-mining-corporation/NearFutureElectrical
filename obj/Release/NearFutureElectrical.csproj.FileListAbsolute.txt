@@ -3,3 +3,4 @@ G:\Games\Steam\SteamApps\common\Kerbal Space Program\GameData\NearFuture\Plugins
 G:\KSP Modding\plugin\NearFutureElectrical\NearFuture\obj\Release\NearFutureElectrical.dll
 G:\KSP Modding\plugin\NearFutureElectrical\NearFutureElectrical\obj\Release\NearFutureElectrical.csprojResolveAssemblyReference.cache
 G:\KSP Modding\plugin\NearFutureElectrical\NearFutureElectrical\obj\Release\NearFutureElectrical.dll
+G:\Games\Steam\SteamApps\common\Kerbal Space Program\GameData\NearFutureElectrical\Plugins\NearFutureElectrical.dll

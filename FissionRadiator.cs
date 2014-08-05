@@ -23,12 +23,19 @@ namespace NearFutureElectrical
 
         // Amount of power dissipated w/ pressure in ideal conditions
         [KSPField(isPersistant = false)]
-        public FloatCurve PressureCurve;
+        public FloatCurve PressureCurve = new FloatCurve();
+
+        // Amount of power dissipated w/ velocity in ideal conditions
+        [KSPField(isPersistant = false)]
+        public FloatCurve VelocityCurve = new FloatCurve();
 
         // animation for radiator heat
         [KSPField(isPersistant = false)]
         public string HeatAnimation;
-       
+
+        [KSPField(isPersistant = false)]
+        public string HeatTransformName;
+
         // Tweakable to allow or disallow sun tracking
         [KSPField(guiName = "Tracking", guiActiveEditor = true,isPersistant = true)]
         [UI_Toggle(disabledText = "Disabled", enabledText = "Enabled")]
@@ -55,11 +62,12 @@ namespace NearFutureElectrical
             if (base.panelState == ModuleDeployableSolarPanel.panelStates.RETRACTED)
                 base.Extend();
         }
-        
+
+        private FloatCurve WindCurve = new FloatCurve();
 
         // Heat animations
         private AnimationState[] heatStates;
-  
+        private Transform heatTransform;
         private FissionGenerator attachedReactor;
 
         private float requestedHeatRejection = 0f;
@@ -81,12 +89,25 @@ namespace NearFutureElectrical
             base.OnStart(state);
 
             heatStates = Utils.SetUpAnimation(HeatAnimation, part);
-           
 
-            PressureCurve = new FloatCurve();
-            PressureCurve.Add(0f, 0f);
-            PressureCurve.Add(1f, 1f);
 
+            heatTransform = part.FindModelTransform(HeatTransformName);
+            
+            foreach (AnimationState heatState in heatStates)
+            {
+                heatState.AddMixingTransform(heatTransform);
+                heatState.blendMode = AnimationBlendMode.Blend;
+                heatState.layer = 15;
+                heatState.weight = 1.0f;
+                heatState.enabled = true;
+            }
+
+            WindCurve = new FloatCurve();
+            WindCurve.Add(0f, 0.5f);
+            WindCurve.Add(1000f, 20f);
+            WindCurve.Add(200000f, 0f);
+
+            
             if (!TrackSun)
                 base.trackingSpeed = 0f;
 
@@ -115,11 +136,13 @@ namespace NearFutureElectrical
             // Gameplay bits
 
             // Heat rejection from convection
-            if (Utils.VesselInAtmosphere(this.vessel))
+            if (Utils.VesselInAtmosphere(this.vessel) && base.panelState != ModuleDeployableSolarPanel.panelStates.BROKEN)
             {
                 double pressure = FlightGlobals.getStaticPressure(vessel.transform.position);
-                availableHeatRejection = PressureCurve.Evaluate((float)pressure);
+                double velocity = vessel.srfSpeed;
+                availableHeatRejection = PressureCurve.Evaluate((float)pressure) * VelocityCurve.Evaluate((float)velocity + WindCurve.Evaluate((float)vessel.terrainAltitude)) * (part.mass * 5f); ;
             }
+                
             else
             {
                 availableHeatRejection = 0f;
@@ -128,7 +151,7 @@ namespace NearFutureElectrical
             if (base.panelState != ModuleDeployableSolarPanel.panelStates.EXTENDED && base.panelState != ModuleDeployableSolarPanel.panelStates.BROKEN)
             {
                // Debug.Log("Closed! " + HeatRadiatedClosed.ToString());
-                availableHeatRejection += HeatRadiatedClosed;
+               // availableHeatRejection += HeatRadiatedClosed;
             }
             else if (base.panelState == ModuleDeployableSolarPanel.panelStates.BROKEN)
             {

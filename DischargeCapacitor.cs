@@ -37,8 +37,6 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public string ChargeAnimation;
 
-        [KSPField(isPersistant = true)]
-        float currentCharge = 0f;
 
         // Capacitor Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Status")]
@@ -65,7 +63,15 @@ namespace NearFutureElectrical
             Enabled = false;
         }
 
-
+        /// UI ACTIONS
+        /// --------------------
+        /// Toggle control panel
+        [KSPEvent(guiActive = true, guiName = "Toggle Capacitor Control", active = true)]
+        public void ShowCapacitorControl()
+        {
+            DischargeCapacitorUI.ToggleWindow();
+        }
+            
 
         [KSPAction("Discharge Capacitor")]
         public void DischargeAction(KSPActionParam param) { Discharge(); }
@@ -97,6 +103,9 @@ namespace NearFutureElectrical
         }
 
 
+
+        
+
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
@@ -110,9 +119,11 @@ namespace NearFutureElectrical
 
             foreach (AnimationState cState in capacityState)
             {
-                cState.normalizedTime = 1 - (-currentCharge / MaximumCharge);
+                cState.normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
             }
-            currentCharge = (float)this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition("StoredCharge").id).amount;
+           
+
+            
 
         }
 
@@ -134,15 +145,22 @@ namespace NearFutureElectrical
             
         }
 
-
+        public float CurrentCharge
+        {
+            get
+            {
+                return (float)this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition("StoredCharge").id).amount;
+            }
+            
+        }
         public override void OnFixedUpdate()
         {
             if (Discharging)
             {
                 foreach (AnimationState cState in capacityState)
                 {
-                    
-                    cState.normalizedTime = 1-(-currentCharge/MaximumCharge);
+
+                    cState.normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
                 }
 
 
@@ -150,49 +168,49 @@ namespace NearFutureElectrical
                     
                 this.part.RequestResource("StoredCharge", amt);
                 this.part.RequestResource("ElectricCharge", -amt);
-                currentCharge = currentCharge - amt;
 
                 CapacitorStatus = String.Format("Discharging: {0:F2}/s", DischargeRate*(dischargeSlider / 100f));
 
                 // if the amount returned is zero, disable discharging
-                if (currentCharge <= 0f)
+                if (CurrentCharge <= 0f)
                 {
                     Discharging = false;
+                    
                 }
             }
-            else if (Enabled)
+            else if (Enabled && CurrentCharge < MaximumCharge)
             {
                 foreach (AnimationState cState in capacityState)
                 {
-                    cState.normalizedTime = 1-(-currentCharge / MaximumCharge);
+                    cState.normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
                 }
                 double amt = this.part.RequestResource("ElectricCharge", TimeWarp.fixedDeltaTime * ChargeRate);
 
-                if  ( amt > 0d)
+                if (amt > 0d)
                 {
                     this.part.RequestResource("StoredCharge", -amt * ChargeRatio);
-                    currentCharge = currentCharge + (float)amt;
                     CapacitorStatus = String.Format("Recharging: {0:F2}/s", ChargeRate);
                 }
                 else
                 {
                     CapacitorStatus = String.Format("Not enough ElectricCharge!");
                 }
-                
-
-                if (currentCharge >= MaximumCharge)
-                {
-                    currentCharge = MaximumCharge;
-                    Disable();
-                }
-                
             }
-            else
+            else if (CurrentCharge == 0f)
+            {
+                CapacitorStatus = "Discharged!";
+            } else 
             {
                 CapacitorStatus = String.Format("Ready");
             }
-        }
 
+
+           
+           
+            
+        }
+        
+       
         
 
     }
