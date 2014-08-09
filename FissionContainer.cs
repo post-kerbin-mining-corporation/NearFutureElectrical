@@ -76,12 +76,12 @@ namespace NearFutureElectrical
             if (wasteSpaceAvailable < fuelAvailable)
             {
                 // waste limited
-                adjAmt = wasteSpaceAvailable;
+                adjAmt = (double)Mathf.Clamp((float)amt, 0f, (float)wasteSpaceAvailable);
             }
             else
             {
                 // fuel limited
-                adjAmt = fuelAvailable;
+                adjAmt = (double)Mathf.Clamp((float)amt, 0f, (float)fuelAvailable);
             }
 
             //Debug.Log("NFPP: FissionContainer has enough fuel and waste space");

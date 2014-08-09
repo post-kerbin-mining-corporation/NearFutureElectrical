@@ -302,6 +302,7 @@ namespace NearFutureElectrical
                     this.part.force_activate();
    
                 FuelUpdate();
+                oldHighlight = part.highlightColor;
             }
 
             // LogItAll();

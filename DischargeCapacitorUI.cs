@@ -28,7 +28,7 @@ namespace NearFutureElectrical
         public void FindCapacitors()
         {
             
-            Debug.Log("NFE: Capacitor Manager: Finding Capcitors");
+            //Debug.Log("NFE: Capacitor Manager: Finding Capcitors");
             List<DischargeCapacitor> unsortedCapacitorList = new List<DischargeCapacitor>();
             // Get all parts
             List<Part> allParts = FlightGlobals.ActiveVessel.parts;
@@ -48,7 +48,7 @@ namespace NearFutureElectrical
             //sort
             capacitorList = unsortedCapacitorList.OrderByDescending(x => x.dischargeActual).ToList();
             capacitorList = unsortedCapacitorList;
-            Debug.Log("NFE: Capacitor Manager: Found " + capacitorList.Count() + " capacitors");
+           // Debug.Log("NFE: Capacitor Manager: Found " + capacitorList.Count() + " capacitors");
         }
 
         // GUI VARS
@@ -193,12 +193,12 @@ namespace NearFutureElectrical
                             if (!enoughChargeAdded)
                             {
                                 //Debug.Log("status = " + cap.Discharging.ToString() + ", " + cap.Enabled.ToString() + ", " + cap.CurrentCharge.ToString());
-                                Debug.Log("status = " + (!cap.Discharging && cap.CurrentCharge >= cap.MaximumCharge * 0.5f).ToString());
+                               // Debug.Log("status = " + (!cap.Discharging && cap.CurrentCharge >= cap.MaximumCharge * 0.5f).ToString());
                                 // capacitor cannot be already discharging, recharging or have a low amount of charge
                                 if (cap.CurrentCharge >= cap.MaximumCharge * 0.5f && !cap.Discharging)
                                 {
                                     chargeAdded = chargeAdded + cap.dischargeActual;
-                                    Debug.Log("Discharged ");
+                                    //Debug.Log("Discharged ");
                                     cap.Discharge();
                                     if (chargeAdded >= chargePerSecRequired)
                                     {

@@ -24,7 +24,7 @@ namespace NearFutureElectrical
         // Finds all reactors on ship
         public void FindReactors()
         {
-            Debug.Log("NFT: Reactor UI: Finding reactors");
+            //Debug.Log("NFT: Reactor UI: Finding reactors");
             reactorList = new List<FissionGenerator>();
             // Get all parts
             List<Part> allParts = FlightGlobals.ActiveVessel.parts;
@@ -40,7 +40,7 @@ namespace NearFutureElectrical
                     }
                 }
             }
-            Debug.Log("NFT: Reactor UI: Found " + reactorList.Count() + " reactors");
+            //Debug.Log("NFT: Reactor UI: Found " + reactorList.Count() + " reactors");
         }
 
         // GUI VARS
@@ -96,7 +96,7 @@ namespace NearFutureElectrical
             
             if (activeVessel != null)
             {
-                Debug.Log("NFPP: Start Reactor UI Draw");
+                //Debug.Log("NFPP: Start Reactor UI Draw");
                 if (!initStyles)
                     InitStyles();
                 if (reactorList == null)
@@ -108,7 +108,7 @@ namespace NearFutureElectrical
 
                     windowPos = GUI.Window(windowID, windowPos, Window, "Near Future Technology Fission Reactor Control Panel", gui_window);
                 }
-                Debug.Log("NFPP: Stop Reactor UI Draw");
+               // Debug.Log("NFPP: Stop Reactor UI Draw");
             }
          
         }
