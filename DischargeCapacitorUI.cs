@@ -145,16 +145,20 @@ namespace NearFutureElectrical
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                automate = GUILayout.Toggle(automate, "Capacitor Automation");
-                
+                automate = GUILayout.Toggle(automate, "Capacitor Automation", GUILayout.MinWidth(175f), GUILayout.MaxWidth(175f));
+                GUILayout.Label(String.Format("Total Stored Charge: {0:F0}", getTotalSc()), gui_text);
+                    
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(String.Format("Total Stored Charge Available: {0:F0}%", getTotalSc()), gui_text);
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("X", GUILayout.MaxWidth(32f), GUILayout.MinWidth(32f), GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f)))
-                {
-                    ToggleWindow();
-                }
+                
+                    GUILayout.Label("Discharge Threshold", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
+                    threshold = GUILayout.HorizontalSlider(threshold, 1f, 50f, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
+                    GUILayout.Label(String.Format("{0:F0} Ec/s", threshold), gui_text);
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("X", GUILayout.MaxWidth(32f), GUILayout.MinWidth(32f), GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f)))
+                    {
+                        ToggleWindow();
+                    }
                 GUILayout.EndHorizontal();
             }
             else
@@ -170,6 +174,8 @@ namespace NearFutureElectrical
         int frameCounter = 0;
         private float lastResources = 999999999f;
 
+        private float threshold = 10f;
+
         protected void FixedUpdate()
         {
             if (HighLogic.LoadedSceneIsFlight)
@@ -182,7 +188,7 @@ namespace NearFutureElectrical
                     float delta = lastResources - totalEc;
 
                     //Debug.Log("total: " + totalEc.ToString() + ". lastFrame: " + lastResources.ToString() + ". delta:" + delta.ToString());
-                    if (delta > 10f * TimeWarp.fixedDeltaTime)
+                    if (delta > threshold * TimeWarp.fixedDeltaTime)
                     {
                         float chargePerSecRequired = delta * (1f / TimeWarp.fixedDeltaTime);
                         float chargeAdded = 0f;

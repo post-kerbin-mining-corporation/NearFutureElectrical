@@ -83,7 +83,7 @@ namespace NearFutureElectrical
             progressBarBG = new GUIStyle(HighLogic.Skin.textField);
             progressBarBG.active = progressBarBG.hover = progressBarBG.normal;
 
-            windowPos = new Rect(200f, 200f, 500f, 200f);
+            windowPos = new Rect(200f, 200f, 550f, 200f);
 
             initStyles = true;
         }
@@ -119,7 +119,7 @@ namespace NearFutureElectrical
             GUI.skin = HighLogic.Skin;
             if (reactorList != null && reactorList.Count > 0)
             {
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(490f), GUILayout.Height(175f));
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(500f), GUILayout.Height(175f));
                 GUILayout.BeginVertical();
 
                 windowPos.height = 175f + 70f;
@@ -184,7 +184,7 @@ namespace NearFutureElectrical
             GUI.color = XKCDColors.Orangeish;
             GUI.DrawTexture(last, Resources.gui_progressbar);
             GUI.color = Color.white;
-            GUILayout.Label(String.Format("{0:F0} W", gen.currentThermalPower), gui_text);
+            GUILayout.Label(String.Format("{0:F0} kW", gen.currentThermalPower), gui_text);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.MinWidth(250f), GUILayout.MaxWidth(250f));
             GUILayout.Label("Core Temperature", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));

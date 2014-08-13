@@ -151,7 +151,7 @@ namespace NearFutureElectrical
             if (base.panelState != ModuleDeployableSolarPanel.panelStates.EXTENDED && base.panelState != ModuleDeployableSolarPanel.panelStates.BROKEN)
             {
                // Debug.Log("Closed! " + HeatRadiatedClosed.ToString());
-               // availableHeatRejection += HeatRadiatedClosed;
+               availableHeatRejection += HeatRadiatedClosed;
             }
             else if (base.panelState == ModuleDeployableSolarPanel.panelStates.BROKEN)
             {
