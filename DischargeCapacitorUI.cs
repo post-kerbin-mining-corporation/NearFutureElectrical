@@ -230,6 +230,11 @@ namespace NearFutureElectrical
 
         private float getTotalEc()
         {
+            if (FlightGlobals.ActiveVessel.parts.Count == 0)
+            {
+                return 0f;
+            }
+
             List<PartResource> resources = new List<PartResource>();
             FlightGlobals.ActiveVessel.parts[0].GetConnectedResources(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id, ResourceFlowMode.ALL_VESSEL, resources);
             float totalEc = 0f;
@@ -241,6 +246,11 @@ namespace NearFutureElectrical
         }
         private float getTotalSc()
         {
+            if (FlightGlobals.ActiveVessel.parts.Count == 0)
+            {
+                return 0f;
+            }
+
             List<PartResource> resources = new List<PartResource>();
             FlightGlobals.ActiveVessel.parts[0].GetConnectedResources(PartResourceLibrary.Instance.GetDefinition("StoredCharge").id, ResourceFlowMode.ALL_VESSEL, resources);
             float totalEc = 0f;
