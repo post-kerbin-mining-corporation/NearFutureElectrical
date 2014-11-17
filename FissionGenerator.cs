@@ -16,16 +16,26 @@ namespace NearFutureElectrical
 
 
         /// KSPFIELD
-        /// 
+        /// Fuel Resource name
         [KSPField(isPersistant = false)]
         public string fuelName = "EnrichedUranium";
+        
+        // Waste Resource Name
         [KSPField(isPersistant = false)]
         public string depletedName = "DepletedUranium";
 
-        // Use a staging icon
+        // Produced resource name
+        [KSPField(isPersistant = false)]
+        public string generatedName = "ElectricCharge";
+        
+        // Heat resource name
+        [KSPField(isPersistant = false)]
+        public string heatName = "Heat";
+        
+        // Use a staging icon or not
         [KSPField(isPersistant = false)]
         public bool UseStagingIcon = true;
-        // Force activate on load
+        // Force activate on load or not
         [KSPField(isPersistant = false)]
         public bool UseForcedActivation = true;
 
@@ -33,11 +43,11 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true)]
         public bool Enabled;
 
-        // LastFuelUpdate
+        // LastFuelUpdate time
         [KSPField(isPersistant = true)]
         public float LastFuelUpdate = 0f;
 
-        // Maximum power generation
+        // Power resource genreated/s at maximum power
          [KSPField(isPersistant = false)]
         public float PowerGenerationMaximum;
         
@@ -53,29 +63,34 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true)]
         public float CurrentPowerPercent = 1.0f;
 
-        // Is the safety limit on?
+        // State of the reactor safety limit
         [KSPField(isPersistant = true)]
         public bool SafetyLimit = true;
 
-        // Amount of power radiation required
+        // Thermal Power of the reactor
         [KSPField(isPersistant = false)]
         public float ThermalPower;
+        
         // Rate of thermal power response
         [KSPField(isPersistant = false)]
         public float ThermalPowerResponseRate;
 
-        // Maximum core temperature
+        // Maximum reactor core temperature
         [KSPField(isPersistant = false)]
         public float MaxCoreTemperature;
+        
         // Rate of core temperature response
         [KSPField(isPersistant = false)]
         public float CoreTemperatureResponseRate;
+        
         // Current core temperature
         [KSPField(isPersistant = true)]
         public float CurrentCoreTemperature = 0f;
+        
         // Meltdown core temperature
         [KSPField(isPersistant = false)]
         public float MeltdownCoreTemperature;
+        
         // Current thermal power
         [KSPField(isPersistant = true)]
         public float currentThermalPower = 0f;
@@ -83,36 +98,25 @@ namespace NearFutureElectrical
         // Overheating going on
         [KSPField(isPersistant = true)]
         public float overheatAmount = 0f;
-
+        // Amount of damage to the core (1.0 = 100%)
         [KSPField(isPersistant = true)]
         public float CoreDamagePercent = 0f;
 
+        /// Heat Dissipation in atmosphere
         // Amount of power dissipated w/ pressure in ideal conditions
         [KSPField(isPersistant = false)]
         public FloatCurve PressureCurve= new FloatCurve();
+        
         // Amount of power dissipated w/ velocity in ideal conditions
         [KSPField(isPersistant = false)]
         public FloatCurve VelocityCurve = new FloatCurve();
 
-        // Fairings
-        // Editor Toggle
-        [KSPEvent(guiName = "Toggle Reactor Fairing", guiActive = false, guiActiveEditor = false)]
-        public void ToggleFairing () 
-        {
-        }
-
-        // Whether the fairing is present
-        [KSPField(isPersistant = true)]
-        public bool hasFairing = false;
-        
-
-
+       
         // private
 
-        // Current Ec/s generation
+        // Current resource generation
         private double currentGeneration =0d;
         
-
         // Ratio of cur power to max power
         private double thermalPowerRatio = 0f;
 
@@ -122,11 +126,13 @@ namespace NearFutureElectrical
         // the info staging box
         private VInfoBox infoBox;
         private List<FissionRadiator> radiators;
+        // Reactor animator
         private FissionGeneratorAnimator generatorAnimation;
 
+        // The wind curve
         private FloatCurve WindCurve = new FloatCurve();
 
-        // ACTIONS
+        /// ACTIONS
         // -------
         [KSPEvent(guiActive = true, guiName = "Startup Reactor", active = true)]
         public void StartReactor()
@@ -140,7 +146,25 @@ namespace NearFutureElectrical
             Enabled = false;
         }
 
-        /// UI ACTIONS
+        [KSPAction("Deploy Radiators")]
+        public void DeployRadiatorsAction(KSPActionParam param)
+        {
+            DeployRadiators();
+        }
+
+        [KSPAction("Retract Radiators")]
+        public void RetractRadiatorsAction(KSPActionParam param)
+        {
+            RetractRadiators();
+        }
+
+        [KSPAction("Toggle Radiators")]
+        public void ToggleRadiatorsAction(KSPActionParam param)
+        {
+            ToggleRadiators();
+        }
+        
+        /// UI Buttons
         /// --------------------
         /// Toggle control panel
         [KSPEvent(guiActive = true, guiName = "Toggle Reactor Control", active = true)]
@@ -189,24 +213,7 @@ namespace NearFutureElectrical
         }
 
 
-        // Actions
-        [KSPAction("Deploy Radiators")]
-        public void DeployRadiatorsAction(KSPActionParam param)
-        {
-            DeployRadiators();
-        }
-
-        [KSPAction("Retract Radiators")]
-        public void RetractRadiatorsAction(KSPActionParam param)
-        {
-            RetractRadiators();
-        }
-
-        [KSPAction("Toggle Radiators")]
-        public void ToggleRadiatorsAction(KSPActionParam param)
-        {
-            ToggleRadiators();
-        }
+       
 
         // STATUS STRINGS
         ///--------------------
@@ -266,7 +273,6 @@ namespace NearFutureElectrical
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
-            this.moduleName = "Fission Reactor";
         }
 
 
@@ -279,6 +285,7 @@ namespace NearFutureElectrical
 
             if (state != StartState.Editor)
             {
+                // Establish a wind curve
                 WindCurve = new FloatCurve();
                 WindCurve.Add(0f, 0f);
                 WindCurve.Add(1000f, 20f);
@@ -287,7 +294,6 @@ namespace NearFutureElectrical
                 if (UseStagingIcon)
                 {
                     infoBox = this.part.stackIcon.DisplayInfo();
-
                     infoBox.SetMsgBgColor(XKCDColors.RedOrange);
                     infoBox.SetMsgTextColor(XKCDColors.Orange);
                     infoBox.SetLength(1.0f);
@@ -295,12 +301,14 @@ namespace NearFutureElectrical
                     infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
                     infoBox.SetProgressBarColor(XKCDColors.Orange);
                 }
+                
                 generatorAnimation = part.Modules.OfType<FissionGeneratorAnimator>().First();
                 SetupRadiators();
 
                 if (UseForcedActivation)
                     this.part.force_activate();
-   
+                    
+                // Perform a FuelUpdate
                 FuelUpdate();
                 oldHighlight = part.highlightColor;
             }
@@ -312,7 +320,6 @@ namespace NearFutureElectrical
 
         private void FuelUpdate()
         {
-
             if (LastFuelUpdate == 0f)
             {
                 Debug.Log("NFT: Fission Reactor: checking nonfocused use, no time elapsed.");
@@ -384,7 +391,6 @@ namespace NearFutureElectrical
         // Do animation, UI
         public override void OnUpdate()
         {
-
             if ((Enabled && Events["StartReactor"].active) || (!Enabled && Events["ShutdownReactor"].active))
             {
                 Events["StartReactor"].active = !Enabled;
@@ -393,7 +399,6 @@ namespace NearFutureElectrical
             // Update GUI 
             GeneratorStatus = String.Format("{0:F2} Ec/s", currentGeneration);
         }
-
 
         public override void OnFixedUpdate()
         {
@@ -506,13 +511,14 @@ namespace NearFutureElectrical
                 ShutdownReactor();
             }
 
+            // Set the last fuel update time
             LastFuelUpdate = (float)vessel.missionTime;
            
             // Split addition of resources into several calls, improves stability of high rates
-            this.part.RequestResource("ElectricCharge", -0.25f*currentGeneration*TimeWarp.fixedDeltaTime);
-            this.part.RequestResource("ElectricCharge", -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
-            this.part.RequestResource("ElectricCharge", -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
-            this.part.RequestResource("ElectricCharge", -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
+            this.part.RequestResource(generatedName, -0.25f * currentGeneration*TimeWarp.fixedDeltaTime);
+            this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
+            this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
+            this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
 
         }
 
