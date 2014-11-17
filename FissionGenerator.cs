@@ -14,8 +14,8 @@ namespace NearFutureElectrical
     public class FissionGenerator: PartModule
     {
 
-
-        /// KSPFIELD
+        /// CONFIGURABLE FIELDS
+        // ----------------------
         /// Fuel Resource name
         [KSPField(isPersistant = false)]
         public string fuelName = "EnrichedUranium";
@@ -112,8 +112,8 @@ namespace NearFutureElectrical
         public FloatCurve VelocityCurve = new FloatCurve();
 
        
-        // private
-
+        /// PRIVATE VARIABLES
+        /// ----------------------
         // Current resource generation
         private double currentGeneration =0d;
         
@@ -164,7 +164,7 @@ namespace NearFutureElectrical
             ToggleRadiators();
         }
         
-        /// UI Buttons
+        /// UI BUTTONS
         /// --------------------
         /// Toggle control panel
         [KSPEvent(guiActive = true, guiName = "Toggle Reactor Control", active = true)]
@@ -212,11 +212,8 @@ namespace NearFutureElectrical
            this.TryRefuel();
         }
 
-
-       
-
-        // STATUS STRINGS
-        ///--------------------
+        /// UI FIELDS
+        /// --------------------
         // Fuel Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Core Life")]
         public string FuelStatus;
@@ -232,8 +229,6 @@ namespace NearFutureElectrical
         // Info for ui
         public override string GetInfo()
         {
-            StringBuilder str = new StringBuilder();
-            
             return String.Format("Maximum Power: {0:F2} Ec/s", PowerGenerationMaximum) + "\n" +
                 String.Format("Required Radiator Power: {0:F2} kW", ThermalPower) + "\n" +
                 "Estimated Core Life: " + FindTimeRemaining(BurnRate);
@@ -488,18 +483,16 @@ namespace NearFutureElectrical
             }
 
 
+            currentGeneration = thermalPowerRatio * PowerGenerationMaximum * (1f - CoreDamagePercent);
+            FuelStatus = FindTimeRemaining(BurnRate * coreTemperatureRatio);
 
-
-            // heat animation
+            // Set the heat animation
             if (CoreDamagePercent >= 1f)
                 generatorAnimation.SetHeatLevel(1f);
             else
                 generatorAnimation.SetHeatLevel(Mathf.Clamp01((CurrentCoreTemperature - MaxCoreTemperature) / MeltdownCoreTemperature));
 
-            currentGeneration = thermalPowerRatio * PowerGenerationMaximum * (1f - CoreDamagePercent);
-            FuelStatus = FindTimeRemaining(BurnRate * coreTemperatureRatio);
-
-            // compute the fuel usage
+            // Compute and subtract the fuel usage
             fuelUsage = BurnRate * coreTemperatureRatio * TimeWarp.fixedDeltaTime;
             double fuelAmt = this.part.RequestResource(fuelName, fuelUsage);
             this.part.RequestResource(depletedName, -fuelAmt);
@@ -507,7 +500,6 @@ namespace NearFutureElectrical
             if (fuelAmt <= 0d && fuelUsage > 0d)
             {
                 FuelStatus = "No fuel remaining";
-
                 ShutdownReactor();
             }
 
