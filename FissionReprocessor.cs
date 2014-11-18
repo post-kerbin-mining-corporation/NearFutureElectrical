@@ -128,7 +128,6 @@ namespace NearFutureElectrical
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
-            this.moduleName = "Nuclear Fuel Reprocessor";
         }
 
         public override void OnStart(PartModule.StartState state)

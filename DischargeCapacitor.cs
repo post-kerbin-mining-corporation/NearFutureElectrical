@@ -109,7 +109,7 @@ namespace NearFutureElectrical
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
-            this.moduleName = "Capacitor";
+        
         }
 
         public override void OnStart(PartModule.StartState state)
