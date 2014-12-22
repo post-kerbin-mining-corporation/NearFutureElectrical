@@ -110,6 +110,26 @@ namespace NearFutureElectrical
 
             return result;
         }
+        
+        public static double CalculateDecimalYears(double seconds)
+        {
+            double dayLength;
+            double yearLength;
+            
+            if (GameSettings.KERBIN_TIME)
+            {
+                dayLength = 6d;
+                yearLength = 426d;
+            }
+            else
+            {
+                dayLength = 24d;
+                yearLength = 365d;
+            }
+            double decYears = seconds/60d/60d/dayLength/yearLength;
+            
+            return decYears;
+        }
 
         // finds the flow rate given thrust, isp and the propellant 
         public static float FindFlowRate(float thrust, float isp, Propellant fuelPropellant)
