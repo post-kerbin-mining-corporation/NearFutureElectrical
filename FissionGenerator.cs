@@ -317,18 +317,23 @@ namespace NearFutureElectrical
                 // if the reactor is online
                 if (Enabled)
                 {
-
+                    thermalGoal = ThermalPower*CurrentPowerPercent
                     //Don't let thermal wattage go too high
                     if (SafetyLimit)
                     {
-
+                        float curDelta = heatModule.VesselHeatDelta;
+                        // If heat delta is positive, heat is accumulating
+                        if ( curDelta > 0f)
+                        {
+                            // Reduce goal to the lower of thermalGoal and currenpower - the current delta
+                            thermalGoal = Mathf.Min(thermalGoal,
+                                currentThermalPower-curDelta
+                                );
+                        } 
                         //wattsGoal = Mathf.Min(ThermalPower * CurrentPowerPercent, wattsRadiated + wattsConvected);
                     }
                     // Allow thermal power to go to maximum
-                    else
-                    {
-                        thermalGoal = ThermalPower * CurrentPowerPercent;
-                    }
+                    
                     //Split addition of resources into several calls, improves stability of high rates
                     this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
                     this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
