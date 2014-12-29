@@ -52,6 +52,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="SystemHeat">
+      <HintPath>..\..\..\..\Games\Steam\SteamApps\common\Kerbal Space Program\GameData\SystemHeat\Plugin\SystemHeat.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>G:\Games\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -59,11 +62,10 @@
   <ItemGroup>
     <Compile Include="DischargeCapacitorUI.cs" />
     <Compile Include="FissionGeneratorUI.cs" />
-    <Compile Include="FissionRadiator.cs" />
     <Compile Include="FissionReprocessor.cs" />
     <Compile Include="NearFuture.cs" />
     <Compile Include="FissionContainer.cs" />
-    <Compile Include="FissionGeneratorAnimator.cs" />
+    <Compile Include="RadioisotopeGenerator.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="DischargeCapacitor.cs" />
     <Compile Include="Utils.cs" />

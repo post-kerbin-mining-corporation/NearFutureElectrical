@@ -30,11 +30,12 @@ namespace NearFutureElectrical
         
         // Heat resource name
         [KSPField(isPersistant = false)]
-        public string heatName = "Heat";
+        public string heatName = "SystemHeat";
         
         // Use a staging icon or not
         [KSPField(isPersistant = false)]
         public bool UseStagingIcon = true;
+
         // Force activate on load or not
         [KSPField(isPersistant = false)]
         public bool UseForcedActivation = true;
@@ -43,7 +44,7 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true)]
         public bool Enabled;
 
-        // LastFuelUpdate time
+        // Last FuelUpdate time
         [KSPField(isPersistant = true)]
         public float LastFuelUpdate = 0f;
 
@@ -67,7 +68,7 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true)]
         public bool SafetyLimit = true;
 
-        // Thermal Power of the reactor
+        // Thermal power of the reactor
         [KSPField(isPersistant = false)]
         public float ThermalPower;
         
@@ -125,12 +126,11 @@ namespace NearFutureElectrical
         
         // the info staging box
         private VInfoBox infoBox;
-        private List<FissionRadiator> radiators;
-        // Reactor animator
-        private FissionGeneratorAnimator generatorAnimation;
 
         // The wind curve
         private FloatCurve WindCurve = new FloatCurve();
+        private SystemHeat.ModuleSystemHeat heatModule;
+
 
         /// ACTIONS
         // -------
@@ -146,23 +146,20 @@ namespace NearFutureElectrical
             Enabled = false;
         }
 
-        [KSPAction("Deploy Radiators")]
-        public void DeployRadiatorsAction(KSPActionParam param)
+
+        [KSPAction("Start Reactor")]
+        public void StartReactorAction(KSPActionParam param)
         {
-            DeployRadiators();
+            StartReactor();
         }
 
-        [KSPAction("Retract Radiators")]
-        public void RetractRadiatorsAction(KSPActionParam param)
+        [KSPAction("Shutdown Reactor")]
+        public void ShutdownReactorAction(KSPActionParam param)
         {
-            RetractRadiators();
+            ShutdownReactor();
         }
 
-        [KSPAction("Toggle Radiators")]
-        public void ToggleRadiatorsAction(KSPActionParam param)
-        {
-            ToggleRadiators();
-        }
+      
         
         /// UI BUTTONS
         /// --------------------
@@ -171,39 +168,7 @@ namespace NearFutureElectrical
         public void ShowReactorControl()
         {
             FissionGeneratorUI.ToggleWindow();
-            
-        }
-
-        // Deploy all radiators attached to this reactor
-        [KSPEvent(guiActive = true, guiName = "Deploy Attached Radiators", active = false)]
-        public void DeployRadiators()
-        {
-
-            foreach (FissionRadiator radiator in radiators)
-            {
-                //radiator.Extend();
-            }
-        }
-        // Retract all radiators attached to this reactor
-        [KSPEvent(guiActive = true, guiName = "Retract Attached Radiators", active = false)]
-        public void RetractRadiators()
-        {
-            
-            foreach (FissionRadiator radiator in radiators)
-            {
-               // radiator.Retract();
-            }
-        }
-        // Toggle all radiators attached to this reactor
-        [KSPEvent(guiActive = true, guiName = "Toggle Attached Radiators", active = true)]
-        public void ToggleRadiators()
-        {
-
-            foreach (FissionRadiator radiator in radiators)
-            {
-                radiator.Toggle();
-               //radiator.ExtendPanelsAction(new KSPActionParam(KSPActionGroup.None,KSPActionType.Activate));
-            }
+           
         }
         // try to refuel the reactor
         [KSPEvent(guiName = "Refuel Reactor", externalToEVAOnly = true, unfocusedRange = 2f, guiActiveUnfocused = true)]
@@ -230,7 +195,7 @@ namespace NearFutureElectrical
         public override string GetInfo()
         {
             return String.Format("Maximum Power: {0:F2} Ec/s", PowerGenerationMaximum) + "\n" +
-                String.Format("Required Radiator Power: {0:F2} kW", ThermalPower) + "\n" +
+                String.Format("Heat Generated: {0:F2} kW", ThermalPower) + "\n" +
                 "Estimated Core Life: " + FindTimeRemaining(BurnRate);
         }
 
@@ -275,30 +240,26 @@ namespace NearFutureElectrical
         {
             if (UseStagingIcon)
                 this.part.stagingIcon = "FUEL_TANK";
-            else 
-                Debug.Log("NFT: Fission Reactor: Staging Icon Disabled!");
+            else
+                Utils.LogWarn("Fission Reactor: Staging Icon Disabled!");
 
             if (state != StartState.Editor)
             {
-                // Establish a wind curve
-                WindCurve = new FloatCurve();
-                WindCurve.Add(0f, 0f);
-                WindCurve.Add(1000f, 20f);
-                WindCurve.Add(200000f, 0f);
+                // Get heat module
+                heatModule = GetComponent<SystemHeat.ModuleSystemHeat>();
 
+                // Set up staging icon heat bar
                 if (UseStagingIcon)
                 {
                     infoBox = this.part.stackIcon.DisplayInfo();
                     infoBox.SetMsgBgColor(XKCDColors.RedOrange);
                     infoBox.SetMsgTextColor(XKCDColors.Orange);
                     infoBox.SetLength(1.0f);
-                    infoBox.SetMessage("CoreHeat");
+                    infoBox.SetMessage("CoreDamage");
                     infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
                     infoBox.SetProgressBarColor(XKCDColors.Orange);
                 }
-                
-                generatorAnimation = part.Modules.OfType<FissionGeneratorAnimator>().First();
-                SetupRadiators();
+               
 
                 if (UseForcedActivation)
                     this.part.force_activate();
@@ -317,7 +278,7 @@ namespace NearFutureElectrical
         {
             if (LastFuelUpdate == 0f)
             {
-                Debug.Log("NFT: Fission Reactor: checking nonfocused use, no time elapsed.");
+                Utils.Log("Fission Reactor: checking nonfocused use, no time elapsed.");
                 return;
             }
             double timeElapsed = vessel.missionTime - (double)LastFuelUpdate;
@@ -325,63 +286,11 @@ namespace NearFutureElectrical
             float fuelUsage = (float)(((CurrentCoreTemperature / MaxCoreTemperature)) * BurnRate * timeElapsed);
             double fuelAmt = this.part.RequestResource(fuelName, fuelUsage);
             this.part.RequestResource(depletedName, -fuelAmt);
-            Debug.Log("NFT: Fission Reactor: checking nonfocused use, time unfocused is " + timeElapsed.ToString() + "s, removing " + fuelAmt.ToString() + " fuel"); 
+            Utils.Log("Fission Reactor: checking nonfocused use, time unfocused is " + timeElapsed.ToString() + "s, removing " + fuelAmt.ToString() + " fuel"); 
         }
 
 
-        // Gets all attached radiators
-        private void SetupRadiators()
-        {
-            Debug.Log("NFT: Fission Reactor: begin radiator check....");
-            radiators = new List<FissionRadiator>();
-            // Get attached radiators
-            Part[] children = this.part.FindChildParts<Part>();
-            // Debug.Log("NFPP: Reactor has " + children.Length.ToString()+" children");
-            foreach (Part pt in children)
-            {
-                PartModuleList modules = pt.Modules;
-                for (int i = 0; i < modules.Count; i++)
-                {
-                    PartModule curModule = modules.GetModule(i);
-                    FissionRadiator candidate = curModule.GetComponent<FissionRadiator>();
-                    if (candidate != null)
-                    {
-                        candidate.SetupRadiator(this);
-                        radiators.Add(candidate);
-                    }
-                }
-
-            }
-            Debug.Log("NFT: Fission Reactor: Completed radiator check, found " + radiators.Count() + " radiators" );
-        }
-        public void RemoveRadiator(FissionRadiator rad)
-        {
-            if (rad != null)
-            {
-                radiators.Remove(rad);
-            }
-        }
-
-        public float RadiatorEfficiency()
-        {
-            float wattsDissip = 0f;
-
-            foreach (FissionRadiator rad in radiators)
-            {
-                wattsDissip += rad.HeatRejection((float)currentThermalPower / (float)radiators.Count);
-            }
-
-            return wattsDissip;
-        }
-        
-        private void LogItAll()
-        {
-            Debug.Log(
-                 "Enabled: " + Enabled.ToString() + "\n" +
-                 "Radiator list: " + radiators + "\n" +
-                    "Generator anim: " + generatorAnimation
-                );
-        }
+       
 
         // Do animation, UI
         public override void OnUpdate()
@@ -395,122 +304,109 @@ namespace NearFutureElectrical
             GeneratorStatus = String.Format("{0:F2} Ec/s", currentGeneration);
         }
 
-        public override void OnFixedUpdate()
+        private void FixedUpdate()
         {
-            float wattsRadiated = RadiatorEfficiency();
-            float wattsConvected = 0f;
-            float wattsGoal = 0f;
-            float wattsError = 0f;
-
-            float goalTemperature = 0f;
-
-            double fuelUsage = 0d;
-
-            // calculate atmoshperic dissipation
-            if (Utils.VesselInAtmosphere(vessel))
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
-                //Debug.Log("NFPP: Debugging Pressure Curves... " + PressureCurve.maxTime.ToString() + " and " + PressureCurve.minTime.ToString() );
-                float pressure = (float)FlightGlobals.getStaticPressure(vessel.transform.position);
-                double velocity = vessel.srfSpeed;
-                // v*const*
-                wattsConvected = PressureCurve.Evaluate(pressure) * VelocityCurve.Evaluate((float)velocity+WindCurve.Evaluate((float)vessel.terrainAltitude))*(part.mass);
-            }
-            if (Enabled)
-            {
-                // Don't let thermal wattage go over radiation+convection
-                if (SafetyLimit)
-                {
-                    wattsGoal = Mathf.Min(ThermalPower * CurrentPowerPercent, wattsRadiated + wattsConvected);
-                }
-                // Allow thermal power to go to maximum
-                else
-                {
-                    wattsGoal = ThermalPower * CurrentPowerPercent;
-                }
-            }
-            else
-            {
-                wattsGoal = 0f;
-            }
-            
-            currentThermalPower = Mathf.MoveTowards(currentThermalPower, wattsGoal, TimeWarp.fixedDeltaTime * ThermalPowerResponseRate);
-            thermalPowerRatio = (double)(currentThermalPower / ThermalPower);
-
-            // what the wattage difference between cooling and power is
-            wattsError = currentThermalPower - wattsRadiated - wattsConvected;
-            //Debug.Log("Watt error: " + wattsError.ToString());
-
-            if (wattsError > 0f)
-            {
-                // increase the overheat amount
-                overheatAmount += TimeWarp.fixedDeltaTime * (wattsError / (this.part.mass * 500f));
-                if (UseStagingIcon)
-                    infoBox.SetValue(Mathf.Clamp01((CurrentCoreTemperature - MaxCoreTemperature) / (MeltdownCoreTemperature - MaxCoreTemperature)));
-            }
-            else
-            {
-                //overheatAmount += TimeWarp.fixedDeltaTime * (wattsError / (this.part.mass * 500f));
-                overheatAmount = Mathf.MoveTowards(overheatAmount, 0f, TimeWarp.fixedDeltaTime * Mathf.Max((wattsError / (this.part.mass * 500f)), 1f));
-                if (UseStagingIcon)
-                    infoBox.SetValue(Mathf.Clamp01((CurrentCoreTemperature - MaxCoreTemperature) / (MeltdownCoreTemperature - MaxCoreTemperature)));
-            }
-            //Debug.Log("Overheat total: " + overheatAmount.ToString());
-            goalTemperature = (float)thermalPowerRatio * MaxCoreTemperature + Mathf.Clamp(overheatAmount, 0f, 5000f);
-
-            CurrentCoreTemperature = Mathf.MoveTowards(CurrentCoreTemperature, goalTemperature, TimeWarp.fixedDeltaTime * CoreTemperatureResponseRate);
-            coreTemperatureRatio = (double)(CurrentCoreTemperature / MaxCoreTemperature);
-
-            // Reactor meltdown!
-            if (CurrentCoreTemperature >= MeltdownCoreTemperature)
-            {
-                CoreDamagePercent = 1f;
-                CoreStatus = "Complete Meltdown!";
+                // First, add heat to ship
+                float overheat = heatModule.AddHeat(currentThermalPower * TimeWarp.fixedDeltaTime);
+                Utils.Log(overheat.ToString());
+                float goalTemperature = 0f;
+                float thermalGoal = 0f;
+                double fuelUsage = 0d;
+                // if the reactor is online
                 if (Enabled)
                 {
+
+                    //Don't let thermal wattage go too high
+                    if (SafetyLimit)
+                    {
+
+                        //wattsGoal = Mathf.Min(ThermalPower * CurrentPowerPercent, wattsRadiated + wattsConvected);
+                    }
+                    // Allow thermal power to go to maximum
+                    else
+                    {
+                        thermalGoal = ThermalPower * CurrentPowerPercent;
+                    }
+                    //Split addition of resources into several calls, improves stability of high rates
+                    this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
+                    this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
+                    this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
+                    this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
+
+                }
+                else
+                {
+                    thermalGoal = 0f;
+                }
+
+
+                currentThermalPower = Mathf.MoveTowards(currentThermalPower, thermalGoal, TimeWarp.fixedDeltaTime * ThermalPowerResponseRate);
+                thermalPowerRatio = (double)(currentThermalPower / ThermalPower);
+
+
+                if (overheat > 0f)
+                {
+                    // increase the overheat amount
+                    overheatAmount += TimeWarp.fixedDeltaTime * (overheat / (this.part.mass * 1000f));
+                }
+                else
+                {
+                    overheatAmount = Mathf.MoveTowards(overheatAmount, 0f, TimeWarp.fixedDeltaTime * Mathf.Max(((float)overheat / (this.part.mass * 1000f)), 1f));
+                }
+                //Debug.Log("Overheat total: " + overheatAmount.ToString());
+                goalTemperature = (float)thermalPowerRatio * MaxCoreTemperature + Mathf.Clamp(overheatAmount, 0f, 5000f);
+
+                CurrentCoreTemperature = Mathf.MoveTowards(CurrentCoreTemperature, goalTemperature, TimeWarp.fixedDeltaTime * CoreTemperatureResponseRate);
+                coreTemperatureRatio = (double)(CurrentCoreTemperature / MaxCoreTemperature);
+
+                // Reactor meltdown!
+                if (CurrentCoreTemperature >= MeltdownCoreTemperature)
+                {
+                    CoreDamagePercent = 1f;
+                    CoreStatus = "Complete Meltdown!";
+                    if (Enabled)
+                    {
+                        ShutdownReactor();
+                    }
+                }
+                else if (CurrentCoreTemperature >= MaxCoreTemperature)
+                {
+                    CoreDamagePercent = Mathf.Max(CoreDamagePercent, (CurrentCoreTemperature - MaxCoreTemperature * 1.15f) / (MeltdownCoreTemperature - MaxCoreTemperature * 1.15f));
+                    if (CoreDamagePercent < 1f)
+                        CoreStatus = String.Format("{0:F0} %", Mathf.Clamp01(1f - CoreDamagePercent) * 100f);
+                }
+                else
+                {
+                    if (CoreDamagePercent < 1f)
+                        CoreStatus = String.Format("{0:F0} %", Mathf.Clamp01(1f - CoreDamagePercent) * 100f);
+                }
+
+
+                currentGeneration = thermalPowerRatio * PowerGenerationMaximum * (1f - CoreDamagePercent);
+
+                if (UseStagingIcon)
+                    infoBox.SetValue(CoreDamagePercent);
+
+
+                FuelStatus = FindTimeRemaining(BurnRate * coreTemperatureRatio);
+
+                // Compute and subtract the fuel usage
+                fuelUsage = BurnRate * coreTemperatureRatio * TimeWarp.fixedDeltaTime;
+                double fuelAmt = this.part.RequestResource(fuelName, fuelUsage);
+                this.part.RequestResource(depletedName, -fuelAmt);
+
+                if (fuelAmt <= 0d && fuelUsage > 0d)
+                {
+                    FuelStatus = "No fuel remaining";
                     ShutdownReactor();
                 }
+
+                // Set the last fuel update time
+                LastFuelUpdate = (float)vessel.missionTime;
+
             }
-            else if (CurrentCoreTemperature >= MaxCoreTemperature)
-            {
-                CoreDamagePercent = Mathf.Max(CoreDamagePercent, (CurrentCoreTemperature - MaxCoreTemperature * 1.15f) / (MeltdownCoreTemperature - MaxCoreTemperature * 1.15f));
-                if (CoreDamagePercent < 1f)
-                    CoreStatus = String.Format("{0:F0} %", Mathf.Clamp01(1f - CoreDamagePercent) * 100f);
-            }
-            else
-            {
-                if (CoreDamagePercent < 1f)
-                    CoreStatus = String.Format("{0:F0} %", Mathf.Clamp01(1f - CoreDamagePercent) * 100f);
-            }
-
-
-            currentGeneration = thermalPowerRatio * PowerGenerationMaximum * (1f - CoreDamagePercent);
-            FuelStatus = FindTimeRemaining(BurnRate * coreTemperatureRatio);
-
-            // Set the heat animation
-            if (CoreDamagePercent >= 1f)
-                generatorAnimation.SetHeatLevel(1f);
-            else
-                generatorAnimation.SetHeatLevel(Mathf.Clamp01((CurrentCoreTemperature - MaxCoreTemperature) / MeltdownCoreTemperature));
-
-            // Compute and subtract the fuel usage
-            fuelUsage = BurnRate * coreTemperatureRatio * TimeWarp.fixedDeltaTime;
-            double fuelAmt = this.part.RequestResource(fuelName, fuelUsage);
-            this.part.RequestResource(depletedName, -fuelAmt);
-
-            if (fuelAmt <= 0d && fuelUsage > 0d)
-            {
-                FuelStatus = "No fuel remaining";
-                ShutdownReactor();
-            }
-
-            // Set the last fuel update time
-            LastFuelUpdate = (float)vessel.missionTime;
-           
-            // Split addition of resources into several calls, improves stability of high rates
-            this.part.RequestResource(generatedName, -0.25f * currentGeneration*TimeWarp.fixedDeltaTime);
-            this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
-            this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
-            this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
 
         }
 
@@ -530,11 +426,11 @@ namespace NearFutureElectrical
             }
             else
             {
-                Debug.Log("NFT: Fission Reactor: Searching for valid containers...");
+                Utils.Log("Fission Reactor: Searching for valid containers...");
                 FissionContainer from = FindValidFissionContainer();
                 if (from != null)
                 {
-                    Debug.Log("NFT: Fission Reactor: Refuelling valid container...");
+                    Utils.Log("Fission Reactor: Refuelling valid container...");
                     from.RefuelReactorFromContainer(this, this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount);
 
                 }
@@ -552,7 +448,7 @@ namespace NearFutureElectrical
                 // check for fuel space
                 if (cont.CheckFuelSpace(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount))
                 {
-                    Debug.Log("NFT: Fission Reactor: Found valid FissionContainer.");
+                    Utils.Log("Fission Reactor: Found valid FissionContainer.");
                     return cont;
                 }
             }

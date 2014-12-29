@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NearFutureElectrical")]
 [assembly: AssemblyDescription("Near Future Technologies Electrical Modules")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Dromaeosaurid Productions")]
+[assembly: AssemblyCompany("Area Denial Games")]
 [assembly: AssemblyProduct("NearFutureElectrical")]
 [assembly: AssemblyCopyright("Copyright Chris Adderley ©  2013")]
 [assembly: AssemblyTrademark("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.3.0.0")]
-[assembly: AssemblyFileVersion("0.3.0.0")]
+[assembly: AssemblyVersion("0.4.0.0")]
+[assembly: AssemblyFileVersion("0.4.0.0")]

@@ -158,15 +158,23 @@ namespace NearFutureElectrical
             double isp = (((thrust * 1000f) / (9.82d)) / flowRate) / (fuelDensity * 1000f);
             return (float)isp;
         }
+        // LOGGING
+        // -------
+        public static void Log(string message)
+        {
+            Debug.Log("NF Electrical: " + message);
+        }
+
+        public static void LogWarn(string message)
+        {
+            Debug.LogWarning("NF Electrical: " + message);
+        }
+
+        public static void LogError(string message)
+        {
+            Debug.LogError("NF Electrical: " + message);
+        }
     }
 
-    
-    public enum RadiatorState
-    {
-        Deployed,
-        Deploying,
-        Retracted,
-        Retracting,
-        Broken,
-    }
+     
 }
