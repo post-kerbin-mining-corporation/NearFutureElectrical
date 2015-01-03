@@ -309,7 +309,7 @@ namespace NearFutureElectrical
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
                 // First, add heat to ship
-                float overheat = heatModule.AddHeat(currentThermalPower * TimeWarp.fixedDeltaTime);
+                float overheat = (float)heatModule.GenerateHeat((double)(currentThermalPower * TimeWarp.fixedDeltaTime));
                 Utils.Log(overheat.ToString());
                 float goalTemperature = 0f;
                 float thermalGoal = 0f;
@@ -317,19 +317,23 @@ namespace NearFutureElectrical
                 // if the reactor is online
                 if (Enabled)
                 {
-                    thermalGoal = ThermalPower*CurrentPowerPercent
+                    thermalGoal = ThermalPower * CurrentPowerPercent;
                     //Don't let thermal wattage go too high
                     if (SafetyLimit)
                     {
-                        float curDelta = heatModule.VesselHeatDelta;
+                        float curDelta = heatModule.VesselHeatBalance;
                         // If heat delta is positive, heat is accumulating
-                        if ( curDelta > 0f)
+                        if (curDelta >= 0f)
                         {
-                            // Reduce goal to the lower of thermalGoal and currenpower - the current delta
-                            thermalGoal = Mathf.Min(thermalGoal,
-                                currentThermalPower-curDelta
-                                );
-                        } 
+                            // Reduce goal to the lower of thermalGoal and currentpower - the current delta
+                            thermalGoal = Mathf.Clamp(
+                                Mathf.Min(thermalGoal, currentThermalPower - curDelta*0.25f),
+                                0f, ThermalPower);
+                        }
+                        else
+                        {
+                            thermalGoal = ThermalPower * CurrentPowerPercent;
+                        }
                         //wattsGoal = Mathf.Min(ThermalPower * CurrentPowerPercent, wattsRadiated + wattsConvected);
                     }
                     // Allow thermal power to go to maximum

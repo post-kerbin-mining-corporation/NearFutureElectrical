@@ -41,8 +41,8 @@ namespace NearFutureElectrical
         public override string GetInfo()
         {
             return "Generates power constantly, but decays over time \n\n" +
-           String.Format("Power Generated: {0:F2} Ec/s",BasePower) + "\n" +
-             String.Format("Half-Life: {0:F0} y", HalfLife);
+                String.Format("Power Generated: {0:F2} Ec/s",BasePower) + "\n" +
+                String.Format("Half-Life: {0:F0} y", HalfLife);
         }
 
 
