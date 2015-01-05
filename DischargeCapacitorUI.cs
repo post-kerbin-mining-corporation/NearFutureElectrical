@@ -54,9 +54,12 @@ namespace NearFutureElectrical
         // GUI VARS
         // ---------- 
         public Rect windowPos = new Rect(200f, 200f, 500f, 200f);
+        public Vector2 scrollPosition = Vector2.zero;
         static bool showWindow = false;
         int windowID = new System.Random().Next();
         bool initStyles = false;
+
+
 
         // styles
         GUIStyle progressBarBG;
@@ -128,38 +131,50 @@ namespace NearFutureElectrical
             {
 
                 GUILayout.BeginHorizontal();
-
-                if (GUILayout.Button("Enable Capacitor Recharge"))
-                {
-                    foreach (DischargeCapacitor cap in capacitorList)
-                    {
-                        cap.Enable();
-                    }
-                }
-                if (GUILayout.Button("Disable Capacitor Recharge"))
-                {
-                    foreach (DischargeCapacitor cap in capacitorList)
-                    {
-                        cap.Disable();
-                    }
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                automate = GUILayout.Toggle(automate, "Capacitor Automation", GUILayout.MinWidth(175f), GUILayout.MaxWidth(175f));
-                GUILayout.Label(String.Format("Total Stored Charge: {0:F0}", getTotalSc()), gui_text);
+                    GUILayout.BeginVertical();
+                        if (GUILayout.Button("Enable all capacitor charging"))
+                        {
+                            ChargeAll();
+                        }
+                        if (GUILayout.Button("Disable all capacitor charging"))
+                        {
+                            StopChargeAll();
+                        }
+                    GUILayout.EndVertical();
                     
+                    GUILayout.Label(String.Format("Current total recharge rate: {0:F2}/s",GetAllChargeRatesCurrent()), 
+                        gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
+                    GUILayout.Label(String.Format"Current total discharge rate: {0:F2}/s",GetAllDischargeRatesCurrent()), 
+                        gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
+
+                    
+                    if (GUILayout.Button("Discharge all capacitors"))
+                    {
+                        DischargeAll();
+                    }
+                        
+                   
                 GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
                 
-                    GUILayout.Label("Discharge Threshold", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
-                    threshold = GUILayout.HorizontalSlider(threshold, 1f, 50f, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
-                    GUILayout.Label(String.Format("{0:F0} Ec/s", threshold), gui_text);
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(500f), GUILayout.Height(175f));
+                GUILayout.BeginVertical();
+                    //windowPos.height = 175f + 70f;
+                    foreach (DischargeCapacitor c in capacitorList)
+                    {
+                        DrawCapacitor(c);
+                    }
+               GUILayout.EndVertical();
+               GUILayout.EndScrollView();
+               GUILayout.BeginHorizontal();
+               
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("X", GUILayout.MaxWidth(32f), GUILayout.MinWidth(32f), GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f)))
                     {
                         ToggleWindow();
                     }
                 GUILayout.EndHorizontal();
+                
+                
             }
             else
             {
@@ -176,6 +191,102 @@ namespace NearFutureElectrical
 
         private float threshold = 10f;
 
+        private void DrawCapacitor(DischargeCapacitor cap)
+        {
+            GUILayout.BeginHorizontal(gui_bg);
+            // Capacitor Name Field
+            GUILayout.Label(gen.part.partInfo.title, gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f));
+            // Properties
+            GUILayout.BeginVertical();
+                GUILayout.Label(String.Format("{0:F0}% Charged", GetChargePercent(cap), gui_text);
+                GUILayout.Label(String.Format("{0:F0} Sc/s",  GetCurrentRate(cap), gui_text);
+            GUILayout.EndVertical();
+            // Changeables
+            
+            GUILayout.BeginVertical();
+            // Bar
+            GUILayout.BeginHorizontal();
+                GUILayout.Label("Customize Discharge Rates", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
+                cap.dischargeSlider = GUILayout.HorizontalSlider(cap.dischargeSlider, 50f, 100f, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
+                GUILayout.Label(String.Format("{0:F0} Ec/s", cap.DischargeActual), gui_text);
+            GUILayout.EndHorizontal();
+            // Buttons
+            GUILayout.BeginHorizontal();
+                cap.Enabled = GUILayout.Toggle(cap.Enabled, "Recharge Enabled");
+                if (GUILayout.Button("Discharge "))
+                {
+                    cap.Discharge();
+                }
+            GUILayout.EndHorizontal();
+            
+            GUILayout.EndVertical();
+            
+            GUILayout.EndHorizontal();
+
+        }
+        // Gets the current charge or discharge rate of a capacitor
+        private float GetCurrentRate(DischargeCapacitor cap)
+        {
+            if (cap.Discharging)
+            {
+                return -cap.DischargeRate;
+            } else if (cap.Enabled && cap.CurrentCharge < cap.MaximumCharge)
+            {
+                return cap.ChargeRate*cap.ChargeRatio;
+            } else
+            {
+                return 0f;
+            }
+        }
+        // Gets a capacitor's percent charge
+        private float GetChargePercent(DischargeCapacitor cap)
+        {
+            return (cap.CurrentCharge / cap.MaximumCharge) *100f;
+        }
+
+        private float GetAllChargeRatesCurrent()
+        {
+            float chargeRate = 0f;
+            foreach (DischargeCapacitor cap in capacitorList)
+            {
+                if (cap.Enabled && cap.CurrentCharge < cap.MaximumCharge)
+                    chargeRate = chargeRate + cap.ChargeRate*cap.ChargeRatio;
+            }
+            return chargeRate;
+        }
+        private float GetAllDischargeRatesCurrent()
+        {
+            float dischargeRate = 0f;
+            foreach (DischargeCapacitor cap in capacitorList)
+            {
+                if (cap.Discharging)
+                    dischargeRate = dischargeRate + cap.dischargeActual;
+            }
+            return dischargeRate;
+        }
+        
+        private void DischargeAll()
+        {
+            foreach (DischargeCapacitor cap in capacitorList)
+            {
+                cap.Discharge();
+            }
+        }
+        private void ChargeAll()
+        {
+            foreach (DischargeCapacitor cap in capacitorList)
+            {
+                cap.Enable();
+            }
+        }
+        private void StopChargeAll()
+        {
+             foreach (DischargeCapacitor cap in capacitorList)
+            {
+                cap.Disable();
+            }
+        }
+        
         protected void FixedUpdate()
         {
             if (HighLogic.LoadedSceneIsFlight)
