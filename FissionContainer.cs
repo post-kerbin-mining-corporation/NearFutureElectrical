@@ -40,10 +40,10 @@ namespace NearFutureElectrical
             // waste is limiting
             if (fuelAvailable > 0.0d || wasteSpaceAvailable > 0.0d)
             {
-                Debug.Log("NFPP: Container has enough fuel");
+                Utils.Log("FissionContainer has enough fuel");
                 return true;
             }
-            Debug.Log("NFPP: Container has insufficient fuel");
+            Utils.Log("FissionContainer has insufficient fuel");
             return false;
             
         }
@@ -57,10 +57,10 @@ namespace NearFutureElectrical
 
             if (wasteAvailable > 0d && fuelSpaceAvailable > 0)
             {
-                Debug.Log("NFPP: Container has waste & space");
+                Utils.Log("FissionContainer has waste & space");
                 return true;
             }
-            Debug.Log("NFPP: Container has no waste and space");
+            Utils.Log("FissionContainer has no waste and space");
             return false;
 
         }
@@ -68,33 +68,39 @@ namespace NearFutureElectrical
         // Refuel from this module
         public void RefuelReactorFromContainer(FissionGenerator reactor, double amt)
         {
+            // The reactor fuel max. Total contents of reactor should never exceed this number
+            double reactorFuelMax = reactor.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).maxAmount;
+            
+            // Reactor resource counts
+            double reactorFuelAvailable = reactor.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount;
+            double reactorWasteAvailable = reactor.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount;
+            
+            // Container resource counts
             double fuelAvailable = this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount;
             double wasteSpaceAvailable = this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).maxAmount - this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount;
 
-            double adjAmt = amt;
-            if (wasteSpaceAvailable < fuelAvailable)
-            {
-                // waste limited
-                adjAmt = (double)Mathf.Clamp((float)amt, 0f, (float)wasteSpaceAvailable);
-            }
-            else
-            {
-                // fuel limited
-                adjAmt = (double)Mathf.Clamp((float)amt, 0f, (float)fuelAvailable);
-            }
-
-            //Debug.Log("NFPP: FissionContainer has enough fuel and waste space");
-            this.part.RequestResource(fuelName, adjAmt);
-            this.part.RequestResource(depletedName, -adjAmt);
-
-            reactor.part.RequestResource(fuelName, -adjAmt);
-            reactor.part.RequestResource(depletedName, adjAmt);
-
+            //Transfer only the waste that will "fit"
+            
+            double wasteToTransfer = Math.Clamp(reactorWasteAvailable,0d,wasteSpaceAvailable)
+            
+            // Remove the waste
+            this.part.RequestResource(depletedName, -wasteToTransfer);
+            reactor.part.RequestResource(depletedName, wasteToTransfer);
+            
+            // Space for fuel  after waste removed
+            double fuelSpace = reactorFuelMax - reactor.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount
+                -reactorWasteAvailable = reactor.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount
+            
+            // Add that amount of fuel if possible
+            double amt = this.part.RequestResource(fuelName, fuelSpace);
+            reactor.part.RequestResource(fuelName, -amt);
+            
+            
             if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount <= 0 ||
                       ((this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).maxAmount - this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount) <= 0))
             {
                 Expended = true;
-                Debug.Log("NFPP: FissionContainer is now expended");
+                Utils.Log("FissionContainer is now expended");
             }
         }
     }    
