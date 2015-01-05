@@ -103,6 +103,18 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true)]
         public float CoreDamagePercent = 0f;
 
+        // Level of Kerbal needed for repair
+        [KSPField(isPersistant = false)]
+        public int KerbalRepairLevelNeeded = 5;
+
+        // The maximum core damage fraction to which the reactor can be repaired
+        [KSPField(isPersistant = false)]
+        public float RepairMaximumAmount = 0.05f;
+        
+        // Level of Kerbal needed for refue
+        [KSPField(isPersistant = false)]
+        public int KerbalRefuelLevelNeeded = 4;
+        
         /// Heat Dissipation in atmosphere
         // Amount of power dissipated w/ pressure in ideal conditions
         [KSPField(isPersistant = false)]
@@ -175,6 +187,12 @@ namespace NearFutureElectrical
         public void RefuelReactor()
         {
            this.TryRefuel();
+        }
+        // try to refuel the reactor
+        [KSPEvent(guiName = "Repair Reactor", externalToEVAOnly = true, unfocusedRange = 2f, guiActiveUnfocused = true)]
+        public void RepairReactor()
+        {
+           this.TryRepair();
         }
 
         /// UI FIELDS
@@ -421,6 +439,50 @@ namespace NearFutureElectrical
 
 
         // ####################################
+        // Repairing
+        // ####################################
+
+
+        // Tries to refeul the reactor
+        public void TryRepair()
+        {
+            if (Enabled || CurrentCoreTemperature > 0f)
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot attempt repair while reactor is running or hot!", 4f, ScreenMessageStyle.UPPER_CENTER));
+                return;
+            }
+            else
+            {
+                int engLevel = KerbalEngineerLevel();
+                if (engLevel < KerbalRepairLevelNeeded)
+                {
+                    ScreenMessages.PostScreenMessage(new ScreenMessage("A level " + KerbalRepairLevelNeeded.ToSring() + " Engineer is required for reactor repair", 4f, ScreenMessageStyle.UPPER_CENTER));
+                }
+                else 
+                {
+                    CoreDamagePercent = Mathf.Min(CoreDamagePercent,RepairMaximumAmount);
+                    ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor repaired to " + 
+                        String.Format("{0:F0} %",100f*(1f-CoreDamagePercent)) + "capacity", 4f, ScreenMessageStyle.UPPER_CENTER));
+                }
+            }
+        }
+        
+        private int KerbalEngineerLevel()
+        {
+            ProtoCrewMember kerbal = FlightGlobals.ActiveVessel.rootPart.protoModuleCrew[0];
+            if (kerbal.experienceTrait.Title == "Engineer")
+            {
+                return kerbal.experienceLevel;
+            }
+            else 
+            {
+                return -1;
+            }
+        }
+        
+        
+        
+        // ####################################
         // Refuelling
         // ####################################
 
@@ -435,13 +497,21 @@ namespace NearFutureElectrical
             }
             else
             {
-                Utils.Log("Fission Reactor: Searching for valid containers...");
-                FissionContainer from = FindValidFissionContainer();
-                if (from != null)
+                int engLevel = KerbalEngineerLevel();
+                if (engLevel < KerbalRefuelLevelNeeded)
                 {
-                    Utils.Log("Fission Reactor: Refuelling valid container...");
-                    from.RefuelReactorFromContainer(this, this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount);
-
+                    ScreenMessages.PostScreenMessage(new ScreenMessage("A level " + KerbalRefuelLevelNeeded.ToSring() + " Engineer is required for reactor fuelling", 4f, ScreenMessageStyle.UPPER_CENTER));
+                }
+                else 
+                {
+                    Utils.Log("Fission Reactor: Searching for valid containers...");
+                    FissionContainer from = FindValidFissionContainer();
+                    if (from != null)
+                    {
+                        Utils.Log("Fission Reactor: Refuelling valid container...");
+                        from.RefuelReactorFromContainer(this, this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount);
+    
+                    }
                 }
             }
         }
@@ -452,10 +522,14 @@ namespace NearFutureElectrical
 
             List<FissionContainer> candidates = FindFissionContainers();
 
+            double depletedAmount = this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount;
+            double fuelAmount = this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount;
+            
             foreach (FissionContainer cont in candidates)
             {
+                
                 // check for fuel space
-                if (cont.CheckFuelSpace(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(depletedName).id).amount))
+                if (cont.CheckFuelSpace(depletedAmount))
                 {
                     Utils.Log("Fission Reactor: Found valid FissionContainer.");
                     return cont;
