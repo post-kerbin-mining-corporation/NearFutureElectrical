@@ -341,7 +341,7 @@ namespace NearFutureElectrical
                     {
                         float curDelta = heatModule.VesselHeatBalance;
                         // If heat delta is positive, heat is accumulating
-                        if (curDelta >= 0f)
+                        if (curDelta > 0f)
                         {
                             // Reduce goal to the lower of thermalGoal and currentpower - the current delta
                             thermalGoal = Mathf.Clamp(
@@ -352,7 +352,7 @@ namespace NearFutureElectrical
                         {
                             thermalGoal = ThermalPower * CurrentPowerPercent;
                         }
-                        //wattsGoal = Mathf.Min(ThermalPower * CurrentPowerPercent, wattsRadiated + wattsConvected);
+                    
                     }
                     // Allow thermal power to go to maximum
                     
