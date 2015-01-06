@@ -20,13 +20,16 @@ namespace NearFutureElectrical
         [KSPField(guiName = "Power Output", isPersistant = false, guiActiveEditor = true, guiActive = true, guiUnits = " Ec/s")]
         private float ActualPower = 0;
 
-
         [KSPField(guiName = "Efficiency", isPersistant = false, guiActiveEditor = false, guiActive = true, guiUnits = "%")]
         public float PercentPower = 100f;
 
-        // Easy mode never lets power drop below 1%
+        // Easy mode never lets power drop below a certain %
         [KSPField(isPersistant = true)]
         public bool EasyMode = true;
+        
+        // Percent for cutoff
+        [KSPField(isPersistant = false)]
+        public float EasyModeCutoff = 0.05f;
 
         public override void OnFixedUpdate()
         {
@@ -60,7 +63,7 @@ namespace NearFutureElectrical
             float amountRemaining = (float)Math.Pow(2,(-totalYears)/HalfLife);
 
             if (EasyMode)
-                amountRemaining = Mathf.Clamp(amountRemaining,0.05f,1f);
+                amountRemaining = Mathf.Clamp(amountRemaining,EasyModeCutoff,1f);
 
             return amountRemaining;
         }
