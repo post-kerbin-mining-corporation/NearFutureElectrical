@@ -81,7 +81,7 @@ namespace NearFutureElectrical
 
             //Transfer only the waste that will "fit"
             
-            double wasteToTransfer = Math.Clamp(reactorWasteAvailable,0d,wasteSpaceAvailable)
+            double wasteToTransfer = Mathf.Clamp((float)reactorWasteAvailable,0f,(float)wasteSpaceAvailable);
             
             // Remove the waste
             this.part.RequestResource(depletedName, -wasteToTransfer);
@@ -89,11 +89,11 @@ namespace NearFutureElectrical
             
             // Space for fuel  after waste removed
             double fuelSpace = reactorFuelMax - reactor.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount
-                -reactorWasteAvailable = reactor.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount
+                - reactorWasteAvailable + reactor.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount;
             
             // Add that amount of fuel if possible
-            double amt = this.part.RequestResource(fuelName, fuelSpace);
-            reactor.part.RequestResource(fuelName, -amt);
+            double thisAmt = this.part.RequestResource(fuelName, fuelSpace);
+            reactor.part.RequestResource(fuelName, -thisAmt);
             
             
             if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(fuelName).id).amount <= 0 ||

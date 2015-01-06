@@ -456,7 +456,7 @@ namespace NearFutureElectrical
                 int engLevel = KerbalEngineerLevel();
                 if (engLevel < KerbalRepairLevelNeeded)
                 {
-                    ScreenMessages.PostScreenMessage(new ScreenMessage("A level " + KerbalRepairLevelNeeded.ToSring() + " Engineer is required for reactor repair", 4f, ScreenMessageStyle.UPPER_CENTER));
+                    ScreenMessages.PostScreenMessage(new ScreenMessage("A level " + KerbalRepairLevelNeeded.ToString() + " Engineer is required for reactor repair", 4f, ScreenMessageStyle.UPPER_CENTER));
                 }
                 else 
                 {
@@ -500,7 +500,7 @@ namespace NearFutureElectrical
                 int engLevel = KerbalEngineerLevel();
                 if (engLevel < KerbalRefuelLevelNeeded)
                 {
-                    ScreenMessages.PostScreenMessage(new ScreenMessage("A level " + KerbalRefuelLevelNeeded.ToSring() + " Engineer is required for reactor fuelling", 4f, ScreenMessageStyle.UPPER_CENTER));
+                    ScreenMessages.PostScreenMessage(new ScreenMessage("A level " + KerbalRefuelLevelNeeded.ToString() + " Engineer is required for reactor fuelling", 4f, ScreenMessageStyle.UPPER_CENTER));
                 }
                 else 
                 {

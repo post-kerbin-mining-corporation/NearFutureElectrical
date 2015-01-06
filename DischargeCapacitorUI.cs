@@ -144,7 +144,7 @@ namespace NearFutureElectrical
                     
                     GUILayout.Label(String.Format("Current total recharge rate: {0:F2}/s",GetAllChargeRatesCurrent()), 
                         gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
-                    GUILayout.Label(String.Format"Current total discharge rate: {0:F2}/s",GetAllDischargeRatesCurrent()), 
+                    GUILayout.Label(String.Format("Current total discharge rate: {0:F2}/s",GetAllDischargeRatesCurrent()), 
                         gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
 
                     
@@ -195,11 +195,11 @@ namespace NearFutureElectrical
         {
             GUILayout.BeginHorizontal(gui_bg);
             // Capacitor Name Field
-            GUILayout.Label(gen.part.partInfo.title, gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f));
+            GUILayout.Label(cap.part.partInfo.title, gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f));
             // Properties
             GUILayout.BeginVertical();
-                GUILayout.Label(String.Format("{0:F0}% Charged", GetChargePercent(cap), gui_text);
-                GUILayout.Label(String.Format("{0:F0} Sc/s",  GetCurrentRate(cap), gui_text);
+                GUILayout.Label(String.Format("{0:F0}% Charged", GetChargePercent(cap)), gui_text);
+                GUILayout.Label(String.Format("{0:F0} Sc/s",  GetCurrentRate(cap)), gui_text);
             GUILayout.EndVertical();
             // Changeables
             
@@ -208,7 +208,7 @@ namespace NearFutureElectrical
             GUILayout.BeginHorizontal();
                 GUILayout.Label("Customize Discharge Rates", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
                 cap.dischargeSlider = GUILayout.HorizontalSlider(cap.dischargeSlider, 50f, 100f, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
-                GUILayout.Label(String.Format("{0:F0} Ec/s", cap.DischargeActual), gui_text);
+                GUILayout.Label(String.Format("{0:F0} Ec/s", cap.dischargeActual), gui_text);
             GUILayout.EndHorizontal();
             // Buttons
             GUILayout.BeginHorizontal();
