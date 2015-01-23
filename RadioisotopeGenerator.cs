@@ -8,15 +8,16 @@ using KSP;
 
 namespace NearFutureElectrical
 {
-    //[KSPModule("RadioisotopeGenerator")]
     public class ModuleRadioisotopeGenerator : PartModule
     {
+        // Power generated at max
         [KSPField(isPersistant = false)]
         public float BasePower = 1f;
+        
+        // GUI elements
         [KSPField(guiName = "Half Life", isPersistant = false, guiActiveEditor = true, guiActive = true, guiUnits = " y")]
         public float HalfLife = 16f;
-
-        // information output
+        
         [KSPField(guiName = "Power Output", isPersistant = false, guiActiveEditor = true, guiActive = true, guiUnits = " Ec/s")]
         private float ActualPower = 0;
 
@@ -47,19 +48,17 @@ namespace NearFutureElectrical
                 String.Format("Power Generated: {0:F2} Ec/s",BasePower) + "\n" +
                 String.Format("Half-Life: {0:F0} y", HalfLife);
         }
-
-
-
+        
+        // Computes the amount remaining
         private float AmountRemaining()
         {
             double totalYears = 0d;
+            // If we blew up for some reason
             if (vessel == null)
-            totalYears = 0d;
+                totalYears = 0d;
             else
-            totalYears = vessel.missionTime;
-
+                totalYears = vessel.missionTime;
             totalYears = Utils.CalculateDecimalYears(totalYears);
-
             float amountRemaining = (float)Math.Pow(2,(-totalYears)/HalfLife);
 
             if (EasyMode)
