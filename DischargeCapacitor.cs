@@ -155,7 +155,8 @@ namespace NearFutureElectrical
         }
         public override void OnFixedUpdate()
         {
-            if (Discharging)
+            // Only attempt to discharge if there is charge available
+            if (Discharging && CurrentCharge > 0f)
             {
                 foreach (AnimationState cState in capacityState)
                 {
@@ -199,6 +200,7 @@ namespace NearFutureElectrical
             else if (CurrentCharge == 0f)
             {
                 CapacitorStatus = "Discharged!";
+                Discharging = false;
             } else 
             {
                 CapacitorStatus = String.Format("Ready");
