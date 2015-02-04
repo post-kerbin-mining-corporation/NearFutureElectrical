@@ -166,9 +166,10 @@ namespace NearFutureElectrical
                 }
 
 
-                float amt = TimeWarp.fixedDeltaTime * (dischargeSlider/100f )* DischargeRate;
-                    
-                this.part.RequestResource("StoredCharge", amt);
+                float requested_amt = TimeWarp.fixedDeltaTime * (dischargeSlider/100f )* DischargeRate;
+
+                // Don't try to insert more ElectricCharge than there was StoredCharge available
+                float amt = this.part.RequestResource("StoredCharge", requested_amt);
                 this.part.RequestResource("ElectricCharge", -amt);
 
                 CapacitorStatus = String.Format("Discharging: {0:F2}/s", DischargeRate*(dischargeSlider / 100f));
