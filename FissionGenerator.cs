@@ -213,7 +213,7 @@ namespace NearFutureElectrical
         public override string GetInfo()
         {
             return String.Format("Maximum Power: {0:F2} Ec/s", PowerGenerationMaximum) + "\n" +
-                String.Format("Heat Generated: {0:F2} kW", ThermalPower) + "\n" +
+                String.Format("Heat Generated: {0:F3} MW", ThermalPower) + "\n" +
                 "Estimated Core Life: " + FindTimeRemaining(BurnRate);
         }
 
@@ -328,33 +328,89 @@ namespace NearFutureElectrical
             {
                 // First, add heat to ship
                 float overheat = (float)heatModule.GenerateHeat((double)(currentThermalPower * TimeWarp.fixedDeltaTime));
-                Utils.Log(overheat.ToString());
+               // Utils.Log(overheat.ToString());
                 float goalTemperature = 0f;
                 float thermalGoal = 0f;
                 double fuelUsage = 0d;
                 // if the reactor is online
                 if (Enabled)
                 {
-                    thermalGoal = ThermalPower * CurrentPowerPercent;
-                    //Don't let thermal wattage go too high
+                    
+                    // If the safety limit is on, don't let thermal wattage go too high
                     if (SafetyLimit)
                     {
+                        // original goal is current power
+                        thermalGoal = currentThermalPower;
+
+                        // Get current heat delta, per second
                         float curDelta = heatModule.VesselHeatBalance;
+                        float vesselHeatStored = heatModule.VesselHeatStored;
+                        float vesselMaxHeatStored = heatModule.VesselMaxHeatStored;
+                        float vesselHeatFraction = vesselHeatStored / vesselMaxHeatStored;
+
                         // If heat delta is positive, heat is accumulating
                         if (curDelta > 0f)
                         {
-                            // Reduce goal to the lower of thermalGoal and currentpower - the current delta
-                            thermalGoal = Mathf.Clamp(
-                                Mathf.Min(thermalGoal, currentThermalPower - curDelta*0.25f),
-                                0f, ThermalPower);
+                            if (vesselHeatFraction >= 0.25f)
+                            {
+                                // Reduce thermal power 
+                                thermalGoal = Mathf.Min(ThermalPower * CurrentPowerPercent
+                                            , Mathf.MoveTowards(thermalGoal, 0f, TimeWarp.fixedDeltaTime * ThermalPowerResponseRate * 5f));
+                            }
+                            else
+                            {
+                                // Do nothing to thermal power!
+                                thermalGoal = Mathf.Min(ThermalPower * CurrentPowerPercent, currentThermalPower);
+                            }
+
                         }
                         else
                         {
-                            thermalGoal = ThermalPower * CurrentPowerPercent;
+                            // if delta is zero...
+                            
+                            // either things are stable (do nothing) or reactor is set too low and there's no heat present so no delta (turn up)
+                            if (curDelta == 0f)
+                            {
+                              
+                               
+
+                                // if the vessel heat storage is > 25% full
+                                if (vesselHeatFraction >= 0.250f)
+                                {
+                                    // turn down heat a bit
+                                    thermalGoal = Mathf.Min(ThermalPower * CurrentPowerPercent
+                                        , Mathf.MoveTowards(thermalGoal, 0f, TimeWarp.fixedDeltaTime * ThermalPowerResponseRate * 5f));
+                                }
+                                // if the vessel heat storage is > 25% full
+                                else if (vesselHeatFraction >= 0.1f)
+                                {
+                                    // assume equilibrium, do nothing
+                                    thermalGoal = Mathf.Min(ThermalPower * CurrentPowerPercent, currentThermalPower);
+                                }
+                                // If the vessel storage is practically empty
+                                else
+                                {
+                                    // turn up reactor a bit
+                                    thermalGoal = Mathf.Min(ThermalPower * CurrentPowerPercent
+                                        , Mathf.MoveTowards(thermalGoal, ThermalPower * CurrentPowerPercent, TimeWarp.fixedDeltaTime * ThermalPowerResponseRate * 2f));
+                                }
+                            }
+                            // If delta is negative, can turn up the power... slowly
+                            else
+                            {
+                                thermalGoal = Mathf.Min(ThermalPower * CurrentPowerPercent,
+                                    Mathf.Lerp(thermalGoal, ThermalPower * CurrentPowerPercent, TimeWarp.fixedDeltaTime * ThermalPowerResponseRate* 2f));
+                            }
                         }
-                    
+
                     }
                     // Allow thermal power to go to maximum
+                    else
+                    {    
+                        thermalGoal = ThermalPower * CurrentPowerPercent;
+                    }
+
+                    
                     
                     //Split addition of resources into several calls, improves stability of high rates
                     this.part.RequestResource(generatedName, -0.25f * currentGeneration * TimeWarp.fixedDeltaTime);
@@ -443,7 +499,7 @@ namespace NearFutureElectrical
         // ####################################
 
 
-        // Tries to refeul the reactor
+        // Tries to repair the reactor
         public void TryRepair()
         {
             if (Enabled || CurrentCoreTemperature > 0f)

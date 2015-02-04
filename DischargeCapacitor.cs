@@ -47,8 +47,10 @@ namespace NearFutureElectrical
         [KSPEvent(guiActive = true, guiName = "Discharge Capacitor")]
         public void Discharge()
         {
-   
-            Discharging = true;
+            if (CurrentCharge > 0f)
+            {
+                Discharging = true;
+            }
         }
         // charge on/off
         [KSPEvent(guiActive = true, guiName = "Enable Recharge", active = true)]
@@ -69,7 +71,7 @@ namespace NearFutureElectrical
         [KSPEvent(guiActive = true, guiName = "Toggle Capacitor Control", active = true)]
         public void ShowCapacitorControl()
         {
-            DischargeCapacitorUI.ToggleWindow();
+            DischargeCapacitorUI.ToggleCapWindow();
         }
             
 

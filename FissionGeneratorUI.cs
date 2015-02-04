@@ -83,7 +83,7 @@ namespace NearFutureElectrical
             progressBarBG = new GUIStyle(HighLogic.Skin.textField);
             progressBarBG.active = progressBarBG.hover = progressBarBG.normal;
 
-            windowPos = new Rect(200f, 200f, 550f, 200f);
+            windowPos = new Rect(200f, 200f, 530f, 185f);
 
             initStyles = true;
         }
@@ -105,8 +105,9 @@ namespace NearFutureElectrical
                 if (showWindow)
                 {
                     // Debug.Log(windowPos.ToString());
-
-                    windowPos = GUI.Window(windowID, windowPos, Window, "Near Future Technology Fission Reactor Control Panel", gui_window);
+                    GUI.skin = HighLogic.Skin;
+                    gui_window.padding.top = 5;
+                    windowPos = GUI.Window(windowID, windowPos, Window,new GUIContent() , gui_window);
                 }
                // Debug.Log("NFPP: Stop Reactor UI Draw");
             }
@@ -115,27 +116,31 @@ namespace NearFutureElectrical
 
         // GUI function for the window
         private void Window(int windowId)
-        {
-            GUI.skin = HighLogic.Skin;
+       { 
+            
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Installed Fission Reactors", gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f));
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("X", GUILayout.MaxWidth(26f), GUILayout.MinWidth(26f), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f)))
+            {
+                ToggleWindow();
+            }
+            GUILayout.EndHorizontal();
+
             if (reactorList != null && reactorList.Count > 0)
             {
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(500f), GUILayout.Height(175f));
                 GUILayout.BeginVertical();
 
-                windowPos.height = 175f + 70f;
+                windowPos.height = 175f + 50f;
                 foreach (FissionGenerator gen in reactorList)
                 {
                     DrawReactor(gen);
                 }
                 GUILayout.EndVertical();
                 GUILayout.EndScrollView();
-                GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("X", GUILayout.MaxWidth(32f), GUILayout.MinWidth(32f), GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f)))
-                {
-                    ToggleWindow();
-                }
-                GUILayout.EndHorizontal();
+                
             }
             else
             {
@@ -178,20 +183,20 @@ namespace NearFutureElectrical
             GUILayout.Box("", HighLogic.Skin.horizontalSlider, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
             Rect last = GUILayoutUtility.GetLastRect();
             last.xMin = last.xMin + last.width * 0.05f;
-            last.width = last.width * 0.9f * (gen.currentThermalPower / gen.ThermalPower);
+            last.width = last.width * 0.9f * Mathf.Clamp01(gen.currentThermalPower / gen.ThermalPower);
             last.yMin = last.yMin + last.height * 0.05f;
             last.height = last.height * 0.8f;
             GUI.color = XKCDColors.Orangeish;
             GUI.DrawTexture(last, Resources.gui_progressbar);
             GUI.color = Color.white;
-            GUILayout.Label(String.Format("{0:F0} kW", gen.currentThermalPower), gui_text);
+            GUILayout.Label(String.Format("{0:F3} MW", gen.currentThermalPower), gui_text);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(GUILayout.MinWidth(250f), GUILayout.MaxWidth(250f));
             GUILayout.Label("Core Temperature", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
             GUILayout.Box("", HighLogic.Skin.horizontalSlider, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
             last = GUILayoutUtility.GetLastRect();
             last.xMin = last.xMin + last.width * 0.05f;
-            last.width = last.width * 0.9f * (gen.CurrentCoreTemperature / gen.MeltdownCoreTemperature);
+            last.width = last.width * 0.9f * Mathf.Clamp01(gen.CurrentCoreTemperature / gen.MeltdownCoreTemperature);
             last.yMin = last.yMin + last.height * 0.05f;
             last.height = last.height * 0.8f;
             GUI.color = Color.Lerp(XKCDColors.Green, XKCDColors.RedOrange, gen.CurrentCoreTemperature / gen.MeltdownCoreTemperature);

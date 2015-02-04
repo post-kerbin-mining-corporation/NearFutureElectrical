@@ -15,14 +15,14 @@ namespace NearFutureElectrical
             {
                 RenderingManager.AddToPostDrawQueue(0, DrawGUI);
                 FindCapacitors();
-                lastResources = getTotalEc();
+                
             }
         }
 
-        public static void ToggleWindow()
+        public static void ToggleCapWindow()
         {
             //Debug.Log("NFT: Toggle Reactor Window");
-            showWindow = !showWindow;
+            showCapWindow = !showCapWindow;
         }
 
         public void FindCapacitors()
@@ -55,7 +55,7 @@ namespace NearFutureElectrical
         // ---------- 
         public Rect windowPos = new Rect(200f, 200f, 500f, 200f);
         public Vector2 scrollPosition = Vector2.zero;
-        static bool showWindow = false;
+        static bool showCapWindow = false;
         int windowID = new System.Random().Next();
         bool initStyles = false;
 
@@ -97,7 +97,7 @@ namespace NearFutureElectrical
             progressBarBG = new GUIStyle(HighLogic.Skin.textField);
             progressBarBG.active = progressBarBG.hover = progressBarBG.normal;
 
-            windowPos = new Rect(200f, 200f, 375f, 135f);
+            windowPos = new Rect(200f, 200f, 550f, 315f);
 
             initStyles = true;
         }
@@ -113,7 +113,7 @@ namespace NearFutureElectrical
                     InitStyles();
                 if (capacitorList == null)
                     FindCapacitors();
-                if (showWindow)
+                if (showCapWindow)
                 {
 
                     windowPos = GUI.Window(windowID, windowPos, Window, "Near Future Technology Capacitor Control Panel", gui_window);
@@ -132,11 +132,11 @@ namespace NearFutureElectrical
 
                 GUILayout.BeginHorizontal();
                     GUILayout.BeginVertical();
-                        if (GUILayout.Button("Enable all capacitor charging"))
+                        if (GUILayout.Button("Enable all charging"))
                         {
                             ChargeAll();
                         }
-                        if (GUILayout.Button("Disable all capacitor charging"))
+                        if (GUILayout.Button("Disable all charging"))
                         {
                             StopChargeAll();
                         }
@@ -144,11 +144,15 @@ namespace NearFutureElectrical
                     
                     GUILayout.Label(String.Format("Current total recharge rate: {0:F2}/s",GetAllChargeRatesCurrent()), 
                         gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
+
+                    GUILayout.FlexibleSpace();
+
                     GUILayout.Label(String.Format("Current total discharge rate: {0:F2}/s",GetAllDischargeRatesCurrent()), 
                         gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
 
                     
-                    if (GUILayout.Button("Discharge all capacitors"))
+                    
+                    if (GUILayout.Button("Discharge all"))
                     {
                         DischargeAll();
                     }
@@ -156,7 +160,7 @@ namespace NearFutureElectrical
                    
                 GUILayout.EndHorizontal();
                 
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(500f), GUILayout.Height(175f));
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(525f), GUILayout.Height(175f));
                 GUILayout.BeginVertical();
                     //windowPos.height = 175f + 70f;
                     foreach (DischargeCapacitor c in capacitorList)
@@ -170,7 +174,7 @@ namespace NearFutureElectrical
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("X", GUILayout.MaxWidth(32f), GUILayout.MinWidth(32f), GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f)))
                     {
-                        ToggleWindow();
+                        ToggleCapWindow();
                     }
                 GUILayout.EndHorizontal();
                 
@@ -183,13 +187,9 @@ namespace NearFutureElectrical
             GUI.DragWindow();
         }
 
-        private bool automate = false;
+       
         private List<DischargeCapacitor> capacitorList;
 
-        int frameCounter = 0;
-        private float lastResources = 999999999f;
-
-        private float threshold = 10f;
 
         private void DrawCapacitor(DischargeCapacitor cap)
         {
@@ -206,14 +206,15 @@ namespace NearFutureElectrical
             GUILayout.BeginVertical();
             // Bar
             GUILayout.BeginHorizontal();
-                GUILayout.Label("Customize Discharge Rates", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
+                GUILayout.Label("Customize Discharge Rate", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
                 cap.dischargeSlider = GUILayout.HorizontalSlider(cap.dischargeSlider, 50f, 100f, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
-                GUILayout.Label(String.Format("{0:F0} Ec/s", cap.dischargeActual), gui_text);
+                GUILayout.Label(String.Format("Rate: {0:F0} Ec/s", cap.dischargeActual), gui_text);
             GUILayout.EndHorizontal();
             // Buttons
             GUILayout.BeginHorizontal();
                 cap.Enabled = GUILayout.Toggle(cap.Enabled, "Recharge Enabled");
-                if (GUILayout.Button("Discharge "))
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Discharge ", GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f)))
                 {
                     cap.Discharge();
                 }
@@ -287,57 +288,6 @@ namespace NearFutureElectrical
             }
         }
         
-        protected void FixedUpdate()
-        {
-            if (HighLogic.LoadedSceneIsFlight)
-            {
-                if (automate && frameCounter > 10)
-                {
-                    frameCounter = 0;
-                    float totalEc = getTotalEc();
-
-                    float delta = lastResources - totalEc;
-
-                    //Debug.Log("total: " + totalEc.ToString() + ". lastFrame: " + lastResources.ToString() + ". delta:" + delta.ToString());
-                    if (delta > threshold * TimeWarp.fixedDeltaTime)
-                    {
-                        float chargePerSecRequired = delta * (1f / TimeWarp.fixedDeltaTime);
-                        float chargeAdded = 0f;
-                        bool enoughChargeAdded = false;
-
-                        foreach (DischargeCapacitor cap in capacitorList)
-                        {
-                            if (!enoughChargeAdded)
-                            {
-                                //Debug.Log("status = " + cap.Discharging.ToString() + ", " + cap.Enabled.ToString() + ", " + cap.CurrentCharge.ToString());
-                               // Debug.Log("status = " + (!cap.Discharging && cap.CurrentCharge >= cap.MaximumCharge * 0.5f).ToString());
-                                // capacitor cannot be already discharging, recharging or have a low amount of charge
-                                if (cap.CurrentCharge >= cap.MaximumCharge * 0.5f && !cap.Discharging)
-                                {
-                                    chargeAdded = chargeAdded + cap.dischargeActual;
-                                    //Debug.Log("Discharged ");
-                                    cap.Discharge();
-                                    if (chargeAdded >= chargePerSecRequired)
-                                    {
-                                        enoughChargeAdded = true;
-                                    }
-
-
-                                }
-
-                            }
-                        }
-                    }
-
-                }
-
-                lastResources = getTotalEc();
-                frameCounter = frameCounter + 1;
-            }
-        }
-
-        
-
 
         private float getTotalEc()
         {
