@@ -32,13 +32,16 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float EasyModeCutoff = 0.05f;
 
-        public override void OnFixedUpdate()
+        private void FixedUpdate()
         {
-            // Generate power
-            part.RequestResource("ElectricCharge", -ActualPower * TimeWarp.fixedDeltaTime);
-            // Decay and update efficiency
-            PercentPower = AmountRemaining() * 100;
-            ActualPower = AmountRemaining() * BasePower;
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            {
+                // Generate power
+                part.RequestResource("ElectricCharge", -ActualPower * TimeWarp.fixedDeltaTime);
+                // Decay and update efficiency
+                PercentPower = AmountRemaining() * 100;
+                ActualPower = AmountRemaining() * BasePower;
+            }
         }
 
 
