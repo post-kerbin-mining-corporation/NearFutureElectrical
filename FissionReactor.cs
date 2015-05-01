@@ -28,7 +28,6 @@ namespace NearFutureElectrical
 
         /// CONFIGURABLE FIELDS
         // ----------------------
-    
      
         // Use a staging icon or not
         [KSPField(isPersistant = false)]
@@ -41,29 +40,13 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float HeatGeneration;
 
-        // Minumum power the reactor can run at (0-1.0)
-        //[KSPField(isPersistant = true)]
-        //public float MinPowerPercent;
-
         // Current reactor power setting (0-1.0)
         [KSPField(isPersistant = true, guiActive = true, guiName = "Power Setting"), UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
         public float CurrentPowerPercent = 50f;
 
-
         [KSPField(isPersistant = false)]
         public string FuelName = "EnrichedUranium";
 
-        // Level of Kerbal needed for repair
-        //[KSPField(isPersistant = false)]
-        //public int KerbalRepairLevelNeeded = 5;
-
-        // The maximum core damage fraction to which the reactor can be repaired
-        //[KSPField(isPersistant = false)]
-        //public float RepairMaximumAmount = 0.05f;
-        
-        // Level of Kerbal needed for refue
-        //[KSPField(isPersistant = false)]
-        //public int KerbalRefuelLevelNeeded = 4;
         
        
         /// PRIVATE VARIABLES
@@ -76,14 +59,6 @@ namespace NearFutureElectrical
         private List<ResourceBaseRatio> inputs;
         private List<ResourceBaseRatio> outputs;
 
-        /// UI BUTTONS
-        /// --------------------
-        // try to refuel the reactor
-//        [KSPEvent(guiName = "Repair Reactor", externalToEVAOnly = true, unfocusedRange = 2f, guiActiveUnfocused = true)]
-  //      public void RepairReactor()
-   //     {
-    //       this.TryRepair();
-      //  }
 
         /// UI FIELDS
         /// --------------------
@@ -94,10 +69,6 @@ namespace NearFutureElectrical
         // Reactor Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Output")]
         public string GeneratorStatus;
-
-        // Core Status string
-        //[KSPField(isPersistant = false, guiActive = true, guiName = "Core Integrity")]
-        //public string CoreStatus;
 
         private void SetupResourceRatios()
         {

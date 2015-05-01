@@ -13,13 +13,6 @@ namespace NearFutureElectrical
 {
     public class RadioactiveStorageContainer: PartModule
     {
-        public enum TransferType
-        {
-            Dangerous,
-            Safe,
-            None
-        }
-
         // Fuel that is dangerous to transfer
         [KSPField(isPersistant = false)]
         public string DangerousFuel = "DepletedFuel";
@@ -38,7 +31,7 @@ namespace NearFutureElectrical
 
         // Maximum heat level at which a transfer can be made
         [KSPField(isPersistant = false)]
-        public float MaxTempForTransfer = 600;
+        public float MaxTempForTransfer = 300;
 
         // Transfer the dangerous fuel
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Transfer Waste")]
@@ -104,6 +97,21 @@ namespace NearFutureElectrical
 
         public bool PartCanTransferResource(string nm)
         {
+            
+            // Some modules need to be off.
+            ModuleResourceConverter converter = GetComponent<ModuleResourceConverter>(); 
+            FissionReactor reactor = GetComponent<FissionReactor>();
+            if (converter != null && converter.ModuleIsActive())
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer from a running converter!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                return false;
+            }
+            if (reactor !=null && reactor.ModuleIsActive())
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer from a running reactor! Seriously a bad idea!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                return false;
+            }
+
             // Fail if the part is too hot
             if (part.temperature > MaxTempForTransfer)
             {
@@ -183,9 +191,22 @@ namespace NearFutureElectrical
                 }
                 else
                 {
+                    ModuleResourceConverter converter = container.GetComponent<ModuleResourceConverter>();
+                    FissionReactor reactor = container.GetComponent<FissionReactor>();
                     if (part.temperature > container.MaxTempForTransfer)
                     {
                         ScreenMessages.PostScreenMessage(new ScreenMessage("Selected part must be below " + container.MaxTempForTransfer.ToString() + " K to transfer!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                    }
+                    
+                    else if (converter != null && converter.ModuleIsActive())
+                    {
+                        ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer into a running converter!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        
+                    }
+                    else if (reactor!= null && reactor.ModuleIsActive())
+                    {
+                        ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer into a running reactor! Seriously a bad idea!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        
                     }
                     else
                     {
