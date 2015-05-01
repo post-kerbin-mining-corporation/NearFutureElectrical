@@ -38,6 +38,9 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public bool UseForcedActivation = true;
 
+        [KSPField(isPersistant = false)]
+        public float HeatGeneration;
+
         // Minumum power the reactor can run at (0-1.0)
         //[KSPField(isPersistant = true)]
         //public float MinPowerPercent;
@@ -69,7 +72,7 @@ namespace NearFutureElectrical
         private VInfoBox infoBox;
 
         // base paramters
-        private double baseHeatGeneration;
+        
         private List<ResourceBaseRatio> inputs;
         private List<ResourceBaseRatio> outputs;
 
@@ -98,7 +101,7 @@ namespace NearFutureElectrical
 
         private void SetupResourceRatios()
         {
-            baseHeatGeneration = this.TemperatureModifier;
+           
             inputs = new List<ResourceBaseRatio>();
             outputs = new List<ResourceBaseRatio>();
 
@@ -164,6 +167,8 @@ namespace NearFutureElectrical
 
                     FuelStatus = FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,rate);
                     RecalculateRatios(CurrentPowerPercent/100f);
+                    // Generate heat
+                    this.part.AddThermalFlux(HeatGeneration* CurrentPowerPercent/100f);
                 } else 
                 {
                     FuelStatus = "Reactor Offline";
@@ -176,7 +181,7 @@ namespace NearFutureElectrical
 
         private void RecalculateRatios(float inputScale)
         {
-            TemperatureModifier = (float)baseHeatGeneration * inputScale;
+            
             foreach (ResourceRatio input in inputList)
             {
                 foreach (ResourceBaseRatio baseInput in inputs)
