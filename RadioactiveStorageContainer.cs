@@ -33,6 +33,10 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float MaxTempForTransfer = 300;
 
+        // Heat Flux for waste
+        [KSPField(isPersistant = false)]
+        public float HeatFluxPerWasteUnit = 5;
+
         // Transfer the dangerous fuel
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Transfer Waste")]
         public void TransferWaste()
@@ -151,6 +155,17 @@ namespace NearFutureElectrical
         private bool transferring = false;
         private string curTransferType = "";
         private ScreenMessage transferMessage;
+
+        private void FixedUpdate()
+        {
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            {
+                // Spent fuel needs cooling!
+                double wasteAmount = GetResourceAmount(DangerousFuel);
+                part.AddThermalFlux(HeatFluxPerWasteUnit * (float)wasteAmount);
+            }
+        }
+
         private void Update()
         {
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
