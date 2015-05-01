@@ -21,6 +21,14 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true)]
         public bool Discharging;
 
+        // Does discharge generate heat?
+        [KSPField(isPersistant = false)]
+        public bool DischargeGeneratesHeat = false;
+
+        // Heat generated
+        [KSPField(isPersistant = false)]
+        public float HeatRate = 0f;
+
         // Discharge Rate
         [KSPField(isPersistant = false)]
         public float DischargeRate = 10f;
@@ -167,7 +175,12 @@ namespace NearFutureElectrical
 
 
                 float amt = TimeWarp.fixedDeltaTime * (dischargeSlider/100f )* DischargeRate;
-                    
+
+                if (DischargeGeneratesHeat)
+                {
+                    this.part.AddThermalFlux((double)HeatRate);
+                }
+    
                 this.part.RequestResource("StoredCharge", amt);
                 this.part.RequestResource("ElectricCharge", -amt);
 

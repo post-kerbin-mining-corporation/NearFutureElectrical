@@ -141,7 +141,7 @@ namespace NearFutureElectrical
 
         // The wind curve
         private FloatCurve WindCurve = new FloatCurve();
-        private SystemHeat.ModuleSystemHeat heatModule;
+        //private SystemHeat.ModuleSystemHeat heatModule;
 
 
         /// ACTIONS
@@ -264,7 +264,7 @@ namespace NearFutureElectrical
             if (state != StartState.Editor)
             {
                 // Get heat module
-                heatModule = GetComponent<SystemHeat.ModuleSystemHeat>();
+                //heatModule = GetComponent<SystemHeat.ModuleSystemHeat>();
 
                 // Set up staging icon heat bar
                 if (UseStagingIcon)
@@ -327,7 +327,7 @@ namespace NearFutureElectrical
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
                 // First, add heat to ship
-                float overheat = (float)heatModule.GenerateHeat((double)(currentThermalPower * TimeWarp.fixedDeltaTime));
+                float overheat = 0f;// (float)heatModule.GenerateHeat((double)(currentThermalPower * TimeWarp.fixedDeltaTime));
                // Utils.Log(overheat.ToString());
                 float goalTemperature = 0f;
                 float thermalGoal = 0f;
@@ -343,9 +343,9 @@ namespace NearFutureElectrical
                         thermalGoal = currentThermalPower;
 
                         // Get current heat delta, per second
-                        float curDelta = heatModule.VesselHeatBalance;
-                        float vesselHeatStored = heatModule.VesselHeatStored;
-                        float vesselMaxHeatStored = heatModule.VesselMaxHeatStored;
+                        float curDelta = 0f;//heatModule.VesselHeatBalance;
+                        float vesselHeatStored = 0f;//heatModule.VesselHeatStored;
+                        float vesselMaxHeatStored = 0f;//heatModule.VesselMaxHeatStored;
                         float vesselHeatFraction = vesselHeatStored / vesselMaxHeatStored;
 
                         // If heat delta is positive, heat is accumulating
@@ -432,11 +432,11 @@ namespace NearFutureElectrical
                 if (overheat > 0f)
                 {
                     // increase the overheat amount
-                    overheatAmount += TimeWarp.fixedDeltaTime * (overheat / (this.part.mass * 1000f));
+                    overheatAmount += TimeWarp.fixedDeltaTime * (overheat / (this.part.mass * 100f));
                 }
                 else
                 {
-                    overheatAmount = Mathf.MoveTowards(overheatAmount, 0f, TimeWarp.fixedDeltaTime * Mathf.Max(((float)overheat / (this.part.mass * 1000f)), 1f));
+                    overheatAmount = Mathf.MoveTowards(overheatAmount, 0f, TimeWarp.fixedDeltaTime * Mathf.Max(((float)overheat / (this.part.mass * 100f)), 1f));
                 }
                 //Debug.Log("Overheat total: " + overheatAmount.ToString());
                 goalTemperature = (float)thermalPowerRatio * MaxCoreTemperature + Mathf.Clamp(overheatAmount, 0f, 5000f);

@@ -33,7 +33,7 @@ namespace NearFutureElectrical
         // Returns true if ship is it atmoshpere
         public static bool VesselInAtmosphere(Vessel vessel)
         {
-           return vessel.heightFromSurface < vessel.mainBody.maxAtmosphereAltitude;
+            return vessel.atmDensity <= 0d;
         }
 
     
@@ -130,6 +130,8 @@ namespace NearFutureElectrical
             
             return decYears;
         }
+
+      
 
         // finds the flow rate given thrust, isp and the propellant 
         public static float FindFlowRate(float thrust, float isp, Propellant fuelPropellant)

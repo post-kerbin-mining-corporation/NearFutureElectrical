@@ -13,14 +13,15 @@ namespace NearFutureElectrical
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
-                RenderingManager.AddToPostDrawQueue(0, DrawGUI);
+                RenderingManager.AddToPostDrawQueue(0, DrawCapacitorGUI);
                 FindCapacitors();
-                
+                Utils.LogWarn(windowID.ToString());
             }
         }
 
         public static void ToggleCapWindow()
         {
+            
             //Debug.Log("NFT: Toggle Reactor Window");
             showCapWindow = !showCapWindow;
         }
@@ -56,7 +57,7 @@ namespace NearFutureElectrical
         public Rect windowPos = new Rect(200f, 200f, 500f, 200f);
         public Vector2 scrollPosition = Vector2.zero;
         static bool showCapWindow = false;
-        int windowID = new System.Random().Next();
+        int windowID = new System.Random(325671).Next();
         bool initStyles = false;
 
 
@@ -102,7 +103,7 @@ namespace NearFutureElectrical
             initStyles = true;
         }
 
-        private void DrawGUI()
+        private void DrawCapacitorGUI()
         {
             //Debug.Log("NFE: Start Capacitor UI Draw");
             Vessel activeVessel = FlightGlobals.ActiveVessel;
@@ -115,8 +116,11 @@ namespace NearFutureElectrical
                     FindCapacitors();
                 if (showCapWindow)
                 {
-
-                    windowPos = GUI.Window(windowID, windowPos, Window, "Near Future Technology Capacitor Control Panel", gui_window);
+                    // Debug.Log(windowPos.ToString());
+                    GUI.skin = HighLogic.Skin;
+                    gui_window.padding.top = 5;
+                    
+                    windowPos = GUI.Window(windowID, windowPos, CapacitorWindow, new GUIContent(), gui_window);
                 }
             }
             //Debug.Log("NFE: Stop Capacitor UI Draw");
@@ -124,9 +128,18 @@ namespace NearFutureElectrical
 
 
         // GUI function for the window
-        private void Window(int windowId)
+        private void CapacitorWindow(int windowId)
         {
             GUI.skin = HighLogic.Skin;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Installed Capacitors", gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f));
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("X", GUILayout.MaxWidth(26f), GUILayout.MinWidth(26f), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f)))
+            {
+                ToggleCapWindow();
+            }
+            GUILayout.EndHorizontal();
+
             if (capacitorList != null && capacitorList.Count > 0)
             {
 
@@ -169,14 +182,7 @@ namespace NearFutureElectrical
                     }
                GUILayout.EndVertical();
                GUILayout.EndScrollView();
-               GUILayout.BeginHorizontal();
-               
-                    GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("X", GUILayout.MaxWidth(32f), GUILayout.MinWidth(32f), GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f)))
-                    {
-                        ToggleCapWindow();
-                    }
-                GUILayout.EndHorizontal();
+             
                 
                 
             }

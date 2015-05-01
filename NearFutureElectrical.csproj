@@ -56,10 +56,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="SystemHeat">
-      <HintPath>..\..\..\..\Games\Steam\SteamApps\common\Kerbal Space Program\GameData\000_SystemHeat\Plugin\SystemHeat.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>G:\Games\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -67,15 +63,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DischargeCapacitorUI.cs" />
-    <Compile Include="FissionGeneratorUI.cs" />
-    <Compile Include="FissionReprocessor.cs" />
-    <Compile Include="NearFuture.cs" />
-    <Compile Include="FissionContainer.cs" />
+    <Compile Include="FissionReactor.cs" />
+    <Compile Include="NearFutureElectrical.cs" />
+    <Compile Include="RadioactiveStorageContainer.cs" />
     <Compile Include="RadioisotopeGenerator.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="DischargeCapacitor.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="FissionGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -22,8 +22,8 @@ namespace NearFutureElectrical
         // Load that texture!
         public static void LoadResources()
         {
-            gui_progressbar.LoadImage(KSP.IO.File.ReadAllBytes<NearFutureElectrical>("ui_progress.png"));
-            gui_show.LoadImage(KSP.IO.File.ReadAllBytes<NearFutureElectrical>("ui_show.png"));
+            //gui_progressbar.LoadImage(KSP.IO.File.ReadAllBytes<NearFutureElectrical>("ui_progress.png"));
+           // gui_show.LoadImage(KSP.IO.File.ReadAllBytes<NearFutureElectrical>("ui_show.png"));
         }
     }
 }

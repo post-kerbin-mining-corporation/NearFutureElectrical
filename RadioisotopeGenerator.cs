@@ -1,4 +1,6 @@
-﻿
+﻿/// RadioactiveStorageContainer.cs
+/// ---------------------------
+// A radioisotope generator that decays over time
 using System;
 using System.Collections.Generic;
 using System.Linq;
