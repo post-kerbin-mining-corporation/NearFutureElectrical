@@ -78,7 +78,7 @@ namespace NearFutureElectrical
             gui_window = new GUIStyle(HighLogic.Skin.window);
             gui_header = new GUIStyle(HighLogic.Skin.label);
             gui_header.fontStyle = FontStyle.Bold;
-            gui_header.alignment = TextAnchor.MiddleLeft;
+            gui_header.alignment = TextAnchor.UpperLeft;
             gui_header.stretchWidth = true;
 
             gui_text = new GUIStyle(HighLogic.Skin.label);

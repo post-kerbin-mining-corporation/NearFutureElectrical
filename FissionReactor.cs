@@ -70,6 +70,19 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Output")]
         public string GeneratorStatus;
 
+        public override string GetInfo()
+        {
+            double baseRate = 0d;
+            foreach (ResourceRatio input in inputList)
+            {
+                if (input.ResourceName == FuelName)
+                    baseRate = input.Ratio;
+            }
+            return base.GetInfo() +
+                String.Format("Heat Production: {0:F2} kW", HeatGeneration) + "\n" + "Estimated Core Life: " +
+                FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,baseRate) ;
+        }
+
         private void SetupResourceRatios()
         {
            
@@ -206,6 +219,10 @@ namespace NearFutureElectrical
         // Finds time remaining at current fuel burn rates
         public string FindTimeRemaining(double amount, double rate)
         {
+            if (rate < 0.0000001)
+            {
+                return "A long time!";
+            }
             double remaining = amount / rate;
             TimeSpan t = TimeSpan.FromSeconds(remaining);
 

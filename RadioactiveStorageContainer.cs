@@ -37,6 +37,11 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float HeatFluxPerWasteUnit = 5;
 
+        public override string GetInfo()
+        {
+            return String.Format("\n\n Allows the storage and transfer of radioactive fuel and waste.");
+        }
+
         // Transfer the dangerous fuel
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Transfer Waste")]
         public void TransferWaste()
