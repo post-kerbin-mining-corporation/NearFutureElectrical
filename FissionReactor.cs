@@ -146,7 +146,7 @@ namespace NearFutureElectrical
                     foreach (ResourceRatio output in outputList)
                     {
                         if (output.ResourceName == "ElectricCharge")
-                            GeneratorStatus = String.Format("{0:F2}/s",output.Ratio);
+                            GeneratorStatus = String.Format("{0:F2} Ec/s",output.Ratio);
                     }
 
                     FuelStatus = FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,rate);
