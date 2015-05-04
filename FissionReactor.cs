@@ -61,6 +61,10 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float GeneratorSpinupRate = 0.5f;
 
+        // integrity of the core
+        [KSPField(isPersistant = true)]
+        public float CoreIntegrity = 100f;
+
         // Rate the core is damaged, in % per S per K
         [KSPField(isPersistant = false)]
         public float CoreDamageRate = 0.005f;
@@ -134,8 +138,10 @@ namespace NearFutureElectrical
         public string GeneratorStatus;
 
         // integrity of the core
-        [KSPField(isPersistant = true, guiActive = true, guiName = "Core Integrity")]
-        public float CoreIntegrity = 100f;
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Core Integrity")]
+        public string CoreStatus;
+
+      
 
         public override string GetInfo()
         {
@@ -186,6 +192,7 @@ namespace NearFutureElectrical
                     infoBox.SetMsgBgColor(XKCDColors.RedOrange);
                     infoBox.SetMsgTextColor(XKCDColors.Orange);
                     infoBox.SetLength(1.0f);
+                    infoBox.SetValue(0.0f);
                     infoBox.SetMessage("Ineffic.");
                     infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
                     infoBox.SetProgressBarColor(XKCDColors.Orange);
@@ -224,7 +231,7 @@ namespace NearFutureElectrical
                     }
 
                     FuelStatus = FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,rate);
-
+                    CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
                     GeneratorSpinup = Mathf.MoveTowards(GeneratorSpinup, 100f, GeneratorSpinupRate * TimeWarp.fixedDeltaTime);
 
 
