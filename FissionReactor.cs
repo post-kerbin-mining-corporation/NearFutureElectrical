@@ -137,6 +137,10 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Output")]
         public string GeneratorStatus;
 
+        // Reactor Status string
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Temperature")]
+        public string ReactorTemp;
+
         // integrity of the core
         [KSPField(isPersistant = false, guiActive = true, guiName = "Core Integrity")]
         public string CoreStatus;
@@ -213,7 +217,7 @@ namespace NearFutureElectrical
         {
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
-                
+                ReactorTemp = String.Format("{0:F1} K", part.temperature);
                 if (base.ModuleIsActive())
                 {
                     double rate = 0d;
@@ -266,9 +270,12 @@ namespace NearFutureElectrical
 
                     // Generate heat
                     this.part.AddThermalFlux(heatAddedByReactor);
-                    foreach (AnimationState cState in overheatStates)
+                    if (OverheatAnimation != "")
                     {
-                        cState.normalizedTime = 1f-tempNetScale;
+                        foreach (AnimationState cState in overheatStates)
+                        {
+                            cState.normalizedTime = 1f - tempNetScale;
+                        }
                     }
 
                 } else 
