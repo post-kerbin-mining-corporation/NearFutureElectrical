@@ -50,8 +50,8 @@ namespace NearFutureElectrical
         public float CriticalTemperature = 1400f;
 
         // Current reactor power setting (0-100, tweakable)
-        [KSPField(isPersistant = true, guiActive = true, guiName = "Power Setting"), UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
-        public float CurrentPowerPercent = 50f;
+        [KSPField(isPersistant = true, guiActive = true, guiName = "Power Setting"), UI_FloatRange(minValue = 30f, maxValue = 100f, stepIncrement = 1f)]
+        public float CurrentPowerPercent = 30f;
 
         // Reactor spoolup percent
         [KSPField(isPersistant =  true)]
@@ -77,6 +77,9 @@ namespace NearFutureElectrical
         public float MaxRepairPercent = 75;
 
         [KSPField(isPersistant = false)]
+        public float MinRepairPercent = 10;
+
+        [KSPField(isPersistant = false)]
         public float MaxTempForRepair = 325;
 
         [KSPField(isPersistant = false)]
@@ -86,9 +89,19 @@ namespace NearFutureElectrical
         public string OverheatAnimation;
 
         // Current reactor power setting (0-1.0)
-        [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Repair Reactor")]
+        [KSPEvent(externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.5f, guiName = "Repair Reactor")]
         public void TryRepairReactor()
         {
+            if (CoreIntegrity <= MinRepairPercent)
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core is too damaged to repair.", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                return;
+            }
+            if (!CheckEVAEngineerLevel(EngineerLevelForRepair))
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core repair requires a Level " + EngineerLevelForRepair.ToString() + "Engineer.", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                return;
+            }
             if (base.ModuleIsActive())
             {
                 ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot repair reactor core while running! Seriously!",
@@ -102,15 +115,11 @@ namespace NearFutureElectrical
             }
             if (CoreIntegrity >= MaxRepairPercent)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core is already at maximum field repairable integrity (75%).", 
+                ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core is already at maximum field repairable integrity (" + MaxRepairPercent.ToString() + "%).", 
                     5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return;
             }
-            if (!CheckEVAEngineerLevel(EngineerLevelForRepair))
-            {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core repair requires a Level " + EngineerLevelForRepair.ToString() + "Engineer on board!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
-                return;
-            }
+           
             RepairReactor();
            
         }
@@ -218,6 +227,23 @@ namespace NearFutureElectrical
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
                 ReactorTemp = String.Format("{0:F1} K", part.temperature);
+
+                if (CoreIntegrity > 0)
+                    CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
+                else
+                    CoreStatus = "Complete Meltdown";
+
+                float critExceedance = (float)part.temperature - CriticalTemperature;
+
+                // If overheated too much, damage the core
+                if (critExceedance > 0f)
+                {
+                    // core is damaged by Rate * temp exceedance * time
+                    CoreIntegrity = Mathf.MoveTowards(CoreIntegrity, 0f, CoreDamageRate * critExceedance * TimeWarp.fixedDeltaTime);
+                  
+                }
+
+
                 if (base.ModuleIsActive())
                 {
                     double rate = 0d;
@@ -235,11 +261,11 @@ namespace NearFutureElectrical
                     }
 
                     FuelStatus = FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,rate);
-                    CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
+                    
                     GeneratorSpinup = Mathf.MoveTowards(GeneratorSpinup, 100f, GeneratorSpinupRate * TimeWarp.fixedDeltaTime);
 
 
-                    float heatAddedByReactor = HeatGeneration * CurrentPowerPercent / 100f;
+                    float heatAddedByReactor = HeatGeneration * CurrentPowerPercent / 100f + HeatGeneration*2*(1-CoreIntegrity/100f);
 
                     // HeatLeavingReactor should never be negative
                     //float heatLeavingReactor = Mathf.Clamp(-(float)(part.thermalConvectionFlux + part.thermalRadiationFlux + part.thermalConductionFlux),0f,999999f); //inverted
@@ -248,21 +274,12 @@ namespace NearFutureElectrical
 
                     // percent exceedance of nominal
                     float tempNetScale = 1f - Mathf.Clamp01((float)((part.temperature - NominalTemperature) / (part.maxTemp - NominalTemperature)));
-                    // critical exceedance
-                    float critExceedance = (float)part.temperature - CriticalTemperature;
-
-                    // If overheated too much, damage the core
-                    if (critExceedance > 0f)
-                    {
-                        // core is damaged by Rate * temp exceedance * time
-                        CoreIntegrity = Mathf.MoveTowards(CoreIntegrity, 0f, CoreDamageRate * critExceedance * TimeWarp.fixedDeltaTime);
-                    }
                     
                     float powerGenerationFactor = (CurrentPowerPercent / 100f) * (tempNetScale) * (GeneratorSpinup / 100f) * (CoreIntegrity/100f);
-
+                    float fuelUseFactor = (CurrentPowerPercent / 100f) * (GeneratorSpinup / 100f) * (100f/(Mathf.Clamp(CoreIntegrity,0.01f,100f)));
                     
 
-                    RecalculateRatios(powerGenerationFactor);
+                    RecalculateRatios(powerGenerationFactor,fuelUseFactor);
 
                     if (UseStagingIcon)
                         infoBox.SetValue(1f-tempNetScale);
@@ -281,15 +298,23 @@ namespace NearFutureElectrical
                 } else 
                 {
                     GeneratorSpinup = 0f;
-                    FuelStatus = "Reactor Offline";
-                    GeneratorStatus = "Reactor Offline";
+                    if (CoreIntegrity <= 0f)
+                    {
+                        FuelStatus = "Core Destroyed";
+                        GeneratorStatus = "Core Destroyed"; 
+                    }
+                    else
+                    {
+                        FuelStatus = "Reactor Offline";
+                        GeneratorStatus = "Reactor Offline";
+                    }
                 }
 
                 
             }
         }
 
-        private void RecalculateRatios(float inputScale)
+        private void RecalculateRatios(float powerInputScale, float fuelInputScale)
         {
             
             foreach (ResourceRatio input in inputList)
@@ -297,7 +322,9 @@ namespace NearFutureElectrical
                 foreach (ResourceBaseRatio baseInput in inputs)
                 {
                     if (baseInput.ResourceName == input.ResourceName)
-                        input.Ratio = baseInput.ResourceRatio * inputScale;
+                    {
+                        input.Ratio = baseInput.ResourceRatio * fuelInputScale;
+                    }
                 }
             }
             foreach (ResourceRatio output in outputList)
@@ -305,7 +332,12 @@ namespace NearFutureElectrical
                 foreach (ResourceBaseRatio baseOutput in outputs)
                 {
                     if (baseOutput.ResourceName == output.ResourceName)
-                        output.Ratio = baseOutput.ResourceRatio * inputScale;
+                    {
+                        if (output.ResourceName == "ElectricCharge")
+                            output.Ratio = baseOutput.ResourceRatio * powerInputScale;
+                        else
+                            output.Ratio = baseOutput.ResourceRatio * fuelInputScale;
+                    }
                 }
             }
         }
