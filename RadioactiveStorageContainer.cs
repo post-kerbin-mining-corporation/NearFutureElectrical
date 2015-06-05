@@ -100,7 +100,7 @@ namespace NearFutureElectrical
                 }
             }
             Utils.Log("No Engineer with level " + lvl.ToString() + " or higher found on board!");
-            ScreenMessages.PostScreenMessage(new ScreenMessage("This transfer requires a Level " + lvl.ToString() + "Engineer on board!",5.0f,ScreenMessageStyle.UPPER_CENTER));
+            ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("This transfer requires a Level {0:F0} Engineer on board!", lvl), 5.0f, ScreenMessageStyle.UPPER_CENTER));
             return false;
         }
 
@@ -124,7 +124,7 @@ namespace NearFutureElectrical
             // Fail if the part is too hot
             if (part.temperature > MaxTempForTransfer)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("This part must be below " + MaxTempForTransfer.ToString() + " K to transfer!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("This part must be below {0:F0} K to transfer!",MaxTempForTransfer), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return false;
             }
             // Fail if that part can't contain this resource
@@ -215,7 +215,7 @@ namespace NearFutureElectrical
                     FissionReactor reactor = container.GetComponent<FissionReactor>();
                     if (part.temperature > container.MaxTempForTransfer)
                     {
-                        ScreenMessages.PostScreenMessage(new ScreenMessage("Selected part must be below " + container.MaxTempForTransfer.ToString() + " K to transfer!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Selected part must be below {0:F0} K to transfer!",container.MaxTempForTransfer), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     }
                     
                     else if (converter != null && converter.ModuleIsActive())
@@ -238,7 +238,7 @@ namespace NearFutureElectrical
                         double amount = this.part.RequestResource(curTransferType, availableSpace);
                         container.part.RequestResource(curTransferType, -amount);
 
-                        ScreenMessages.PostScreenMessage(new ScreenMessage("Transferred " + amount.ToString() + " " + curTransferType + " to container!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Transferred {0:F0} ",amount ) + curTransferType + " to container!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     }
                 }
             }

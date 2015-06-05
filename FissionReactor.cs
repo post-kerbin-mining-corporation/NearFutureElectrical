@@ -50,8 +50,8 @@ namespace NearFutureElectrical
         public float CriticalTemperature = 1400f;
 
         // Current reactor power setting (0-100, tweakable)
-        [KSPField(isPersistant = true, guiActive = true, guiName = "Power Setting"), UI_FloatRange(minValue = 30f, maxValue = 100f, stepIncrement = 1f)]
-        public float CurrentPowerPercent = 30f;
+        [KSPField(isPersistant = true, guiActive = true, guiName = "Power Setting"), UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
+        public float CurrentPowerPercent = 50f;
 
         // Reactor spoolup percent
         [KSPField(isPersistant =  true)]
@@ -99,7 +99,7 @@ namespace NearFutureElectrical
             }
             if (!CheckEVAEngineerLevel(EngineerLevelForRepair))
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core repair requires a Level " + EngineerLevelForRepair.ToString() + "Engineer.", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core repair requires a Level {0:F0} Engineer."), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return;
             }
             if (base.ModuleIsActive())
@@ -110,12 +110,12 @@ namespace NearFutureElectrical
             }
             if (part.temperature > MaxTempForRepair)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("The reactor must be below " + MaxTempForRepair.ToString() + " K to initiate repair!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("The reactor must be below {0:F0} K to initiate repair!", MaxTempForRepair), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return;
             }
             if (CoreIntegrity >= MaxRepairPercent)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core is already at maximum field repairable integrity (" + MaxRepairPercent.ToString() + "%).", 
+                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core is already at maximum field repairable integrity ({0:F0})", MaxRepairPercent), 
                     5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return;
             }
@@ -155,6 +155,7 @@ namespace NearFutureElectrical
         public string CoreStatus;
 
       
+
 
         public override string GetInfo()
         {
@@ -352,7 +353,7 @@ namespace NearFutureElectrical
         public void RepairReactor()
         {
             this.CoreIntegrity = MaxRepairPercent;
-            ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor repaired to "+ MaxRepairPercent.ToString() + "%!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+            ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor repaired to {0:F0}%!", MaxRepairPercent), 5.0f, ScreenMessageStyle.UPPER_CENTER));
         }
 
         // Check the current EVA engineer's level
