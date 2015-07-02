@@ -165,10 +165,15 @@ namespace NearFutureElectrical
         {
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
-                // Spent fuel needs cooling!
-                double wasteAmount = GetResourceAmount(DangerousFuel);
-                part.AddThermalFlux(HeatFluxPerWasteUnit * (float)wasteAmount);
+                // Generate heat
+                if (TimeWarp.CurrentRate <= 100f)
+                {
+                    // Spent fuel needs cooling!
+                    double wasteAmount = GetResourceAmount(DangerousFuel);
+                    part.AddThermalFlux(HeatFluxPerWasteUnit * (float)wasteAmount);
+                }
             }
+            
         }
 
         private void Update()

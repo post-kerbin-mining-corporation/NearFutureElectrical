@@ -176,7 +176,7 @@ namespace NearFutureElectrical
 
                 float amt = TimeWarp.fixedDeltaTime * (dischargeSlider/100f )* DischargeRate;
 
-                if (DischargeGeneratesHeat)
+                if (DischargeGeneratesHeat && TimeWarp.CurrentRate <= 100f)
                 {
                     this.part.AddThermalFlux((double)HeatRate);
                 }

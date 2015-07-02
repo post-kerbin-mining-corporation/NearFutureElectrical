@@ -287,7 +287,10 @@ namespace NearFutureElectrical
 
 
                     // Generate heat
-                    this.part.AddThermalFlux(heatAddedByReactor);
+                    if (TimeWarp.CurrentRate <= 100f)
+                    {
+                        this.part.AddThermalFlux(heatAddedByReactor);
+                    }
                     if (OverheatAnimation != "")
                     {
                         foreach (AnimationState cState in overheatStates)
