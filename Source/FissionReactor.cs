@@ -1,7 +1,7 @@
 ﻿/// FissionReactor
 /// ---------------------------------------------------
 /// Fission Generator!
-/// 
+///
 
 using System;
 using System.Collections.Generic;
@@ -28,8 +28,8 @@ namespace NearFutureElectrical
 
         /// CONFIGURABLE FIELDS
         // ----------------------
-     
-        // Use a staging icon or not
+
+        // Whether to use a staging icon or not
         [KSPField(isPersistant = false)]
         public bool UseStagingIcon = true;
 
@@ -41,11 +41,11 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float HeatGeneration;
 
-        // Nominal reactor temperature
+        // Nominal reactor temperature (where the reactor should live)
         [KSPField(isPersistant = false)]
-        public float NominalTemperature = 700f;
+        public float NominalTemperature = 900f;
 
-        // Critical reactor temperature
+        // Critical reactor temperature (core damage after this)
         [KSPField(isPersistant = false)]
         public float CriticalTemperature = 1400f;
 
@@ -53,14 +53,27 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true, guiActive = true, guiName = "Power Setting"), UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
         public float CurrentPowerPercent = 50f;
 
-        // Reactor spoolup percent
-        [KSPField(isPersistant =  true)]
-        public float GeneratorSpinup = 0f;
+        // Curve relating available power to temperature. Generally should be of the form
+        // AmbientTemp  0
+        // NominalTemp RatedReactorOutput
 
-        // Reactor spoolup rate in % per S
+
+        KSPField(isPersistant = false)]
+        public FloatCurve PowerCurve = new FloatCurve();
+
+        // amount of heating power available from reactor currently
+        [KSPField(isPersistant = true)]
+        public float AvailablePower = 0f;
+
+        // Name of the fuel
         [KSPField(isPersistant = false)]
-        public float GeneratorSpinupRate = 0.5f;
+        public string FuelName = "EnrichedUranium";
 
+        // name of the overheat animation
+        [KSPField(isPersistant = false)]
+        public string OverheatAnimation;
+
+        // REPAIR VARIABLES
         // integrity of the core
         [KSPField(isPersistant = true)]
         public float CoreIntegrity = 100f;
@@ -82,13 +95,9 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float MaxTempForRepair = 325;
 
-        [KSPField(isPersistant = false)]
-        public string FuelName = "EnrichedUranium";
 
-        [KSPField(isPersistant = false)]
-        public string OverheatAnimation;
 
-        // Current reactor power setting (0-1.0)
+        // Try to fix the reactor
         [KSPEvent(externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.5f, guiName = "Repair Reactor")]
         public void TryRepairReactor()
         {
@@ -115,15 +124,15 @@ namespace NearFutureElectrical
             }
             if (CoreIntegrity >= MaxRepairPercent)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core is already at maximum field repairable integrity ({0:F0})", MaxRepairPercent), 
+                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core is already at maximum field repairable integrity ({0:F0})", MaxRepairPercent),
                     5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return;
             }
-           
+
             RepairReactor();
-           
+
         }
-       
+
         /// PRIVATE VARIABLES
         /// ----------------------
         // the info staging box
@@ -143,7 +152,7 @@ namespace NearFutureElectrical
         public string FuelStatus;
 
         // Reactor Status string
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Output")]
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Thermal Output")]
         public string GeneratorStatus;
 
         // Reactor Status string
@@ -154,7 +163,7 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false, guiActive = true, guiName = "Core Integrity")]
         public string CoreStatus;
 
-      
+
 
 
         public override string GetInfo()
@@ -168,14 +177,14 @@ namespace NearFutureElectrical
             return base.GetInfo() +
                 String.Format("Heat Production: {0:F2} kW", HeatGeneration) + "\n"
                 + String.Format("Optimal Temperature: {0:F0} K", NominalTemperature) + "\n"
-                + String.Format("Critical Temperature: {0:F0} K", CriticalTemperature) + "\n" 
+                + String.Format("Critical Temperature: {0:F0} K", CriticalTemperature) + "\n"
                 + "Estimated Core Life: " +
                 FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,baseRate) ;
         }
 
         private void SetupResourceRatios()
         {
-           
+
             inputs = new List<ResourceBaseRatio>();
             outputs = new List<ResourceBaseRatio>();
 
@@ -216,7 +225,7 @@ namespace NearFutureElectrical
                 {
                     overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
 
-                    
+
                 }
                 if (UseForcedActivation)
                     this.part.force_activate();
@@ -241,7 +250,6 @@ namespace NearFutureElectrical
                 {
                     // core is damaged by Rate * temp exceedance * time
                     CoreIntegrity = Mathf.MoveTowards(CoreIntegrity, 0f, CoreDamageRate * critExceedance * TimeWarp.fixedDeltaTime);
-                  
                 }
 
 
@@ -249,48 +257,38 @@ namespace NearFutureElectrical
                 {
                     double rate = 0d;
 
+                    // Set up resources
                     foreach (ResourceRatio input in inputList)
                     {
                         if (input.ResourceName == FuelName)
                             rate = input.Ratio;
                     }
 
-                    foreach (ResourceRatio output in outputList)
-                    {
-                        if (output.ResourceName == "ElectricCharge")
-                            GeneratorStatus = String.Format("{0:F2} Ec/s",output.Ratio);
-                    }
 
+                    // Find resouce time remaining
                     FuelStatus = FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,rate);
-                    
-                    GeneratorSpinup = Mathf.MoveTowards(GeneratorSpinup, 100f, GeneratorSpinupRate * TimeWarp.fixedDeltaTime);
+
+                    //GeneratorSpinup = Mathf.MoveTowards(GeneratorSpinup, 100f, GeneratorSpinupRate * TimeWarp.fixedDeltaTime);
+
+                    // add reactor heat
+                    float heatAddedByReactor = HeatGeneration * CurrentPowerPercent / 100f;
+                    // REPLACE with 1.1 method
+                    this.part.AddThermalFlux(heatAddedByReactor);
+
+                    //float heatAddedByReactor = HeatGeneration * CurrentPowerPercent / 100f + HeatGeneration*2*(1-CoreIntegrity/100f);
+                    //float powerGenerationFactor = (CurrentPowerPercent / 100f) * (tempNetScale) * (GeneratorSpinup / 100f) * (CoreIntegrity/100f);
+
+                    // use up fuel properly
+                    RecalculateRatios(CurrentPowerPercent / 100f);
 
 
-                    float heatAddedByReactor = HeatGeneration * CurrentPowerPercent / 100f + HeatGeneration*2*(1-CoreIntegrity/100f);
-
-                    // HeatLeavingReactor should never be negative
-                    //float heatLeavingReactor = Mathf.Clamp(-(float)(part.thermalConvectionFlux + part.thermalRadiationFlux + part.thermalConductionFlux),0f,999999f); //inverted
-                    // Percent of heat leaving the reactor
-                    //float heatNetScale = 1f-Mathf.Clamp(heatAddedByReactor - heatLeavingReactor,0f,HeatGeneration)/heatAddedByReactor;
-
+                    // visualize temperature
                     // percent exceedance of nominal
                     float tempNetScale = 1f - Mathf.Clamp01((float)((part.temperature - NominalTemperature) / (part.maxTemp - NominalTemperature)));
-                    
-                    float powerGenerationFactor = (CurrentPowerPercent / 100f) * (tempNetScale) * (GeneratorSpinup / 100f) * (CoreIntegrity/100f);
-                    float fuelUseFactor = (CurrentPowerPercent / 100f) * (GeneratorSpinup / 100f) * (100f/(Mathf.Clamp(CoreIntegrity,0.01f,100f)));
-                    
-
-                    RecalculateRatios(powerGenerationFactor,fuelUseFactor);
 
                     if (UseStagingIcon)
                         infoBox.SetValue(1f-tempNetScale);
 
-
-                    // Generate heat
-                    if (TimeWarp.CurrentRate <= 100f)
-                    {
-                        this.part.AddThermalFlux(heatAddedByReactor);
-                    }
                     if (OverheatAnimation != "")
                     {
                         foreach (AnimationState cState in overheatStates)
@@ -299,13 +297,35 @@ namespace NearFutureElectrical
                         }
                     }
 
-                } else 
+                    // create and distribute available heat
+                    AvailablePower = PowerCurve.Evaluate(ReactorTemp);
+                    GeneratorStatus = String.Format("{0:F0} kW", AvailablePower);
+
+                    // Get consumers and sort by priority
+                    List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>();
+                    List<FissionConsumer> sortedConsumers = consumers.OrderBy(o>o.Priority).ToList();
+
+                    // allocate power to all consumers
+                    foreach (FissionConsumer consumer in consumers)
+                    {
+                      if (consumer.Status)
+                      {
+                        float usage = TryConsumeHeat(consumer.HeatUsed)
+                        consumer.CurrentHeatUsed = usage;
+                        AvailablePower = availablePower - usage;
+                        if (AvailablePower >= 0f)
+                          AvailablePower = 0f;
+                      }
+
+                    }
+
+                } else
                 {
-                    GeneratorSpinup = 0f;
+
                     if (CoreIntegrity <= 0f)
                     {
                         FuelStatus = "Core Destroyed";
-                        GeneratorStatus = "Core Destroyed"; 
+                        GeneratorStatus = "Core Destroyed";
                     }
                     else
                     {
@@ -314,13 +334,20 @@ namespace NearFutureElectrical
                     }
                 }
 
-                
+
             }
         }
-
-        private void RecalculateRatios(float powerInputScale, float fuelInputScale)
+        private float TryConsumeHeat(float powerRequired)
         {
-            
+          if (AvailablePower >= powerRequired)
+            return powerRequired;
+          else
+            return Mathf.Clamp(AvailablePower-powerRequired,0f,10000000f);
+
+        }
+        private void RecalculateRatios(float fuelInputScale)
+        {
+
             foreach (ResourceRatio input in inputList)
             {
                 foreach (ResourceBaseRatio baseInput in inputs)
@@ -337,10 +364,7 @@ namespace NearFutureElectrical
                 {
                     if (baseOutput.ResourceName == output.ResourceName)
                     {
-                        if (output.ResourceName == "ElectricCharge")
-                            output.Ratio = baseOutput.ResourceRatio * powerInputScale;
-                        else
-                            output.Ratio = baseOutput.ResourceRatio * fuelInputScale;
+                          output.Ratio = baseOutput.ResourceRatio * fuelInputScale;
                     }
                 }
             }
@@ -367,20 +391,20 @@ namespace NearFutureElectrical
             {
                 return true;
             }
-            else 
+            else
             {
                 return false;
             }
         }
-        
-        
-        
+
+
+
         // ####################################
         // Refuelling
         // ####################################
 
 
-      
+
         // Finds time remaining at current fuel burn rates
         public string FindTimeRemaining(double amount, double rate)
         {
