@@ -13,7 +13,6 @@ namespace NearFutureElectrical
 {
     public class FissionReactor: ModuleResourceConverter
     {
-
         public struct ResourceBaseRatio
         {
             public string ResourceName;
@@ -56,8 +55,7 @@ namespace NearFutureElectrical
         // Curve relating available power to temperature. Generally should be of the form
         // AmbientTemp  0
         // NominalTemp RatedReactorOutput
-
-
+        // MaxTemp BonusReactorOutput
         KSPField(isPersistant = false)]
         public FloatCurve PowerCurve = new FloatCurve();
 
@@ -95,42 +93,14 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float MaxTempForRepair = 325;
 
-
-
         // Try to fix the reactor
         [KSPEvent(externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.5f, guiName = "Repair Reactor")]
-        public void TryRepairReactor()
+        public void RepairReactor()
         {
-            if (CoreIntegrity <= MinRepairPercent)
+            if (TryRepairReactor)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core is too damaged to repair.", 5.0f, ScreenMessageStyle.UPPER_CENTER));
-                return;
+              DoReactorRepair();
             }
-            if (!CheckEVAEngineerLevel(EngineerLevelForRepair))
-            {
-                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core repair requires a Level {0:F0} Engineer."), 5.0f, ScreenMessageStyle.UPPER_CENTER));
-                return;
-            }
-            if (base.ModuleIsActive())
-            {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot repair reactor core while running! Seriously!",
-                    5.0f, ScreenMessageStyle.UPPER_CENTER));
-                return;
-            }
-            if (part.temperature > MaxTempForRepair)
-            {
-                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("The reactor must be below {0:F0} K to initiate repair!", MaxTempForRepair), 5.0f, ScreenMessageStyle.UPPER_CENTER));
-                return;
-            }
-            if (CoreIntegrity >= MaxRepairPercent)
-            {
-                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core is already at maximum field repairable integrity ({0:F0})", MaxRepairPercent),
-                    5.0f, ScreenMessageStyle.UPPER_CENTER));
-                return;
-            }
-
-            RepairReactor();
-
         }
 
         /// PRIVATE VARIABLES
@@ -144,7 +114,6 @@ namespace NearFutureElectrical
         private List<ResourceBaseRatio> inputs;
         private List<ResourceBaseRatio> outputs;
 
-
         /// UI FIELDS
         /// --------------------
         // Fuel Status string
@@ -153,18 +122,15 @@ namespace NearFutureElectrical
 
         // Reactor Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Thermal Output")]
-        public string GeneratorStatus;
+        public string ThermalOutput;
 
         // Reactor Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Temperature")]
         public string ReactorTemp;
 
         // integrity of the core
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Core Integrity")]
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Core Health")]
         public string CoreStatus;
-
-
-
 
         public override string GetInfo()
         {
@@ -216,7 +182,7 @@ namespace NearFutureElectrical
                     infoBox.SetMsgTextColor(XKCDColors.Orange);
                     infoBox.SetLength(1.0f);
                     infoBox.SetValue(0.0f);
-                    infoBox.SetMessage("Ineffic.");
+                    infoBox.SetMessage("Meltdwn");
                     infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
                     infoBox.SetProgressBarColor(XKCDColors.Orange);
                 }
@@ -236,118 +202,145 @@ namespace NearFutureElectrical
         {
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
+                // Update reactor temp readout
                 ReactorTemp = String.Format("{0:F1} K", part.temperature);
 
+                // Update reactor core integrity readout
                 if (CoreIntegrity > 0)
                     CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
                 else
                     CoreStatus = "Complete Meltdown";
 
-                float critExceedance = (float)part.temperature - CriticalTemperature;
-
-                // If overheated too much, damage the core
-                if (critExceedance > 0f)
-                {
-                    // core is damaged by Rate * temp exceedance * time
-                    CoreIntegrity = Mathf.MoveTowards(CoreIntegrity, 0f, CoreDamageRate * critExceedance * TimeWarp.fixedDeltaTime);
-                }
+                // Create and distribute heat
+                CreateAndDistributeHeat();
+                // Handle core damage tracking and effects
+                HandleCoreDamage();
 
 
+                // IF REACTOR ON
+                // =============
                 if (base.ModuleIsActive())
                 {
+                    // Get current resource consumption
                     double rate = 0d;
-
-                    // Set up resources
                     foreach (ResourceRatio input in inputList)
                     {
                         if (input.ResourceName == FuelName)
                             rate = input.Ratio;
                     }
 
-
-                    // Find resouce time remaining
-                    FuelStatus = FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,rate);
-
-                    //GeneratorSpinup = Mathf.MoveTowards(GeneratorSpinup, 100f, GeneratorSpinupRate * TimeWarp.fixedDeltaTime);
-
                     // add reactor heat
                     float heatAddedByReactor = HeatGeneration * CurrentPowerPercent / 100f;
+
                     // REPLACE with 1.1 method
                     this.part.AddThermalFlux(heatAddedByReactor);
 
-                    //float heatAddedByReactor = HeatGeneration * CurrentPowerPercent / 100f + HeatGeneration*2*(1-CoreIntegrity/100f);
-                    //float powerGenerationFactor = (CurrentPowerPercent / 100f) * (tempNetScale) * (GeneratorSpinup / 100f) * (CoreIntegrity/100f);
+                    // Recalculate fuel use Ratio
+                    // Fuel use is proportional to current power + inverse of current core integrity
+                    RecalculateRatios((CurrentPowerPercent + 2f*(100f-CoreIntegrity) ) / 100f);
 
-                    // use up fuel properly
-                    RecalculateRatios(CurrentPowerPercent / 100f);
-
-
-                    // visualize temperature
-                    // percent exceedance of nominal
-                    float tempNetScale = 1f - Mathf.Clamp01((float)((part.temperature - NominalTemperature) / (part.maxTemp - NominalTemperature)));
-
-                    if (UseStagingIcon)
-                        infoBox.SetValue(1f-tempNetScale);
-
-                    if (OverheatAnimation != "")
-                    {
-                        foreach (AnimationState cState in overheatStates)
-                        {
-                            cState.normalizedTime = 1f - tempNetScale;
-                        }
-                    }
-
-                    // create and distribute available heat
-                    AvailablePower = PowerCurve.Evaluate(ReactorTemp);
-                    GeneratorStatus = String.Format("{0:F0} kW", AvailablePower);
-
-                    // Get consumers and sort by priority
-                    List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>();
-                    List<FissionConsumer> sortedConsumers = consumers.OrderBy(o>o.Priority).ToList();
-
-                    // allocate power to all consumers
-                    foreach (FissionConsumer consumer in consumers)
-                    {
-                      if (consumer.Status)
-                      {
-                        float usage = TryConsumeHeat(consumer.HeatUsed)
-                        consumer.CurrentHeatUsed = usage;
-                        AvailablePower = availablePower - usage;
-                        if (AvailablePower >= 0f)
-                          AvailablePower = 0f;
-                      }
-
-                    }
-
-                } else
+                    // Update UI
+                    // current core life
+                    FuelStatus = FindTimeRemaining(
+                      this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,
+                      rate);
+                }
+                // IF REACTOR OFF
+                // =============
+                else
                 {
-
+                    // Update UI
                     if (CoreIntegrity <= 0f)
                     {
                         FuelStatus = "Core Destroyed";
-                        GeneratorStatus = "Core Destroyed";
+                        ThermalOutput = "Core Destroyed";
                     }
                     else
                     {
                         FuelStatus = "Reactor Offline";
-                        GeneratorStatus = "Reactor Offline";
+                        if (AvailablePower <= 10f)
+                        {
+                            ThermalOutput = String.Format("{0:F0} kW", AvailablePower);
+                        } else
+                        {
+                          ThermalOutput = "Reactor Offline";
+                        }
                     }
                 }
-
-
             }
         }
+
+        // Create heat based on reactor temp and distribute it
+        private void CreateAndDistributeHeat()
+        {
+          // Calculate the power from the core temperature
+          AvailablePower = PowerCurve.Evaluate(part.temperature);
+
+          // Update UI
+          ThermalOutput = String.Format("{0:F0} kW", AvailablePower);
+
+          Utils.Log("FissionReactor: has " + AvailablePower.ToString() +" kW to distribute");
+
+          // Get consumers and sort by priority
+          List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>();
+          List<FissionConsumer> sortedConsumers = consumers.OrderBy(o>o.Priority).ToList();
+
+          // allocate power to all consumers
+          foreach (FissionConsumer consumer in consumers)
+          {
+            if (consumer.Status)
+            {
+              float usage = TryConsumeHeat(consumer.HeatUsed)
+              consumer.CurrentHeatUsed = usage;
+              AvailablePower = availablePower - usage;
+              if (AvailablePower <= 0f)
+                AvailablePower = 0f;
+              Utils.Log ("FissionReactor: Consumer used "+ usage.ToString()+ " kW, " +AvailablePower.ToString() +" remaining");
+            }
+          }
+        }
+
+        // A consumer tries to get heat from the pool
         private float TryConsumeHeat(float powerRequired)
         {
           if (AvailablePower >= powerRequired)
             return powerRequired;
           else
             return Mathf.Clamp(AvailablePower-powerRequired,0f,10000000f);
-
         }
+
+        // track and set core damage
+        private void HandleCoreDamage()
+        {
+          // Update reactor damage
+          float critExceedance = (float)part.temperature - CriticalTemperature;
+
+          // If overheated too much, damage the core
+          if (critExceedance > 0f)
+          {
+              // core is damaged by Rate * temp exceedance * time
+              CoreIntegrity = Mathf.MoveTowards(CoreIntegrity, 0f, CoreDamageRate * critExceedance * TimeWarp.fixedDeltaTime);
+          }
+
+          // Calculate percent exceedance of nominal temp
+          float tempNetScale = 1f - Mathf.Clamp01((float)((part.temperature - NominalTemperature) / (part.maxTemp - NominalTemperature)));
+
+          // update staging bar if in use
+          if (UseStagingIcon)
+              infoBox.SetValue(1f-tempNetScale);
+
+          if (OverheatAnimation != "")
+          {
+              foreach (AnimationState cState in overheatStates)
+              {
+                  cState.normalizedTime = 1f - tempNetScale;
+              }
+          }
+        }
+
+        // Set ModuleResourceConverter ratios based on an input scale
         private void RecalculateRatios(float fuelInputScale)
         {
-
             foreach (ResourceRatio input in inputList)
             {
                 foreach (ResourceBaseRatio baseInput in inputs)
@@ -375,9 +368,40 @@ namespace NearFutureElectrical
         // Repairing
         // ####################################
 
+        public bool TryRepairReactor()
+        {
+          if (CoreIntegrity <= MinRepairPercent)
+          {
+              ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core is too damaged to repair.", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+              return false;
+          }
+          if (!CheckEVAEngineerLevel(EngineerLevelForRepair))
+          {
+              ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core repair requires a Level {0:F0} Engineer."), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+              return false;
+          }
+          if (base.ModuleIsActive())
+          {
+              ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot repair reactor core while running! Seriously!",
+                  5.0f, ScreenMessageStyle.UPPER_CENTER));
+              return false;
+          }
+          if (part.temperature > MaxTempForRepair)
+          {
+              ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("The reactor must be below {0:F0} K to initiate repair!", MaxTempForRepair), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+              return false;
+          }
+          if (CoreIntegrity >= MaxRepairPercent)
+          {
+              ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core is already at maximum field repairable integrity ({0:F0})", MaxRepairPercent),
+                  5.0f, ScreenMessageStyle.UPPER_CENTER));
+              return false;
+          }
+          return true;
+        }
 
-        // Tries to repair the reactor
-        public void RepairReactor()
+        // Repair the reactor to max Repair percent
+        public void DoReactorRepair()
         {
             this.CoreIntegrity = MaxRepairPercent;
             ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor repaired to {0:F0}%!", MaxRepairPercent), 5.0f, ScreenMessageStyle.UPPER_CENTER));
@@ -397,15 +421,11 @@ namespace NearFutureElectrical
             }
         }
 
-
-
         // ####################################
         // Refuelling
         // ####################################
 
-
-
-        // Finds time remaining at current fuel burn rates
+        // Finds time remaining at specified fuel burn rates
         public string FindTimeRemaining(double amount, double rate)
         {
             if (rate < 0.0000001)
