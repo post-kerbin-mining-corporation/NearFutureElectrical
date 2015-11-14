@@ -223,7 +223,7 @@ namespace NearFutureElectrical
             }
         }
 
-        private void FixedUpdate()
+        private new void FixedUpdate()
         {
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
@@ -316,6 +316,7 @@ namespace NearFutureElectrical
 
                 
             }
+	    base.FixedUpdate();
         }
 
         private void RecalculateRatios(float powerInputScale, float fuelInputScale)
