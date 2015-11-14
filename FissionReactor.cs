@@ -389,8 +389,6 @@ namespace NearFutureElectrical
                 return "A long time!";
             }
             double remaining = amount / rate;
-            TimeSpan t = TimeSpan.FromSeconds(remaining);
-
             if (remaining >= 0)
             {
                 return Utils.FormatTimeString(remaining);

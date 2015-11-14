@@ -237,7 +237,7 @@ namespace NearFutureElectrical
                     {
                         // get available space in the target container
                         double availableSpace = container.GetResourceAmount(curTransferType, true) - container.GetResourceAmount(curTransferType);
-                        double availableResource = this.GetResourceAmount(curTransferType);
+//                        double availableResource = this.GetResourceAmount(curTransferType);
 
                         // transfer as much as possible
                         double amount = this.part.RequestResource(curTransferType, availableSpace);
