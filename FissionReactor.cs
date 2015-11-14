@@ -223,7 +223,7 @@ namespace NearFutureElectrical
             }
         }
 
-        private void FixedUpdate()
+        private new void FixedUpdate()
         {
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
@@ -316,6 +316,7 @@ namespace NearFutureElectrical
 
                 
             }
+	    base.FixedUpdate();
         }
 
         private void RecalculateRatios(float powerInputScale, float fuelInputScale)
@@ -389,8 +390,6 @@ namespace NearFutureElectrical
                 return "A long time!";
             }
             double remaining = amount / rate;
-            TimeSpan t = TimeSpan.FromSeconds(remaining);
-
             if (remaining >= 0)
             {
                 return Utils.FormatTimeString(remaining);
