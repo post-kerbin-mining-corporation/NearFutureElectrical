@@ -22,19 +22,36 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float Priority = 1;
 
-        // Amount of heat used to produce above power
+        // Amount of heat used at most by the consumer
         [KSPField(isPersistant = false)]
         public float HeatUsed = 500f;
+
+        // 
+        [KSPField(isPersistant = false)]
+        public float Efficiency = 0.5f;
 
         // current amount of heat being used
         [KSPField(isPersistant = true)]
         public float CurrentHeatUsed = 0f;
 
-        public void SetHeatInput(float heatIn)
+        [KSPField(isPersistant = true)]
+        public float Setting = 0f;
+
+        public void SetPowerSetting(float setting)
         {
-          CurrentHeatUsed = heatIn;
+            Setting = setting;
         }
 
+        public void SetHeatInput(float heatIn)
+        {
+            CurrentHeatUsed = heatIn;
+            
+        }
+        public float GetWaste(float heatIn)
+        {
+            return (heatIn*(1f-Efficiency));
+        }
+    
 
 
     }

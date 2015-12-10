@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5C07FB19-285C-4384-8487-B95BAA15FC51}</ProjectGuid>
+    <ProjectGuid>{51875AAC-3DEF-483D-B041-97CC34DAB982}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NearFutureElectrical</RootNamespace>
@@ -18,43 +18,50 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Program Files %28x86%29\Steam\SteamApps\common\Kerbal Space Program\GameData\NearFutureElectrical\Plugins\</OutputPath>
+    <OutputPath>..\GameData\NearFutureElectrical\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Games\Steam\SteamApps\common\Kerbal Space Program\GameData\NearFutureElectrical\Plugins\</OutputPath>
+    <OutputPath>..\GameData\NearFutureElectrical\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\Games\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\Users\cadderley\Library\Application Support\Steam\steamapps\common\KSP app\Contents\Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\..\Games\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NodeTriggeredMesh.cs" />
+    <Compile Include="DischargeCapacitor.cs" />
     <Compile Include="DischargeCapacitorUI.cs" />
+    <Compile Include="FissionConsumer.cs" />
+    <Compile Include="FissionEngine.cs" />
+    <Compile Include="FissionGenerator.cs" />
     <Compile Include="FissionReactor.cs" />
     <Compile Include="NearFutureElectrical.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadioactiveStorageContainer.cs" />
     <Compile Include="RadioisotopeGenerator.cs" />
     <Compile Include="Resources.cs" />
-    <Compile Include="DischargeCapacitor.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FissionGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

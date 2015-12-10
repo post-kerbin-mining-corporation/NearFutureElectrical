@@ -22,17 +22,24 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true)]
         public float CurrentGeneration = 0f;
 
+        // Reactor Status string
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Generation")]
+        public string GeneratorStatus;
+
         public void FixedUpdate()
         {
           if (HighLogic.LoadedScene == GameScenes.FLIGHT)
           {
 
-            if (Status)
-            {
-              double generated = (double)(Mathf.Clamp01(CurrentHeatUsed/HeatUsed) * PowerGeneration);
-              double amt = this.part.RequestResource("ElectricCharge", TimeWarp.fixedDeltaTime*generated );
+              if (Status)
+              {
+                  double generated = (double)(Mathf.Clamp01(CurrentHeatUsed / HeatUsed) * PowerGeneration*Setting);
+                  double amt = this.part.RequestResource("ElectricCharge", -TimeWarp.fixedDeltaTime * generated);
 
-            }
+                  GeneratorStatus = String.Format("{0:F1} Ec/s", generated);
+              }
+              else
+                  GeneratorStatus = "Offline";
           }
 
         }

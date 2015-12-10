@@ -11,9 +11,7 @@ namespace NearFutureElectrical
 {
     public static class Resources
     {
-        // foreground for progress bars
-        public static Texture2D gui_progressbar = new Texture2D(16, 16);
-        public static Texture2D gui_show = new Texture2D(16, 16);   
+       
 
 
         // Styles

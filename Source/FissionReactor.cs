@@ -4,6 +4,7 @@
 ///
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -56,7 +57,7 @@ namespace NearFutureElectrical
         // AmbientTemp  0
         // NominalTemp RatedReactorOutput
         // MaxTemp BonusReactorOutput
-        KSPField(isPersistant = false)]
+        [KSPField(isPersistant = false)]
         public FloatCurve PowerCurve = new FloatCurve();
 
         // amount of heating power available from reactor currently
@@ -97,7 +98,7 @@ namespace NearFutureElectrical
         [KSPEvent(externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.5f, guiName = "Repair Reactor")]
         public void RepairReactor()
         {
-            if (TryRepairReactor)
+            if (TryRepairReactor())
             {
               DoReactorRepair();
             }
@@ -107,6 +108,8 @@ namespace NearFutureElectrical
         /// ----------------------
         // the info staging box
         private VInfoBox infoBox;
+
+        private ModuleCoreHeat core;
 
         private AnimationState[] overheatStates;
 
@@ -123,10 +126,6 @@ namespace NearFutureElectrical
         // Reactor Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Thermal Output")]
         public string ThermalOutput;
-
-        // Reactor Status string
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Temperature")]
-        public string ReactorTemp;
 
         // integrity of the core
         [KSPField(isPersistant = false, guiActive = true, guiName = "Core Health")]
@@ -173,6 +172,11 @@ namespace NearFutureElectrical
 
             if (state != StartState.Editor)
             {
+                
+                core = this.GetComponent<ModuleCoreHeat>();
+                if (core == null)
+                    Utils.LogError("Fission Reactor: Could not find core heat module!");
+
                 SetupResourceRatios();
                 // Set up staging icon heat bar
                 if (UseStagingIcon)
@@ -197,13 +201,15 @@ namespace NearFutureElectrical
                     this.part.force_activate();
             }
         }
+        
 
-        private void FixedUpdate()
+
+        public override void OnFixedUpdate()
         {
+            base.OnFixedUpdate();
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
-                // Update reactor temp readout
-                ReactorTemp = String.Format("{0:F1} K", part.temperature);
+            
 
                 // Update reactor core integrity readout
                 if (CoreIntegrity > 0)
@@ -211,8 +217,7 @@ namespace NearFutureElectrical
                 else
                     CoreStatus = "Complete Meltdown";
 
-                // Create and distribute heat
-                CreateAndDistributeHeat();
+                
                 // Handle core damage tracking and effects
                 HandleCoreDamage();
 
@@ -230,14 +235,18 @@ namespace NearFutureElectrical
                     }
 
                     // add reactor heat
-                    float heatAddedByReactor = HeatGeneration * CurrentPowerPercent / 100f;
+                    // Create and distribute heat
+                    float leftoverHeat = CreateAndDistributeHeat();
 
-                    // REPLACE with 1.1 method
-                    this.part.AddThermalFlux(heatAddedByReactor);
+                    //float heatAddedByReactor = HeatGeneration * CurrentPowerPercent / 100f;
+                    float heatAddedByReactor = leftoverHeat * CurrentPowerPercent / 100f;
+                   
+                    TemperatureModifier = new FloatCurve();
+                    TemperatureModifier.Add(0f, heatAddedByReactor);
 
                     // Recalculate fuel use Ratio
-                    // Fuel use is proportional to current power + inverse of current core integrity
-                    RecalculateRatios((CurrentPowerPercent + 2f*(100f-CoreIntegrity) ) / 100f);
+                    // Fuel use is proportional to core temperature
+                    RecalculateRatios((float)core.CoreTemperature/(float)NominalTemperature );
 
                     // Update UI
                     // current core life
@@ -269,51 +278,62 @@ namespace NearFutureElectrical
                 }
             }
         }
-
+        
         // Create heat based on reactor temp and distribute it
-        private void CreateAndDistributeHeat()
+        private float CreateAndDistributeHeat()
         {
           // Calculate the power from the core temperature
-          AvailablePower = PowerCurve.Evaluate(part.temperature);
+          AvailablePower = PowerCurve.Evaluate((float)core.CoreTemperature)*CoreIntegrity/100f;
 
           // Update UI
           ThermalOutput = String.Format("{0:F0} kW", AvailablePower);
 
-          Utils.Log("FissionReactor: has " + AvailablePower.ToString() +" kW to distribute");
+          Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
 
           // Get consumers and sort by priority
-          List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>();
-          List<FissionConsumer> sortedConsumers = consumers.OrderBy(o>o.Priority).ToList();
+          List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>().ToList();
+          List<FissionConsumer> sortedConsumers = consumers.OrderBy(o=>o.Priority).ToList();
 
+          float totalWaste = 0f;
           // allocate power to all consumers
           foreach (FissionConsumer consumer in consumers)
           {
             if (consumer.Status)
             {
-              float usage = TryConsumeHeat(consumer.HeatUsed)
-              consumer.CurrentHeatUsed = usage;
-              AvailablePower = availablePower - usage;
-              if (AvailablePower <= 0f)
-                AvailablePower = 0f;
-              Utils.Log ("FissionReactor: Consumer used "+ usage.ToString()+ " kW, " +AvailablePower.ToString() +" remaining");
+                consumer.SetPowerSetting(CurrentPowerPercent / 100f);
+                float usage = TryConsumeHeat(consumer);
+                float waste = consumer.GetWaste(usage);
+                AvailablePower = AvailablePower - usage;
+                if (AvailablePower <= 0f)
+                   AvailablePower = 0f;
+                totalWaste = totalWaste + waste;
+                Utils.Log ("FissionReactor: Consumer took "+ usage.ToString()+ " kW, wasted " +waste.ToString() + ", " +AvailablePower.ToString() +" remaining");
             }
           }
+          Utils.Log ("FissionReactor: END CYCLE with "+totalWaste.ToString() + "waste, and " + AvailablePower.ToString() +" spare");
+          return totalWaste + AvailablePower;
+
         }
 
         // A consumer tries to get heat from the pool
-        private float TryConsumeHeat(float powerRequired)
+       
+        private float TryConsumeHeat(FissionConsumer consumer)
         {
-          if (AvailablePower >= powerRequired)
-            return powerRequired;
-          else
-            return Mathf.Clamp(AvailablePower-powerRequired,0f,10000000f);
-        }
+            float usage = 0f;
+            if (AvailablePower >= consumer.HeatUsed)
+                usage = consumer.HeatUsed;
+            else
+                usage = Mathf.Clamp(AvailablePower, 0f, 10000000f);
 
+            consumer.SetHeatInput(usage);
+            return usage;
+        }
+   
         // track and set core damage
         private void HandleCoreDamage()
         {
           // Update reactor damage
-          float critExceedance = (float)part.temperature - CriticalTemperature;
+          float critExceedance = (float)core.CoreTemperature - CriticalTemperature;
 
           // If overheated too much, damage the core
           if (critExceedance > 0f)
@@ -323,7 +343,7 @@ namespace NearFutureElectrical
           }
 
           // Calculate percent exceedance of nominal temp
-          float tempNetScale = 1f - Mathf.Clamp01((float)((part.temperature - NominalTemperature) / (part.maxTemp - NominalTemperature)));
+          float tempNetScale = 1f - Mathf.Clamp01((float)((core.CoreTemperature - NominalTemperature) / (part.maxTemp - NominalTemperature)));
 
           // update staging bar if in use
           if (UseStagingIcon)
@@ -386,7 +406,7 @@ namespace NearFutureElectrical
                   5.0f, ScreenMessageStyle.UPPER_CENTER));
               return false;
           }
-          if (part.temperature > MaxTempForRepair)
+          if (core.CoreTemperature > MaxTempForRepair)
           {
               ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("The reactor must be below {0:F0} K to initiate repair!", MaxTempForRepair), 5.0f, ScreenMessageStyle.UPPER_CENTER));
               return false;
@@ -433,7 +453,7 @@ namespace NearFutureElectrical
                 return "A long time!";
             }
             double remaining = amount / rate;
-            TimeSpan t = TimeSpan.FromSeconds(remaining);
+            //TimeSpan t = TimeSpan.FromSeconds(remaining);
 
             if (remaining >= 0)
             {

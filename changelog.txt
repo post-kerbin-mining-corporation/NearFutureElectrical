@@ -1,7 +1,11 @@
 v0.5.4
 ------
 - KSP 1.05
-- Fixed anti-DRE patch
+- Fixed anti-DRE patch again
+- Nuclear Reprocessor now works similarly to the ISRU in terms of heating mechanics
+- ASRTG matches heat performance of stock RTG
+- New models for 0.625, 1.25 and 2.5 reactors (others coming eventually)
+- Revamped reactor functionality to map to 1.05's heat mechanics
 
 v0.5.3
 ------
