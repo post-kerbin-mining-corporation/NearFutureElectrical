@@ -26,7 +26,7 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float HeatUsed = 500f;
 
-        // 
+        //
         [KSPField(isPersistant = false)]
         public float Efficiency = 0.5f;
 
@@ -45,14 +45,23 @@ namespace NearFutureElectrical
         public void SetHeatInput(float heatIn)
         {
             CurrentHeatUsed = heatIn;
-            
-        }
-        public float GetWaste(float heatIn)
-        {
-            return (heatIn*(1f-Efficiency));
-        }
-    
 
+        }
+        public float GetWaste()
+        {
+            return (CurrentHeatUsed * (1f-Efficiency) );
+        }
+
+        // Given a certain amount of heat, returns the amount left over
+        public float ConsumeHeat(float heatAvailable)
+        {
+          if (heatAvailable >= HeatUsed)
+              CurrentHeatUsed = HeatUsed;
+          else
+              CurrentHeatUsed = Mathf.Clamp(heatAvailable,0f,10000000f);
+
+          return heatAvailable - CurrentHeatUsed;
+        }
 
     }
 }
