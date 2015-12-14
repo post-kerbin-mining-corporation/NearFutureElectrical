@@ -1,4 +1,4 @@
-v0.5.4
+v0.6.0
 ------
 - KSP 1.05
 - Fixed anti-DRE patch again

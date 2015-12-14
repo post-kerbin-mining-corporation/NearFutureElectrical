@@ -72,6 +72,9 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public string OverheatAnimation;
 
+        [KSPField(isPersistant = false)]
+        public int smoothingInterval = 25;
+
         // REPAIR VARIABLES
         // integrity of the core
         [KSPField(isPersistant = true)]
@@ -119,25 +122,27 @@ namespace NearFutureElectrical
 
         /// UI FIELDS
         /// --------------------
-        // Fuel Status string
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Core Life")]
-        public string FuelStatus;
+        
 
         // Reactor Status string
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Heat Gen")]
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Output")]
         public string ReactorOutput;
 
         // Reactor Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Heat Transf")]
         public string ThermalTransfer;
 
-        // Reactor Status string
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Heat")]
-        public string ThermalOutput;
+        // integrity of the core
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Core Temperature")]
+        public string CoreTemp;
 
         // integrity of the core
         [KSPField(isPersistant = false, guiActive = true, guiName = "Core Health")]
         public string CoreStatus;
+
+        // Fuel Status string
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Core Life")]
+        public string FuelStatus;
 
         public override string GetInfo()
         {
@@ -147,8 +152,7 @@ namespace NearFutureElectrical
                 if (input.ResourceName == FuelName)
                     baseRate = input.Ratio;
             }
-            return base.GetInfo() +
-                String.Format("Heat Production: {0:F2} kW", HeatGeneration) + "\n"
+            return base.GetInfo() 
                 + String.Format("Optimal Temperature: {0:F0} K", NominalTemperature) + "\n"
                 + String.Format("Critical Temperature: {0:F0} K", CriticalTemperature) + "\n"
                 + "Estimated Core Life: " +
@@ -225,7 +229,8 @@ namespace NearFutureElectrical
 
                 // Handle core damage tracking and effects
                 HandleCoreDamage();
-
+                // Heat consumption occurs if reactor is on or off
+                DoHeatConsumption();
 
                 // IF REACTOR ON
                 // =============
@@ -233,7 +238,7 @@ namespace NearFutureElectrical
                 {
                   DoFuelConsumption();
                   DoHeatGeneration();
-                  DoHeatConsumption();
+                  
                 }
                 // IF REACTOR OFF
                 // =============
@@ -243,20 +248,16 @@ namespace NearFutureElectrical
                     if (CoreIntegrity <= 0f)
                     {
                         FuelStatus = "Core Destroyed";
-                        ThermalOutput = "Core Destroyed";
+                        ReactorOutput = "Core Destroyed";
                     }
                     else
                     {
                         FuelStatus = "Reactor Offline";
-                        if (AvailablePower <= 10f)
-                        {
-                            ThermalOutput = String.Format("{0:F0} kW", AvailablePower);
-                        } else
-                        {
-                          ThermalOutput = "Reactor Offline";
-                        }
+                        ReactorOutput = "Reactor Offline";
+                        
                     }
                 }
+                
             }
         }
 
@@ -278,57 +279,98 @@ namespace NearFutureElectrical
             this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,
             rate);
         }
+
+        // Creates heat from the reaction
         private void DoHeatGeneration()
         {
-          // Generate heat from the reaction and apply it
-          SetHeatGeneration(CurrentPowerPercent / 100f * HeatGeneration);
+            // Generate heat from the reaction and apply it
+            SetHeatGeneration(CurrentPowerPercent / 100f * HeatGeneration * CoreIntegrity/100f);
 
-          ReactorOutput = String.Format("{0:F0} kW", CurrentPowerPercent / 100f * HeatGeneration))
-
-          // Determine power available to transfer to components
-          //AvailablePower = PowerCurve.Evaluate((float)core.CoreTemperature);
-          AvailablePower = core.RadUsage;
-
-          if ((float)core.CoreTemperature < NominalTemperature)
-          {
-            core.CoreTempGoalAdjustment = -300d *(1f-270f/NominalTemperature);
-          } else
-          {
-            core.CoreTempGoalAdjustment = 0d;
-          }
+            if (CoreIntegrity <= 0f)
+            {
+                FuelStatus = "Core Destroyed";
+                ReactorOutput = "Core Destroyed";
+            }
+            else
+            {
+                ReactorOutput = String.Format("{0:F0} kW", CurrentPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f);
+            }
         }
+
+        List<float> availablePowerList = new List<float>();
 
         private void DoHeatConsumption()
         {
-          // Get the list of all modules on the part that can consume heat
-          List<FissionConsumer> consumers = GetOrderedConsumers();
+            // determine the maximum radiator cooling
+            // At temperature 0, no cooling is possible
+            // at nominal temperature, full cooling is possible
+            float maxRadiatorCooling = Mathf.Clamp((
+                Mathf.Clamp((float)core.CoreTemperature -270f,0f,(float)part.maxTemp) / NominalTemperature) * HeatGeneration/50f,
+                0f, 
+                HeatGeneration / 50f);
+           
+            
+            Utils.Log("MaxCool: " + maxRadiatorCooling.ToString());
 
-          Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
-
-          float remainingPower = AvailablePower;
-          float totalWaste = 0f;
-          // Iterate through all consumers and allocate available thermal power
-          foreach (FissionConsumer consumer in consumers)
-          {
-            remainingPower = consumer.ConsumeHeat(remainingPower);
-
-            if (consumer.Status)
+            // Determine power available to transfer to components
+            float frameAvailablePower = 0f;
+            if (Single.TryParse(core.D_CoolAmt, out frameAvailablePower))
             {
-              remainingPower = consumer.ConsumeHeat(remainingPower)
-              totalWaste = totalWaste + consumer.GetWaste();
-                AvailablePower = AvailablePower - usage;
-                if (remainingPower <= 0f)
-                   remainingPower = 0f;
-                Utils.Log ("FissionReactor: Consumer took "+ usage.ToString()+ " kW, wasted " +totalWaste.ToString() + ", " +AvailablePower.ToString() +" remaining");
+                availablePowerList.Add(frameAvailablePower/TimeWarp.CurrentRate);
+                if (availablePowerList.Count > smoothingInterval)
+                {
+                    availablePowerList.RemoveAt(0);
+                }
             }
-          }
-          Utils.Log ("FissionReactor: END CYCLE with "+totalWaste.ToString() + " waste, and " + AvailablePower.ToString() +" spare");
+            float smoothedPower = ListMean(availablePowerList);
+            
+            AvailablePower = Mathf.Clamp(smoothedPower,0f, maxRadiatorCooling);
+            //Utils.Log("MeanPower: " + ListMean(availablePowerList));
+
+            ThermalTransfer = String.Format("{0:F2} kW", AvailablePower);
+            CoreTemp = String.Format("{0:F1}/{1:F1} K", (float)core.CoreTemperature, NominalTemperature);
+
+            core.CoreTempGoalAdjustment = -core.CoreTempGoal;
+
+           // Debug.Log(core.D_CoolAmt + core.D_CoolPercent+core.D_coreXfer+core.D_CTE+ core.D_EDiff+ 
+            //    core.D_Excess+ core.D_GE+ core.D_partXfer+ core.D_POT+ core.D_PTE+ core.D_RadCap+ core.D_RadSat+ core.D_RCA+ core.D_TRU+ core.D_XTP);
+            // Get the list of all modules on the part that can consume heat
+            List<FissionConsumer> consumers = GetOrderedConsumers();
+
+            //Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
+
+            float remainingPower = AvailablePower;
+            // Iterate through all consumers and allocate available thermal power
+            foreach (FissionConsumer consumer in consumers)
+            {
+                if (consumer.Status)
+                {
+                    remainingPower = consumer.ConsumeHeat(remainingPower);
+                    //totalWaste = totalWaste + consumer.GetWaste();
+
+                    if (remainingPower <= 0f)
+                        remainingPower = 0f;
+                    Utils.Log ("FissionReactor: Consumer left "+ remainingPower.ToString()+ " kW");
+                }
+            }
+            //Utils.Log ("FissionReactor: END CYCLE with "+totalWaste.ToString() + " waste, and " + AvailablePower.ToString() +" spare");
         }
 
+        // Get the mean of a list
+        private float ListMean(List<float> theList)
+        {
+            float sum = 0f;
+            foreach (float i in theList)
+            {
+                sum += i;
+            }
+            return sum / (float)theList.Count;
+        }
+        
         private List<FissionConsumer> GetOrderedConsumers()
         {
           List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>().ToList();
-          return List<FissionConsumer> sortedConsumers = consumers.OrderBy(o=>o.Priority).ToList();
+          return consumers.OrderBy(o=>o.Priority).ToList();
         }
 
         private void SetHeatGeneration(float heat)
@@ -337,19 +379,7 @@ namespace NearFutureElectrical
           TemperatureModifier.Add(0f, heat);
         }
 
-        // Create heat based on reactor temp and distribute it
-        private float CreateAndDistributeHeat()
-        {
-          // Calculate the power from the core temperature
-
-
-          // Update UI
-          ThermalOutput = String.Format("{0:F0} kW", AvailablePower);
-
-
-          return totalWaste + AvailablePower;
-
-        }
+    
 
 
 

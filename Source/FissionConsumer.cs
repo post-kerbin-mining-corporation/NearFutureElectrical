@@ -55,12 +55,18 @@ namespace NearFutureElectrical
         // Given a certain amount of heat, returns the amount left over
         public float ConsumeHeat(float heatAvailable)
         {
-          if (heatAvailable >= HeatUsed)
-              CurrentHeatUsed = HeatUsed;
-          else
-              CurrentHeatUsed = Mathf.Clamp(heatAvailable,0f,10000000f);
+            if (heatAvailable >= HeatUsed)
+            {
+                CurrentHeatUsed = HeatUsed;
+                return heatAvailable - CurrentHeatUsed;
+            }
+            else
+            {
+                CurrentHeatUsed = Mathf.Clamp(heatAvailable, 0f, 10000000f);
+                return 0f;
+            }
 
-          return heatAvailable - CurrentHeatUsed;
+          
         }
 
     }
