@@ -122,7 +122,7 @@ namespace NearFutureElectrical
 
         /// UI FIELDS
         /// --------------------
-        
+
 
         // Reactor Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Output")]
@@ -152,7 +152,7 @@ namespace NearFutureElectrical
                 if (input.ResourceName == FuelName)
                     baseRate = input.Ratio;
             }
-            return base.GetInfo() 
+            return base.GetInfo()
                 + String.Format("Optimal Temperature: {0:F0} K", NominalTemperature) + "\n"
                 + String.Format("Critical Temperature: {0:F0} K", CriticalTemperature) + "\n"
                 + "Estimated Core Life: " +
@@ -238,7 +238,7 @@ namespace NearFutureElectrical
                 {
                   DoFuelConsumption();
                   DoHeatGeneration();
-                  
+
                 }
                 // IF REACTOR OFF
                 // =============
@@ -254,10 +254,10 @@ namespace NearFutureElectrical
                     {
                         FuelStatus = "Reactor Offline";
                         ReactorOutput = "Reactor Offline";
-                        
+
                     }
                 }
-                
+
             }
         }
 
@@ -298,19 +298,21 @@ namespace NearFutureElectrical
         }
 
         List<float> availablePowerList = new List<float>();
+        float reactorFudgeFactor = 0f;
 
         private void DoHeatConsumption()
         {
             // determine the maximum radiator cooling
             // At temperature 0, no cooling is possible
             // at nominal temperature, full cooling is possible
-            float maxRadiatorCooling = Mathf.Clamp((
-                Mathf.Clamp((float)core.CoreTemperature -270f,0f,(float)part.maxTemp) / NominalTemperature) * HeatGeneration/50f,
-                0f, 
+            float temperatureRatio = Mathf.Clamp((float)core.CoreTemperature -270f,0f, NominalTemperature) / NominalTemperature;
+            float maxRadiatorCooling = Mathf.Clamp(
+                 temperatureRatio * HeatGeneration/50f,
+                0f,
                 HeatGeneration / 50f);
-           
-            
-            Utils.Log("MaxCool: " + maxRadiatorCooling.ToString());
+
+
+            //Utils.Log("MaxCool: " + maxRadiatorCooling.ToString());
 
             // Determine power available to transfer to components
             float frameAvailablePower = 0f;
@@ -323,7 +325,13 @@ namespace NearFutureElectrical
                 }
             }
             float smoothedPower = ListMean(availablePowerList);
-            
+
+
+            // The reactor fudge factor is a number by which we increase the reactor power to pretend radiators are
+            // transferring less at low temperatures
+            reactorFudgeFactor =  smoothedPower - maxRadiatorCooling;
+
+
             AvailablePower = Mathf.Clamp(smoothedPower,0f, maxRadiatorCooling);
             //Utils.Log("MeanPower: " + ListMean(availablePowerList));
 
@@ -332,7 +340,7 @@ namespace NearFutureElectrical
 
             core.CoreTempGoalAdjustment = -core.CoreTempGoal;
 
-           // Debug.Log(core.D_CoolAmt + core.D_CoolPercent+core.D_coreXfer+core.D_CTE+ core.D_EDiff+ 
+           // Debug.Log(core.D_CoolAmt + core.D_CoolPercent+core.D_coreXfer+core.D_CTE+ core.D_EDiff+
             //    core.D_Excess+ core.D_GE+ core.D_partXfer+ core.D_POT+ core.D_PTE+ core.D_RadCap+ core.D_RadSat+ core.D_RCA+ core.D_TRU+ core.D_XTP);
             // Get the list of all modules on the part that can consume heat
             List<FissionConsumer> consumers = GetOrderedConsumers();
@@ -366,7 +374,7 @@ namespace NearFutureElectrical
             }
             return sum / (float)theList.Count;
         }
-        
+
         private List<FissionConsumer> GetOrderedConsumers()
         {
           List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>().ToList();
@@ -376,10 +384,10 @@ namespace NearFutureElectrical
         private void SetHeatGeneration(float heat)
         {
           TemperatureModifier = new FloatCurve();
-          TemperatureModifier.Add(0f, heat);
+          TemperatureModifier.Add(0f, heat + reactorFudgeFactor * 50f);
         }
 
-    
+
 
 
 
