@@ -384,7 +384,12 @@ namespace NearFutureElectrical
         private void SetHeatGeneration(float heat)
         {
             Utils.Log("Fudge Factor currently " + reactorFudgeFactor.ToString());
+            if (float.IsNaN(reactorFudgeFactor))
+            {
+                reactorFudgeFactor = 0f;
+            }
           TemperatureModifier = new FloatCurve();
+           
           TemperatureModifier.Add(0f, heat + reactorFudgeFactor * 50f);
         }
 
