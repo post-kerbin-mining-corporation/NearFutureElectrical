@@ -284,7 +284,7 @@ namespace NearFutureElectrical
         private void DoHeatGeneration()
         {
             // Generate heat from the reaction and apply it
-            SetHeatGeneration(CurrentPowerPercent / 100f * HeatGeneration * CoreIntegrity/100f);
+            SetHeatGeneration((CurrentPowerPercent / 100f * HeatGeneration)* CoreIntegrity/100f);
 
             if (CoreIntegrity <= 0f)
             {
@@ -329,7 +329,7 @@ namespace NearFutureElectrical
 
             // The reactor fudge factor is a number by which we increase the reactor power to pretend radiators are
             // transferring less at low temperatures
-            reactorFudgeFactor =  smoothedPower - maxRadiatorCooling;
+            reactorFudgeFactor =  Mathf.Clamp(smoothedPower - maxRadiatorCooling,0f,(float)core.MaxCoolant);
 
 
             AvailablePower = Mathf.Clamp(smoothedPower,0f, maxRadiatorCooling);
@@ -358,7 +358,7 @@ namespace NearFutureElectrical
 
                     if (remainingPower <= 0f)
                         remainingPower = 0f;
-                    Utils.Log ("FissionReactor: Consumer left "+ remainingPower.ToString()+ " kW");
+                    //Utils.Log ("FissionReactor: Consumer left "+ remainingPower.ToString()+ " kW");
                 }
             }
             //Utils.Log ("FissionReactor: END CYCLE with "+totalWaste.ToString() + " waste, and " + AvailablePower.ToString() +" spare");
@@ -383,6 +383,7 @@ namespace NearFutureElectrical
 
         private void SetHeatGeneration(float heat)
         {
+            Utils.Log("Fudge Factor currently " + reactorFudgeFactor.ToString());
           TemperatureModifier = new FloatCurve();
           TemperatureModifier.Add(0f, heat + reactorFudgeFactor * 50f);
         }
