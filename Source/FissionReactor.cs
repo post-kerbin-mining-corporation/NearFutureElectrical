@@ -305,7 +305,9 @@ namespace NearFutureElectrical
             // determine the maximum radiator cooling
             // At temperature 0, no cooling is possible
             // at nominal temperature, full cooling is possible
-            float temperatureRatio = Mathf.Clamp((float)core.CoreTemperature -270f,0f, NominalTemperature) / NominalTemperature;
+            float partTemperatureDiff = (float)core.CoreTemperature-(float)part.temperature;
+           
+            float temperatureRatio = Mathf.Clamp(partTemperatureDiff/(NominalTemperature - (float)part.temperature),0f,1.0f);
             float maxRadiatorCooling = Mathf.Clamp(
                  temperatureRatio * HeatGeneration/50f,
                 0f,
@@ -318,7 +320,7 @@ namespace NearFutureElectrical
             float frameAvailablePower = 0f;
             if (Single.TryParse(core.D_CoolAmt, out frameAvailablePower))
             {
-                availablePowerList.Add(frameAvailablePower/TimeWarp.CurrentRate);
+                availablePowerList.Add(frameAvailablePower/ Mathf.Clamp(TimeWarp.CurrentRate,0f,(float)core.MaxCalculationWarp));
                 if (availablePowerList.Count > smoothingInterval)
                 {
                     availablePowerList.RemoveAt(0);

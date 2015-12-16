@@ -36,6 +36,9 @@ namespace NearFutureElectrical
                   double generated = (double)(Mathf.Clamp01(CurrentHeatUsed / HeatUsed) * PowerGeneration);
                   double amt = this.part.RequestResource("ElectricCharge", -TimeWarp.fixedDeltaTime * generated);
 
+                  if (double.IsNaN(generated))
+                      generated = 0.0;
+
                   GeneratorStatus = String.Format("{0:F1} Ec/s", generated);
               }
               else
