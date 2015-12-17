@@ -19,7 +19,7 @@ namespace NearFutureElectrical
 
         // Relates core temp (K) to Isp scalar
         [KSPField(isPersistant = false)]
-        public FloatCurve TempIspScale = new FloatCurve()
+        public FloatCurve TempIspScale = new FloatCurve();
 
 
         private FloatCurve baseIspCurve;
@@ -30,6 +30,7 @@ namespace NearFutureElectrical
 
         public override string GetInfo()
         {
+            return "";
         }
 
         public override void OnStart(PartModule.StartState state)
@@ -42,9 +43,8 @@ namespace NearFutureElectrical
         private void SetupEngines()
         {
           // Locate the engine modules
-          List<ModuleEnginesFX> engines = this.GetComponents<ModuleEnginesFX>()
+          List<ModuleEnginesFX> engines = this.GetComponents<ModuleEnginesFX>().ToList();
           // Get their Isps
-          ispCurves = new List<FloatCurve>();
           foreach (ModuleEnginesFX engine in engines) {
               if (engine.engineID == EngineID)
               {
@@ -63,10 +63,10 @@ namespace NearFutureElectrical
         {
           if (HighLogic.LoadedScene == GameScenes.FLIGHT)
           {
-            if (engineFX != null && reactor !== null)
+            if (engineFX != null && reactor != null)
             {
                 // If the engine is off, it will have the maximum Isp available
-                if (!engineFX.active || (engineFX.active && engineFX.throttle))
+                if (!engineFX.active || (engineFX.active && engineFX.throttleSetting > 0f))
                 {
                   engineFX.atmosphereCurve = baseIspCurve;
                 } else
@@ -76,14 +76,15 @@ namespace NearFutureElectrical
 
                   // Scale Isps
                   engineFX.atmosphereCurve = new FloatCurve();
-                  engineFX.atmosphereCurve.Add(baseIspCurve.Evaluate(0f)*CoreTemperatureRatio);
-                  engineFX.atmosphereCurve.Add(baseIspCurve.Evaluate(1f)*CoreTemperatureRatio);
-                  engineFX.atmosphereCurve.Add(baseIspCurve.Evaluate(4f)*CoreTemperatureRatio);
+                  engineFX.atmosphereCurve.Add(0f,baseIspCurve.Evaluate(0f)*CoreTemperatureRatio);
+                  engineFX.atmosphereCurve.Add(1f,baseIspCurve.Evaluate(1f)*CoreTemperatureRatio);
+                  engineFX.atmosphereCurve.Add(4f,baseIspCurve.Evaluate(4f)*CoreTemperatureRatio);
 
                   // The amount of heat to consume depends on mass flow rate
-                  
+                  float flowRate = engineFX.fuelFlowGui;
+
                   // Consume the power from the core
-                  core.AddHeatFlux(-CurrentHeatUsed);
+                  core.AddEnergyToCore(-CurrentHeatUsed);
                 }
 
             }
