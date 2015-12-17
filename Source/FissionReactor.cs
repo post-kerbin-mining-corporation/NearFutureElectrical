@@ -177,6 +177,7 @@ namespace NearFutureElectrical
 
         public override void OnStart(PartModule.StartState state)
         {
+            
             if (UseStagingIcon)
                 this.part.stagingIcon = "FUEL_TANK";
             else
@@ -184,10 +185,13 @@ namespace NearFutureElectrical
 
             if (state != StartState.Editor)
             {
-
+                
                 core = this.GetComponent<ModuleCoreHeat>();
                 if (core == null)
                     Utils.LogError("Fission Reactor: Could not find core heat module!");
+
+               
+                
 
                 SetupResourceRatios();
                 // Set up staging icon heat bar
@@ -210,6 +214,7 @@ namespace NearFutureElectrical
                 if (UseForcedActivation)
                     this.part.force_activate();
             }
+            base.OnStart(state);
         }
 
 
@@ -385,7 +390,7 @@ namespace NearFutureElectrical
 
         private void SetHeatGeneration(float heat)
         {
-            Utils.Log("Fudge Factor currently " + reactorFudgeFactor.ToString());
+            //Utils.Log("Fudge Factor currently " + reactorFudgeFactor.ToString());
             if (float.IsNaN(reactorFudgeFactor))
             {
                 reactorFudgeFactor = 0f;

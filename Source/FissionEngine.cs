@@ -66,7 +66,7 @@ namespace NearFutureElectrical
             if (engineFX != null && reactor != null)
             {
                 // If the engine is off, it will have the maximum Isp available
-                if (!engineFX.active || (engineFX.active && engineFX.throttleSetting > 0f))
+                if (!engineFX.isActiveAndEnabled || (engineFX.isActiveAndEnabled && engineFX.throttleSetting > 0f))
                 {
                   engineFX.atmosphereCurve = baseIspCurve;
                 } else
