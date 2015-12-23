@@ -152,11 +152,12 @@ namespace NearFutureElectrical
                 if (input.ResourceName == FuelName)
                     baseRate = input.Ratio;
             }
-            return base.GetInfo()
+            return 
+                String.Format("Required Cooling: {0:F0} kW", HeatGeneration/50f) + "\n"
                 + String.Format("Optimal Temperature: {0:F0} K", NominalTemperature) + "\n"
                 + String.Format("Critical Temperature: {0:F0} K", CriticalTemperature) + "\n"
                 + "Estimated Core Life: " +
-                FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,baseRate) ;
+                FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount, baseRate) + base.GetInfo();
         }
 
         private void SetupResourceRatios()
@@ -190,9 +191,7 @@ namespace NearFutureElectrical
                 if (core == null)
                     Utils.LogError("Fission Reactor: Could not find core heat module!");
 
-               
                 
-
                 SetupResourceRatios();
                 // Set up staging icon heat bar
                 if (UseStagingIcon)
@@ -338,13 +337,16 @@ namespace NearFutureElectrical
             // transferring less at low temperatures
             reactorFudgeFactor =  Mathf.Clamp(smoothedPower - maxRadiatorCooling,0f,(float)core.MaxCoolant);
 
-
+            
             AvailablePower = Mathf.Clamp(smoothedPower,0f, maxRadiatorCooling);
+            if (float.IsNaN(AvailablePower))
+                AvailablePower = 0f;
             //Utils.Log("MeanPower: " + ListMean(availablePowerList));
 
             ThermalTransfer = String.Format("{0:F2} kW", AvailablePower);
             CoreTemp = String.Format("{0:F1}/{1:F1} K", (float)core.CoreTemperature, NominalTemperature);
 
+            //core.CoreTempGoalAdjustment = -Mathf.Clamp((float)core.CoreTemperature-200f,0f,100f);
             core.CoreTempGoalAdjustment = -core.CoreTempGoal;
 
            // Debug.Log(core.D_CoolAmt + core.D_CoolPercent+core.D_coreXfer+core.D_CTE+ core.D_EDiff+
@@ -390,14 +392,18 @@ namespace NearFutureElectrical
 
         private void SetHeatGeneration(float heat)
         {
+            if (Time.timeSinceLevelLoad > 5f)
+                GeneratesHeat = true;
+            else
+                GeneratesHeat = false;
             //Utils.Log("Fudge Factor currently " + reactorFudgeFactor.ToString());
             if (float.IsNaN(reactorFudgeFactor))
             {
                 reactorFudgeFactor = 0f;
             }
-          TemperatureModifier = new FloatCurve();
-           
-          TemperatureModifier.Add(0f, heat + reactorFudgeFactor * 50f);
+            
+            TemperatureModifier = new FloatCurve();
+            TemperatureModifier.Add(0f, heat + reactorFudgeFactor * 50f);
         }
 
 
