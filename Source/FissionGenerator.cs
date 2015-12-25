@@ -26,6 +26,11 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false, guiActive = true, guiName = "Generation")]
         public string GeneratorStatus;
 
+        public override string GetInfo()
+        {
+            return String.Format("Maximum Generation: {0:F0} Ec/s", PowerGeneration);
+        }
+
         public void FixedUpdate()
         {
           if (HighLogic.LoadedScene == GameScenes.FLIGHT)
