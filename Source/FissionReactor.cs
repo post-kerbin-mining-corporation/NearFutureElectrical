@@ -129,7 +129,7 @@ namespace NearFutureElectrical
         public string ReactorOutput;
 
         // Reactor Status string
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Heat Transf")]
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Heat Dissipated")]
         public string ThermalTransfer;
 
         // integrity of the core
@@ -217,7 +217,19 @@ namespace NearFutureElectrical
         }
 
 
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            {
+                foreach (BaseField fld in base.Fields)
+                {
+                    if (fld.name == "status")
+                        fld.guiActive = false;
 
+                }
+            }
+        }
         public override void OnFixedUpdate()
         {
             base.OnFixedUpdate();

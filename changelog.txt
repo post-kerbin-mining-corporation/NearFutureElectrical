@@ -1,5 +1,11 @@
 v0.6.0
 ------
+- Reactors now correctly show max power output in the VAB
+- Hid misleading "status" field
+- Changed Reactor Heat Transf field to Heat Dissipated
+
+v0.6.0
+------
 - KSP 1.05
 - Revamped reactor functionality completely to map to 1.05's heat mechanics
 - Fixed anti-DRE patch again
