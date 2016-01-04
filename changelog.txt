@@ -1,5 +1,6 @@
 v0.6.1
 ------
+- Fixed reactor heat generation when leaving timewarp. 
 - Reactors now correctly show max power output in the VAB
 - Hid misleading "status" field
 - Changed Reactor Heat Transf field to Heat Dissipated

@@ -39,7 +39,13 @@ namespace NearFutureElectrical
               if (Status)
               {
                   double generated = (double)(Mathf.Clamp01(CurrentHeatUsed / HeatUsed) * PowerGeneration);
-                  double amt = this.part.RequestResource("ElectricCharge", -TimeWarp.fixedDeltaTime * generated);
+                  double gen4 = generated / 4.0f;
+
+                  double amt = this.part.RequestResource("ElectricCharge", -TimeWarp.fixedDeltaTime * gen4);
+                  amt = this.part.RequestResource("ElectricCharge", -TimeWarp.fixedDeltaTime * gen4);
+                  amt = this.part.RequestResource("ElectricCharge", -TimeWarp.fixedDeltaTime * gen4);
+                  amt = this.part.RequestResource("ElectricCharge", -TimeWarp.fixedDeltaTime * gen4);
+
 
                   if (double.IsNaN(generated))
                       generated = 0.0;
