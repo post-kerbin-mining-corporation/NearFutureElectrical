@@ -108,26 +108,26 @@ namespace NearFutureElectrical
         }
         /// DEBUG
         /// ----------------------
-     
-        [KSPField(isPersistant = false, guiActive = true, guiName = "D_RealHeatGen")]
+
+        [KSPField(isPersistant = false, guiActive = false, guiName = "D_RealHeatGen")]
         public string D_RealHeat;
 
-        [KSPField(isPersistant = false, guiActive = true, guiName = "D_RealConsumption")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "D_RealConsumption")]
         public string D_RealConsumption;
 
-        [KSPField(isPersistant = false, guiActive = true, guiName = "D_PowerScale")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "D_PowerScale")]
         public string D_PowerScale;
 
-        [KSPField(isPersistant = false, guiActive = true, guiName = "D_TempScale")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "D_TempScale")]
         public string D_TempScale;
 
-        [KSPField(isPersistant = false, guiActive = true, guiName = "D_FudgeFactor")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "D_FudgeFactor")]
         public string D_FudgeFactor;
 
-        [KSPField(isPersistant = false, guiActive = true, guiName = "D_FudgeCap")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "D_FudgeCap")]
         public string D_FudgeCap;
 
-        [KSPField(isPersistant = false, guiActive = true, guiName = "D_IsHeating")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "D_IsHeating")]
         public string D_IsHeating;
 
         /// PRIVATE VARIABLES
@@ -148,7 +148,7 @@ namespace NearFutureElectrical
 
 
         // Reactor Status string
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Output")]
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Reactor Power")]
         public string ReactorOutput;
 
         // Reactor Status string
@@ -333,7 +333,7 @@ namespace NearFutureElectrical
             }
             else
             {
-                ReactorOutput = String.Format("{0:F0} kW", CurrentPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f);
+                ReactorOutput = String.Format("{0:F1} kW", CurrentPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f);
             }
         }
 
@@ -373,7 +373,7 @@ namespace NearFutureElectrical
             AllocateThermalPower();
 
             // GUI
-            ThermalTransfer = String.Format("{0:F2} kW", AvailablePower);
+            ThermalTransfer = String.Format("{0:F1} kW", AvailablePower);
             CoreTemp = String.Format("{0:F1}/{1:F1} K", (float)core.CoreTemperature, NominalTemperature);
 
             D_TempScale = String.Format("{0:F4}", curTempScale);
