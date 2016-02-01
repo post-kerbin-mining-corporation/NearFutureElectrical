@@ -49,6 +49,10 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float CriticalTemperature = 1400f;
 
+        // Critical reactor temperature (core damage after this)
+        [KSPField(isPersistant = false)]
+        public float MaximumTemperature = 2000f;
+
         // Current reactor power setting (0-100, tweakable)
         [KSPField(isPersistant = true, guiActive = true, guiName = "Power Setting"), UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
         public float CurrentPowerPercent = 100f;
@@ -348,6 +352,8 @@ namespace NearFutureElectrical
             // save some divisions later
             float coreIntegrity = CoreIntegrity / 100f;
             float reactorThrottle = CurrentPowerPercent / 100f;
+            if (!base.ModuleIsActive())
+                reactorThrottle = 0f;
             float maxHeatGenerationKW = HeatGeneration / 50f;
 
             // The core temperature where no generation is possible
@@ -540,7 +546,7 @@ namespace NearFutureElectrical
           }
 
           // Calculate percent exceedance of nominal temp
-          float tempNetScale = 1f - Mathf.Clamp01((float)((core.CoreTemperature - NominalTemperature) / (part.maxTemp - NominalTemperature)));
+          float tempNetScale = 1f - Mathf.Clamp01((float)((core.CoreTemperature - NominalTemperature) / (MaximumTemperature - NominalTemperature)));
 
           // update staging bar if in use
           if (UseStagingIcon)

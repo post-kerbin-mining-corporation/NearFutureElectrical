@@ -49,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FissionFlowRadiator.cs" />
     <Compile Include="NodeTriggeredMesh.cs" />
     <Compile Include="DischargeCapacitor.cs" />
     <Compile Include="DischargeCapacitorUI.cs" />

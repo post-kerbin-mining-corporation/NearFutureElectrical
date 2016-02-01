@@ -10,8 +10,8 @@ namespace NearFutureElectrical
 {
     internal static class Utils
     {
-    
 
+        public const double GRAVITY = 9.80665; 
         // This function loads up some animationstates
         public static AnimationState[] SetUpAnimation(string animationName, Part part)
         {

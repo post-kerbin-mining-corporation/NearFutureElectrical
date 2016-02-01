@@ -13,18 +13,28 @@ namespace NearFutureElectrical
 {
     public class FissionEngine: FissionConsumer
     {
-        // ModuleEnginesFX ID to go nuclear
-        [KSPField(isPersistant = false)]
-        public string EngineID;
+        public struct EngineBaseData
+        {
+            public ModuleEnginesFX engineFX;
+            public float maxThrust;
+            public FloatCurve ispCurve;
+
+            public EngineBaseData(ModuleEnginesFX fx, FloatCurve isp, float thrust)
+            {
+                
+                engineFX = fx;
+                maxThrust = thrust;
+                ispCurve = isp;
+            }
+        }
 
         // Relates core temp (K) to Isp scalar
         [KSPField(isPersistant = false)]
         public FloatCurve TempIspScale = new FloatCurve();
 
+        private List <EngineBaseData> engineData = new List<EngineBaseData>();
 
-        private FloatCurve baseIspCurve;
-
-        private ModuleEnginesFX engineFX;
+        private FissionFlowRadiator flowRadiator;
         private FissionReactor reactor;
         private ModuleCoreHeat core;
 
@@ -46,16 +56,13 @@ namespace NearFutureElectrical
           List<ModuleEnginesFX> engines = this.GetComponents<ModuleEnginesFX>().ToList();
           // Get their Isps
           foreach (ModuleEnginesFX engine in engines) {
-              if (engine.engineID == EngineID)
-              {
-                  engineFX = engine;
-                  baseIspCurve = engine.atmosphereCurve;
-              }
+              engineData.Add(new EngineBaseData(engine,engine.atmosphereCurve,engine.maxThrust));
           }
         }
         private void SetupReactor()
         {
             reactor = this.GetComponent<FissionReactor>();
+            flowRadiator = this.GetComponent<FissionFlowRadiator>();
             core = this.GetComponent<ModuleCoreHeat>();
         }
 
@@ -63,33 +70,58 @@ namespace NearFutureElectrical
         {
           if (HighLogic.LoadedScene == GameScenes.FLIGHT)
           {
-            if (engineFX != null && reactor != null)
+            if (reactor != null)
             {
-                // If the engine is off, it will have the maximum Isp available
-                if (!engineFX.isActiveAndEnabled || (engineFX.isActiveAndEnabled && engineFX.throttleSetting > 0f))
+                foreach (EngineBaseData eData in engineData)
                 {
-                  engineFX.atmosphereCurve = baseIspCurve;
-                } else
-                // Calculate Isp based on core temperature
-                {
-                  float CoreTemperatureRatio =  TempIspScale.Evaluate((float)core.CoreTemperature);
+                    // If the engine is off, it will have the maximum Isp available
+                    if (!eData.engineFX.isActiveAndEnabled || (eData.engineFX.isActiveAndEnabled && eData.engineFX.throttleSetting <= 0f))
+                    {
+                        eData.engineFX.atmosphereCurve = eData.ispCurve;
+                    }
+                    else
+                    {
+                        float CoreTemperatureRatio = TempIspScale.Evaluate((float)core.CoreTemperature);
+                        eData.engineFX.atmosphereCurve = new FloatCurve();
+                        eData.engineFX.atmosphereCurve.Add(0f, eData.ispCurve.Evaluate(0f) * CoreTemperatureRatio);
+                        eData.engineFX.atmosphereCurve.Add(1f, eData.ispCurve.Evaluate(1f) * CoreTemperatureRatio);
+                        eData.engineFX.atmosphereCurve.Add(4f, eData.ispCurve.Evaluate(4f) * CoreTemperatureRatio);
 
-                  // Scale Isps
-                  engineFX.atmosphereCurve = new FloatCurve();
-                  engineFX.atmosphereCurve.Add(0f,baseIspCurve.Evaluate(0f)*CoreTemperatureRatio);
-                  engineFX.atmosphereCurve.Add(1f,baseIspCurve.Evaluate(1f)*CoreTemperatureRatio);
-                  engineFX.atmosphereCurve.Add(4f,baseIspCurve.Evaluate(4f)*CoreTemperatureRatio);
+                        Utils.Log(String.Format("{0} ui {1} max {2} reqested",eData.engineFX.fuelFlowGui,eData.engineFX.maxFuelFlow,eData.engineFX.requestedMassFlow));
+                        flowRadiator.ChangeRadiatorTransfer(base.CurrentHeatUsed*50f);
+                    }
 
-                  // The amount of heat to consume depends on mass flow rate
-                  float flowRate = engineFX.fuelFlowGui;
 
-                  // Consume the power from the core
-                  core.AddEnergyToCore(-CurrentHeatUsed);
                 }
+                
+                
+              
 
             }
 
           }
+        }
+        private float FindFlowRate(float thrust, float isp, Propellant fuelPropellant)
+        {
+            double fuelDensity = PartResourceLibrary.Instance.GetDefinition(fuelPropellant.name).density;
+            double fuelRate = ((thrust * 1000f) / (isp * Utils.GRAVITY)) / (fuelDensity * 1000f);
+            return (float)fuelRate;
+        }
+
+        private float FindIsp(float thrust, float flowRate, Propellant fuelPropellant)
+        {
+            double fuelDensity = PartResourceLibrary.Instance.GetDefinition(fuelPropellant.name).density;
+            double isp = (((thrust * 1000f) / (Utils.GRAVITY)) / flowRate) / (fuelDensity * 1000f);
+            return (float)isp;
+        }
+
+        private float FindThrust(float isp, float flowRate, Propellant fuelPropellant)
+        {
+            
+            double fuelDensity = PartResourceLibrary.Instance.GetDefinition(fuelPropellant.name).density;
+            double thrust = Utils.GRAVITY * isp * flowRate;
+            //double isp = (((thrust * 1000f) / (Utils.GRAVITY)) / flowRate) / (fuelDensity * 1000f);
+            return (float)isp;
         }
 
     }
