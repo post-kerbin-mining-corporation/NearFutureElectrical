@@ -38,6 +38,7 @@ namespace NearFutureElectrical
 
               if (Status)
               {
+                  
                   double generated = (double)(Mathf.Clamp01(CurrentHeatUsed / HeatUsed) * PowerGeneration);
 
                   double delta = 0d;

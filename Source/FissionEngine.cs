@@ -58,6 +58,7 @@ namespace NearFutureElectrical
           foreach (ModuleEnginesFX engine in engines) {
               engineData.Add(new EngineBaseData(engine,engine.atmosphereCurve,engine.maxThrust));
           }
+         
         }
         private void SetupReactor()
         {
@@ -72,12 +73,14 @@ namespace NearFutureElectrical
           {
             if (reactor != null)
             {
+                float maxFlowScalar = 0f;
                 foreach (EngineBaseData eData in engineData)
                 {
                     // If the engine is off, it will have the maximum Isp available
                     if (!eData.engineFX.isActiveAndEnabled || (eData.engineFX.isActiveAndEnabled && eData.engineFX.throttleSetting <= 0f))
                     {
                         eData.engineFX.atmosphereCurve = eData.ispCurve;
+                        maxFlowScalar = Mathf.Max(maxFlowScalar, 0.0f);
                     }
                     else
                     {
@@ -87,12 +90,14 @@ namespace NearFutureElectrical
                         eData.engineFX.atmosphereCurve.Add(1f, eData.ispCurve.Evaluate(1f) * CoreTemperatureRatio);
                         eData.engineFX.atmosphereCurve.Add(4f, eData.ispCurve.Evaluate(4f) * CoreTemperatureRatio);
 
-                        Utils.Log(String.Format("{0} ui {1} max {2} reqested",eData.engineFX.fuelFlowGui,eData.engineFX.maxFuelFlow,eData.engineFX.requestedMassFlow));
-                        flowRadiator.ChangeRadiatorTransfer(base.CurrentHeatUsed*50f);
+                        //Utils.Log(String.Format("{0} ui {1} max {2} reqested",eData.engineFX.fuelFlowGui,eData.engineFX.maxFuelFlow,eData.engineFX.requestedMassFlow));
+                        maxFlowScalar = Mathf.Max(maxFlowScalar, (eData.engineFX.requestedMassFlow/eData.engineFX.maxFuelFlow));
+                        
                     }
-
-
+                   
                 }
+                float heat = reactor.CurrentPowerPercent / 100f * reactor.HeatGeneration / 50f * reactor.CoreIntegrity / 100f;
+                flowRadiator.ChangeRadiatorTransfer(Mathf.Max(base.CurrentHeatUsed, heat) * 50f * maxFlowScalar);
                 
                 
               

@@ -1,3 +1,9 @@
+v0.6.2
+------
+- Updated CRP version
+- Improvements to stability of power generation at high warp
+- Support for fancy NTRs if KerbalAtomics is installed
+
 v0.6.1
 ------
 - Adjusted many reactor parameters

@@ -8,11 +8,12 @@ namespace NearFutureElectrical
 {
     class FissionFlowRadiator:ModuleActiveRadiator
     {
-
+        [KSPField(isPersistant = false)]
+        public float passiveCooling = 0f;
         
         public void ChangeRadiatorTransfer(float scale)
         {
-            this.maxEnergyTransfer = scale;
+            this.maxEnergyTransfer = scale + passiveCooling*50f;
         }
     }
 }
