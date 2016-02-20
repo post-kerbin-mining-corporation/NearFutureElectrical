@@ -1,0 +1,131 @@
+v0.6.2
+------
+- Updated CRP version
+- Improvements to stability of power generation at high warp
+- Support for fancy NTRs if KerbalAtomics is installed
+
+v0.6.1
+------
+- Adjusted many reactor parameters
+- Reworked reactors; still work about the same but have less issues
+- Reactors now correctly show max power output in the VAB
+- Hid misleading "status" field
+
+v0.6.0
+------
+- KSP 1.05
+- Revamped reactor functionality completely to map to 1.05's heat mechanics
+- Fixed anti-DRE patch again
+- Nuclear Reprocessor now works similarly to the ISRU in terms of heating mechanics
+- Nuclear Reprocessor can now generate Xe from DepletedFuel at low efficiency
+- ASRTG matches heat performance of stock RTG
+- New models for 0.625, 1.25 and 2.5 reactors (others coming eventually)
+
+v0.5.3
+------
+- Fixed Fission Reactors saying that they were producing power (and actually producing heat) when empty, when they weren't
+- New method to increase compatability with Deadly Re-entry's part temperature clamping
+- Increased maximum reactor temperature for waste transfer to 600K, increased maximum temperature for repair to 550K
+- Doubled base half life of RTGs in decaying RTG patch
+
+v0.5.2
+------
+- Upgraded bundled CRP version
+- Retuned radiator and reactor parts to work with stock radiator system
+- Removed conformal radiators; they will later return in Heat Control 
+- Tuned heat parameters for other parts
+
+v0.5.1
+------
+- New anti-DRE patch to fix compatibility
+- Fixed non-extant stock technode for heavy reactor parts
+- Tweaks to radiator costs to match the ones in Heat Control
+- Fixed Ore flow mode on uranium extractor
+- Fixed negative cost on Whirlijig reprocessor
+- Fixed attach node issue on 0.625m reactor
+
+v0.5.0
+------
+- KSP 1.02 Update
+- Bundled CRP
+- All parts have had their attach nodes reworked with correct bulkhead sizes
+- RTGs 
+-- New RTG decay is available as an optional patch (applies to stock RTG and ASRTG)
+-- RTGs decay to 0.05% of max power (can be overridden in cfg) over a certain half life
+- Capacitors
+-- Removed old automation panel
+-- Replaced with ship capacitor summary window
+-- Fixed dischargeability when storage empty
+-- Discharge can now generate heat 
+- Nuclear reprocessor
+-- Uses stock resource converters (background processing)
+-- Can now convert Ore into EnrichedUranium, at a very slow rate
+- Reactors
+-- Totally new system based on stock resource converters
+-- Functionality similar, but no reactor window anymore
+-- Uses stock heat system
+- Nuclear fuel
+-- New, better fuel transfer system
+-- Click Transfer Fuel or Transfer waste to initiate a transfer
+-- Click on a valid container to transfer to it (reprocessor, reactors, fuel containers)
+-- Engineers are needed to transfer fuel, L1+. L3+ to transfer fuel
+-- Transfer needs parts to be cool, on the same ship.
+-- Nuclear waste generates a small amount of waste heat
+
+v0.3.1
+------
+- Added support for the Community Tech Tree
+
+v0.3.0
+------
+- Updated for KSP 0.25
+- Updated part research entry costs
+- Changed part cfg file names (no changes to actual part names)
+- Some minor bugfixes to Capacitor and Reactor modules
+- Converted all tga textures to mbm for improved memory use
+- Added a ModuleManager patch to add Connected Living Spaces compatibility to all passable parts. ModuleManager is not included in the download
+
+v0.2.2
+------
+- Rebalanced all Nuclear parts. Power outputs, masses, etc have all changed
+- Added 3.75m MX-2 F.L.A.T. Fission Reactor
+- Added B-800 Radial Battery Pack
+- Added 3.75m B-10K Battery Bank
+- Added PB-AS-NUK Radioisotope Generator
+- Battery costs and masses now scale with total storage capacity
+- 2.5m Stack Battery is now shorter by about 30%
+- Capacitor cost per Sc reduced slightly, also scales with total storage capacity (as with mass)
+- Recoded Reactor UI panel for better functionality
+- Added a close button to the reactor UI panel
+- Fixed a bug that could cause reactor highlights to get stuck on
+- Fixed a bug that would cause reactors to be unable to refuel if there wasn't enough storage in a single waste container for their waste. Reactors now refuel from the first container and wait for the player to try again for the next container
+- Fixed a bug that would cause waste containers to be unable to be used again if they were filled then emptied via reprocessing
+- Initial pass at capacitor automation using the new Capacitor UI panel
+-- Currently can disable or enable all capacitors and toggle automation on/off
+-- Automation discharges capacitors in sequence from highest power rating to lowest power rating and attempts to maintain no power discharge
+- Capacitors no longer turn off their recharge flag when they have recharged fully
+- Improved emissive textures for reactor radiators
+
+v0.2.1
+------
+- Fixed CAR-8K and CAR-EXTRA attach node size
+
+v0.2.0
+------
+- SAVE BREAKING UDPATE! BE WARNED!
+- Updated for KSP 0.24
+- Added more logical costs for all parts
+- Improved the functioning and look of the Reactor Control panel
+- Increased the breaking force of all radiators when deployed
+- Convective cooling of reactors and radiators now works properly, scales with pressure and vessel velocity
+
+v0.1.0
+------
+- Split from main Near Future pack
+- Rewrote radiator code for more efficiency, also breakability and rotation are now enabled and work properly
+- Radiator sun tracking can be disabled in the VAB (this has no gameplay effect)
+- Increased the density of EnrichedUranium and DepletedUranium by 10x. All capcacities and burn rates were also increased by 10x.
+- Improved stability of MX-L reactor's power generation
+- Reactor burn time now accounts for whether you use Kerbin time or Earth time scales in the game settings. Also improved the time display in general.
+- Changed MX-L reactor dry mass from 18.25 to 22t
+- Moved nuclear fuel drums to the Utility tab

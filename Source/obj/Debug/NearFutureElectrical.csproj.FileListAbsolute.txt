@@ -1,0 +1,5 @@
+G:\KSP Modding\repositories\NearFutureElectrical\GameData\NearFutureElectrical\Plugins\NearFutureElectrical.dll
+G:\KSP Modding\repositories\NearFutureElectrical\GameData\NearFutureElectrical\Plugins\NearFutureElectrical.pdb
+G:\KSP Modding\repositories\NearFutureElectrical\Source\obj\Debug\NearFutureElectrical.csprojResolveAssemblyReference.cache
+G:\KSP Modding\repositories\NearFutureElectrical\Source\obj\Debug\NearFutureElectrical.dll
+G:\KSP Modding\repositories\NearFutureElectrical\Source\obj\Debug\NearFutureElectrical.pdb
