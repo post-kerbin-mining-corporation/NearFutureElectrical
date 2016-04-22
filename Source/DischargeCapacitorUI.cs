@@ -13,7 +13,7 @@ namespace NearFutureElectrical
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
-                RenderingManager.AddToPostDrawQueue(0, DrawCapacitorGUI);
+                //RenderingManager.AddToPostDrawQueue(0, DrawCapacitorGUI);
                 FindCapacitors();
                 Utils.LogWarn(windowID.ToString());
             }
@@ -103,6 +103,15 @@ namespace NearFutureElectrical
             initStyles = true;
         }
 
+        private void OnGUI()
+        {
+            if (Event.current.type == EventType.Repaint || Event.current.isMouse)
+            {
+            }
+            DrawCapacitorGUI();
+        }
+
+
         private void DrawCapacitorGUI()
         {
             //Debug.Log("NFE: Start Capacitor UI Draw");
@@ -132,7 +141,7 @@ namespace NearFutureElectrical
         {
             GUI.skin = HighLogic.Skin;
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Installed Capacitors", gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f));
+            GUILayout.Label("Capacitors", gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f));
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("X", GUILayout.MaxWidth(26f), GUILayout.MinWidth(26f), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f)))
             {
@@ -154,17 +163,17 @@ namespace NearFutureElectrical
                             StopChargeAll();
                         }
                     GUILayout.EndVertical();
-                    
+                    GUILayout.BeginVertical();
                     GUILayout.Label(String.Format("Current total recharge rate: {0:F2}/s",GetAllChargeRatesCurrent()), 
-                        gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
+                        gui_text, GUILayout.MaxWidth(950f), GUILayout.MinWidth(190f));
 
-                    GUILayout.FlexibleSpace();
+                    
 
                     GUILayout.Label(String.Format("Current total discharge rate: {0:F2}/s",GetAllDischargeRatesCurrent()), 
-                        gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
+                        gui_text, GUILayout.MaxWidth(190f), GUILayout.MinWidth(190f));
+                    GUILayout.EndVertical();
 
-                    
-                    
+                    GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Discharge all"))
                     {
                         DischargeAll();

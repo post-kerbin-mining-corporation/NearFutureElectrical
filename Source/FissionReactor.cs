@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.UI;
 
 namespace NearFutureElectrical
 {
@@ -36,6 +37,10 @@ namespace NearFutureElectrical
         // Force activate on load or not
         [KSPField(isPersistant = false)]
         public bool UseForcedActivation = true;
+
+        // Engage safety override
+        [KSPField(isPersistant = true, guiActive = true, guiName = "Auto-Shutdown Temp"), UI_FloatRange(minValue = 700f, maxValue = 6000f, stepIncrement = 100f)]
+        public float CurrentSafetyOverride = 1000f;
 
         // Heat generation at full power
         [KSPField(isPersistant = false)]
@@ -137,7 +142,7 @@ namespace NearFutureElectrical
         /// PRIVATE VARIABLES
         /// ----------------------
         // the info staging box
-        private VInfoBox infoBox;
+        private KSP.UI.Screens.ProtoStageIconInfo infoBox;
 
         private ModuleCoreHeat core;
 
@@ -205,11 +210,15 @@ namespace NearFutureElectrical
 
         public override void OnStart(PartModule.StartState state)
         {
-            
+
             if (UseStagingIcon)
-                this.part.stagingIcon = "FUEL_TANK";
+            {
+                //this.part.stackIcon.CreateIcon();
+                //this.part.stackIcon.SetIcon(DefaultIcons.FUEL_TANK);
+            }
             else
                 Utils.LogWarn("Fission Reactor: Staging Icon Disabled!");
+            
 
             if (state != StartState.Editor)
             {
@@ -221,22 +230,25 @@ namespace NearFutureElectrical
                 
                 SetupResourceRatios();
                 // Set up staging icon heat bar
+                
                 if (UseStagingIcon)
                 {
                     infoBox = this.part.stackIcon.DisplayInfo();
-                    infoBox.SetMsgBgColor(XKCDColors.RedOrange);
-                    infoBox.SetMsgTextColor(XKCDColors.Orange);
-                    infoBox.SetLength(1.0f);
-                    infoBox.SetValue(0.0f);
-                    infoBox.SetMessage("Meltdwn");
-                    infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
-                    infoBox.SetProgressBarColor(XKCDColors.Orange);
+                    
+                    //infoBox.SetMsgBgColor(XKCDColors.RedOrange);
+                    //infoBox.SetMsgTextColor(XKCDColors.Orange);
+                    //infoBox.SetLength(1.0f);
+                    //infoBox.SetValue(0.0f);
+                    //infoBox.SetMessage("Meltdwn");
+                    //infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
+                    //infoBox.SetProgressBarColor(XKCDColors.Orange);
                 }
-
+                Utils.Log("D");
                 if (OverheatAnimation != "")
                 {
                     overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
                 }
+                Utils.Log("E");
                 if (UseForcedActivation)
                     this.part.force_activate();
             }
@@ -254,6 +266,10 @@ namespace NearFutureElectrical
                     if (fld.name == "status")
                         fld.guiActive = false;
 
+                }
+                if (core != null)
+                {
+                    core.CoreShutdownTemp = (double)CurrentSafetyOverride;
                 }
             }
         }
@@ -550,7 +566,9 @@ namespace NearFutureElectrical
 
           // update staging bar if in use
           if (UseStagingIcon)
-              infoBox.SetValue(1f-tempNetScale);
+          {
+              //infoBox.SetValue(1f - tempNetScale);
+          }
 
           if (OverheatAnimation != "")
           {

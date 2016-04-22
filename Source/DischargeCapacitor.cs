@@ -116,11 +116,6 @@ namespace NearFutureElectrical
 
         
 
-        public override void OnLoad(ConfigNode node)
-        {
-            base.OnLoad(node);
-        
-        }
 
         public override void OnStart(PartModule.StartState state)
         {
@@ -131,10 +126,9 @@ namespace NearFutureElectrical
             {
                 cState.normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
             }
-           
 
             
-
+            
         }
 
 
