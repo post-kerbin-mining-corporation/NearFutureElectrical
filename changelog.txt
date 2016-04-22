@@ -1,7 +1,9 @@
 v0.7.0
 ------
+- KSP 1.1 repack
 - Updated CRP version
 - Updated ModuleManager version
+- Re-added missing DecayingRTGs patch
 - Many balance tweaks to reactors
 - Converted NodeMesh to B9PartSwitch for the conical reactors. Will improve drag calculations if you need to use one as a nosecone
 - Added part search tags to parts
