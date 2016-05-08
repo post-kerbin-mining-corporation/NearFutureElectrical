@@ -1,0 +1,18 @@
+{
+    "NAME":"NearFutureElectrical",
+    "URL":"https://github.com/ChrisAdderley/NearFutureElectrical/blob/master/GameData/NearFutureElectrical/Versioning/NearFutureElectrical.version",
+    "DOWNLOAD":"http://forum.kerbalspaceprogram.com/threads/52042",
+    "VERSION":
+    {
+        "MAJOR":0,
+        "MINOR":7,
+        "PATCH":0,
+        "BUILD":0
+    },
+    "KSP_VERSION":
+    {
+        "MAJOR":1,
+        "MINOR":1,
+        "PATCH":0
+    }
+}
