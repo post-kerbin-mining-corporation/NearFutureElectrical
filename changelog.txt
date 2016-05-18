@@ -1,3 +1,13 @@
+v0.7.2
+------
+- Updated CRP version
+
+v0.7.1
+------
+- KSP 1.1.2
+- Updated B9PartSwitch version
+- Updated ModuleManager version
+
 v0.7.0
 ------
 - KSP 1.1 repack
