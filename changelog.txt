@@ -1,3 +1,14 @@
+v0.7.3
+------
+- Updated MM version
+- Updated B9PartSwitch version
+- Added revised model for Excalibur reactor
+- Added colliders to "new" reactor models' structural areas when the structural node is enabled
+- Fixed a bug where reactors would auto-shutdown on load when running
+- Core safety override now starts in the editor set to just over the reactor's nominal temperature
+- FissionEngine is now tied to reactor throttle; for full thrust power the reactor must be running as well as hot
+- FissionFlowRadiator no longer needs to be activated and has its on/off UI switch removed
+
 v0.7.2
 ------
 - Updated CRP version

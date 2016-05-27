@@ -85,10 +85,14 @@ namespace NearFutureElectrical
                     else
                     {
                         float CoreTemperatureRatio = TempIspScale.Evaluate((float)core.CoreTemperature);
+                        float reactorRatio = reactor.CurrentPowerPercent / 100f;
+
+                        float ispRatio = CoreTemperatureRatio * reactorRatio;
+
                         eData.engineFX.atmosphereCurve = new FloatCurve();
-                        eData.engineFX.atmosphereCurve.Add(0f, eData.ispCurve.Evaluate(0f) * CoreTemperatureRatio);
-                        eData.engineFX.atmosphereCurve.Add(1f, eData.ispCurve.Evaluate(1f) * CoreTemperatureRatio);
-                        eData.engineFX.atmosphereCurve.Add(4f, eData.ispCurve.Evaluate(4f) * CoreTemperatureRatio);
+                        eData.engineFX.atmosphereCurve.Add(0f, eData.ispCurve.Evaluate(0f) * ispRatio);
+                        eData.engineFX.atmosphereCurve.Add(1f, eData.ispCurve.Evaluate(1f) * ispRatio);
+                        eData.engineFX.atmosphereCurve.Add(4f, eData.ispCurve.Evaluate(4f) * ispRatio);
 
                         //Utils.Log(String.Format("{0} ui {1} max {2} reqested",eData.engineFX.fuelFlowGui,eData.engineFX.maxFuelFlow,eData.engineFX.requestedMassFlow));
                         maxFlowScalar = Mathf.Max(maxFlowScalar, (eData.engineFX.requestedMassFlow/eData.engineFX.maxFuelFlow));
@@ -97,11 +101,7 @@ namespace NearFutureElectrical
                    
                 }
                 float heat = reactor.CurrentPowerPercent / 100f * reactor.HeatGeneration / 50f * reactor.CoreIntegrity / 100f;
-                flowRadiator.ChangeRadiatorTransfer(Mathf.Max(base.CurrentHeatUsed, heat) * 50f * maxFlowScalar);
-                
-                
-              
-
+                flowRadiator.ChangeRadiatorTransfer(Mathf.Max(base.CurrentHeatUsed, heat) * maxFlowScalar);
             }
 
           }
