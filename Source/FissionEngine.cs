@@ -86,6 +86,8 @@ namespace NearFutureElectrical
                     {
                         float CoreTemperatureRatio = TempIspScale.Evaluate((float)core.CoreTemperature);
                         float reactorRatio = reactor.CurrentPowerPercent / 100f;
+                        if (!reactor.ModuleIsActive())
+                            reactorRatio = 0f;
 
                         float ispRatio = CoreTemperatureRatio * reactorRatio;
 

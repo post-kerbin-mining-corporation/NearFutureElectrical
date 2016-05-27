@@ -11,12 +11,21 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float passiveCooling = 0f;
 
+        int ticker = 0;
         void Update()
         {
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            // oh god.
+            if (ticker > 60)
             {
-                base.isEnabled = true;
+                base.Activate();
+                ticker = 0;
             }
+            else
+            {
+                ticker = ticker + 1;
+            }
+            
+             
             if (HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.EDITOR)   
             {
                 foreach (BaseField fld in base.Fields)

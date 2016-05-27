@@ -1,5 +1,5 @@
 ==================================
-NEAR FUTURE ELECTRICAL PACK v0.7.3
+NEAR FUTURE ELECTRICAL PACK v0.7.4
 ==================================
 
 This pack contains advanced electrical parts - capacitors, nuclear reactors and new battery packs.
