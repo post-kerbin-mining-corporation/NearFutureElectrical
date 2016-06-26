@@ -218,15 +218,12 @@ namespace NearFutureElectrical
             }
             else
                 Utils.LogWarn("Fission Reactor: Staging Icon Disabled!");
-            
 
             if (state != StartState.Editor)
             {
-                
                 core = this.GetComponent<ModuleCoreHeat>();
                 if (core == null)
                     Utils.LogError("Fission Reactor: Could not find core heat module!");
-
                 
                 SetupResourceRatios();
                 // Set up staging icon heat bar
@@ -243,15 +240,19 @@ namespace NearFutureElectrical
                     //infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
                     //infoBox.SetProgressBarColor(XKCDColors.Orange);
                 }
-                Utils.Log("D");
+                
                 if (OverheatAnimation != "")
-                {
                     overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
-                }
-                Utils.Log("E");
+               
                 if (UseForcedActivation)
                     this.part.force_activate();
+
+            } else 
+            {
+                this.CurrentSafetyOverride = this.NominalTemperature;
             }
+
+
             base.OnStart(state);
         }
 
@@ -269,7 +270,8 @@ namespace NearFutureElectrical
                 }
                 if (core != null)
                 {
-                    core.CoreShutdownTemp = (double)CurrentSafetyOverride;
+                    core.CoreShutdownTemp = (double)CurrentSafetyOverride+10d;
+                    
                 }
             }
         }
@@ -543,10 +545,6 @@ namespace NearFutureElectrical
             D_RealHeat = String.Format("{0:F2}",heat/50f + reactorFudgeFactor);
             
         }
-
-
-
-
 
         // track and set core damage
         private void HandleCoreDamage()
