@@ -106,6 +106,20 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float MaxTempForRepair = 325;
 
+        /// UI ACTIONS
+        /// --------------------
+        /// Toggle control panel
+        [KSPEvent(guiActive = true, guiName = "Toggle Reactor Control", active = true)]
+        public void ShowReactorControl()
+        {
+            ReactorUI.ToggleReactorWindow();
+        }
+        [KSPAction("Toggle Reactor Panel")]
+        public void TogglePanelAction(KSPActionParam param)
+        {
+            ShowReactorControl();
+        }
+
         // Try to fix the reactor
         [KSPEvent(externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.5f, guiName = "Repair Reactor")]
         public void RepairReactor()

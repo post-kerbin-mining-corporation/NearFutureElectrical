@@ -56,6 +56,7 @@ namespace NearFutureElectrical
                   if (double.IsNaN(generated))
                       generated = 0.0;
 
+                  CurrentGeneration = (float)generated;
                   GeneratorStatus = String.Format("{0:F1} Ec/s", generated);
               }
               else
