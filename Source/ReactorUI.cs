@@ -218,7 +218,13 @@ namespace NearFutureElectrical
             //GUILayout.Label("Core Temperature", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
             GUILayout.BeginHorizontal();
 
+            GUILayout.BeginVertical();
             GUILayout.Label("Reactor Status", gui_header2, GUILayout.MaxWidth(110f), GUILayout.MinWidth(110f));
+            if (reactor.FollowThrottle)
+            {
+                GUILayout.Label(String.Format("Actual: {0:F0}%", reactor.ActualPowerPercent), gui_text);
+            }
+            GUILayout.EndVertical();
 
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
