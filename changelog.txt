@@ -1,3 +1,10 @@
+v0.7.6
+------
+- USI reactor patch will now operate correctly even if the old patch is present
+- Improvments to KerbalAtomics NTR patch mechanics courtesy of henrybauer 
+- Added more RTGs to the DecayingRTGs patch
+- Reactor/Capacitor UIs won't appear if there are no reactors or capacitors on the craft
+
 v0.7.5
 ------
 - KSP 1.1.3

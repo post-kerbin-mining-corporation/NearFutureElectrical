@@ -87,6 +87,7 @@ namespace NearFutureElectrical
             gui_header = new GUIStyle(HighLogic.Skin.label);
             gui_header.fontStyle = FontStyle.Bold;
             gui_header.alignment = TextAnchor.UpperLeft;
+            gui_header.fontSize = 12;
             gui_header.stretchWidth = true;
 
             gui_header2 = new GUIStyle(gui_header);
@@ -326,7 +327,7 @@ namespace NearFutureElectrical
 
         void OnGUIAppLauncherReady()
         {
-            if (ApplicationLauncher.Ready && stockToolbarButton == null)
+            if (ApplicationLauncher.Ready && stockToolbarButton == null && reactorList.Count > 0)
             {
                 stockToolbarButton = ApplicationLauncher.Instance.AddModApplication(
                     OnToolbarButtonToggle,

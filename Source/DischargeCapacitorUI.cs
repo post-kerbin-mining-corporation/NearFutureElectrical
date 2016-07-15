@@ -370,7 +370,7 @@ namespace NearFutureElectrical
 
         void OnGUIAppLauncherReady()
         {
-            if (ApplicationLauncher.Ready && stockToolbarButton == null)
+            if (ApplicationLauncher.Ready && stockToolbarButton == null && capacitorList.Count > 0)
             {
                 stockToolbarButton = ApplicationLauncher.Instance.AddModApplication(
                     OnToolbarButtonToggle,
