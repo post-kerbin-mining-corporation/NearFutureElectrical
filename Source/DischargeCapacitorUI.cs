@@ -10,6 +10,9 @@ namespace NearFutureElectrical
     [KSPAddon(KSPAddon.Startup.Flight, false)] 
     public class DischargeCapacitorUI:MonoBehaviour
     {
+        Vessel activeVessel;
+        int partCount = 0;
+
         public void Start()
         {
             if (ApplicationLauncher.Ready)
@@ -31,7 +34,8 @@ namespace NearFutureElectrical
 
         public void FindCapacitors()
         {
-            
+            activeVessel = FlightGlobals.ActiveVessel;
+            partCount = activeVessel.parts.Count;
             //Debug.Log("NFE: Capacitor Manager: Finding Capcitors");
             List<DischargeCapacitor> unsortedCapacitorList = new List<DischargeCapacitor>();
             // Get all parts
@@ -345,6 +349,69 @@ namespace NearFutureElectrical
                 totalEc = (float)res.amount + totalEc;
             }
             return totalEc;
+        }
+
+        void Update()
+        {
+            if (FlightGlobals.ActiveVessel != null)
+            {
+                if (activeVessel != null)
+                {
+                    if (partCount != activeVessel.parts.Count || activeVessel != FlightGlobals.ActiveVessel)
+                    {
+                        ResetAppLauncher();
+                    }
+                }
+                else
+                {
+                    ResetAppLauncher();
+                }
+
+            }
+            if (activeVessel != null)
+            {
+                if (partCount != activeVessel.parts.Count || activeVessel != FlightGlobals.ActiveVessel)
+                {
+                    ResetAppLauncher();
+
+                }
+            }
+        }
+
+        void ResetAppLauncher()
+        {
+            FindCapacitors();
+            if (stockToolbarButton == null)
+            {
+                if (capacitorList.Count > 0)
+                {
+                    stockToolbarButton = ApplicationLauncher.Instance.AddModApplication(
+                    OnToolbarButtonToggle,
+                    OnToolbarButtonToggle,
+                    DummyVoid,
+                    DummyVoid,
+                    DummyVoid,
+                    DummyVoid,
+                    ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.FLIGHT,
+                    (Texture)GameDatabase.Instance.GetTexture("NearFutureElectrical/UI/reactor_toolbar_off", false));
+                }
+                else
+                {
+                }
+            }
+            else
+            {
+                if (capacitorList.Count > 0)
+                {
+                }
+                else
+                {
+                    showCapWindow = false;
+                    GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
+                    ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
+                }
+            }
+
         }
 
         // Stock toolbar handling methods

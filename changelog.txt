@@ -1,3 +1,7 @@
+v0.7.7
+------
+- Many improvements to the handling on the capacitor and reactor UI panels
+
 v0.7.6
 ------
 - USI reactor patch will now operate correctly even if the old patch is present

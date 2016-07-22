@@ -10,6 +10,9 @@ namespace NearFutureElectrical
     [KSPAddon(KSPAddon.Startup.Flight, false)] 
     public class ReactorUI:MonoBehaviour
     {
+        Vessel activeVessel;
+        int partCount = 0;
+
         public void Start()
         {
             if (ApplicationLauncher.Ready)
@@ -32,7 +35,9 @@ namespace NearFutureElectrical
 
         public void FindReactors()
         {
-            
+            activeVessel = FlightGlobals.ActiveVessel;
+            partCount = activeVessel.parts.Count;
+
             //Debug.Log("NFE: Capacitor Manager: Finding Capcitors");
             List<FissionReactor> unsortedReactorList = new List<FissionReactor>();
             // Get all parts
@@ -304,6 +309,70 @@ namespace NearFutureElectrical
             GUILayout.EndHorizontal();
 
         }
+
+        void Update()
+        {
+            if (FlightGlobals.ActiveVessel != null)
+            {
+                if (activeVessel != null)
+                {
+                    if (partCount != activeVessel.parts.Count || activeVessel != FlightGlobals.ActiveVessel)
+                    {
+                        ResetAppLauncher();
+                    }
+                }
+                else
+                {
+                    ResetAppLauncher();
+                }
+
+            }
+            if (activeVessel != null)
+            {
+                if (partCount != activeVessel.parts.Count || activeVessel != FlightGlobals.ActiveVessel)
+                {
+                    ResetAppLauncher();
+                    
+                }
+            }
+        }
+
+        void ResetAppLauncher()
+        {
+            FindReactors();
+            if (stockToolbarButton == null)
+            {
+                if (reactorList.Count > 0)
+                {
+                    stockToolbarButton = ApplicationLauncher.Instance.AddModApplication(
+                    OnToolbarButtonToggle,
+                    OnToolbarButtonToggle,
+                    DummyVoid,
+                    DummyVoid,
+                    DummyVoid,
+                    DummyVoid,
+                    ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.FLIGHT,
+                    (Texture)GameDatabase.Instance.GetTexture("NearFutureElectrical/UI/reactor_toolbar_off", false));
+                }
+                else
+                {
+                }
+            }
+            else
+            {
+                if (reactorList.Count > 0)
+                {
+                }
+                else
+                {
+                    showReactorWindow = false;
+                    GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
+                    ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
+                }
+            }
+
+        }
+
          // Stock toolbar handling methods
         public void OnDestroy()
         {
@@ -321,7 +390,6 @@ namespace NearFutureElectrical
         {
             ToggleReactorWindow();
             stockToolbarButton.SetTexture((Texture)GameDatabase.Instance.GetTexture(showReactorWindow ? "NearFutureElectrical/UI/reactor_toolbar_on" : "NearFutureElectrical/UI/reactor_toolbar_off", false));
-
         }
 
 
