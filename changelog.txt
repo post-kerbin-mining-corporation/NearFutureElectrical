@@ -1,3 +1,25 @@
+v0.7.7
+------
+- Many improvements to the handling on the capacitor and reactor UI panels
+
+v0.7.6
+------
+- USI reactor patch will now operate correctly even if the old patch is present
+- Improvments to KerbalAtomics NTR patch mechanics courtesy of henrybauer 
+- Added more RTGs to the DecayingRTGs patch
+- Reactor/Capacitor UIs won't appear if there are no reactors or capacitors on the craft
+
+v0.7.5
+------
+- KSP 1.1.3
+- Updated bundled CRP to 0.5.4
+- Updated bundled B9PartSwitch to 1.4.3
+- Added conversion patch for USI Core reactors
+- Added a first pass at the Reactor UI
+- Added toolbar icons to access the Capacitor UI and Reactor UI
+- Added the ability to toggle the Capacitor UI with a hotkey
+- Fixed a couple minor bugs in transfers for reactor fuel
+
 v0.7.4
 ------
 - Fixed wrong dll
