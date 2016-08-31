@@ -30,6 +30,10 @@ namespace NearFutureElectrical
         /// CONFIGURABLE FIELDS
         // ----------------------
 
+        // Whether reactor power settings should follow the throttle setting
+        [KSPField(isPersistant = false)]
+        public bool FollowThrottle = false;
+
         // Whether to use a staging icon or not
         [KSPField(isPersistant = false)]
         public bool UseStagingIcon = true;
@@ -61,6 +65,10 @@ namespace NearFutureElectrical
         // Current reactor power setting (0-100, tweakable)
         [KSPField(isPersistant = true, guiActive = true, guiName = "Power Setting"), UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
         public float CurrentPowerPercent = 100f;
+
+        // Actual reactor power setting used (0-100, read-only)
+        [KSPField(isPersistant = false)]
+        public float ActualPowerPercent = 100f;
 
         // Curve relating available power to temperature. Generally should be of the form
         // AmbientTemp  0
@@ -105,6 +113,20 @@ namespace NearFutureElectrical
 
         [KSPField(isPersistant = false)]
         public float MaxTempForRepair = 325;
+
+        /// UI ACTIONS
+        /// --------------------
+        /// Toggle control panel
+        [KSPEvent(guiActive = true, guiName = "Toggle Reactor Control", active = true)]
+        public void ShowReactorControl()
+        {
+            ReactorUI.ToggleReactorWindow();
+        }
+        [KSPAction("Toggle Reactor Panel")]
+        public void TogglePanelAction(KSPActionParam param)
+        {
+            ShowReactorControl();
+        }
 
         // Try to fix the reactor
         [KSPEvent(externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.5f, guiName = "Repair Reactor")]
@@ -151,6 +173,8 @@ namespace NearFutureElectrical
         // base paramters
         private List<ResourceBaseRatio> inputs;
         private List<ResourceBaseRatio> outputs;
+
+        private FloatCurve throttleCurve;
 
         /// UI FIELDS
         /// --------------------
@@ -210,6 +234,11 @@ namespace NearFutureElectrical
 
         public override void OnStart(PartModule.StartState state)
         {
+
+            throttleCurve = new FloatCurve();
+            throttleCurve.Add(0, 0, 0, 0);
+            throttleCurve.Add(70, 10, 0, 0);
+            throttleCurve.Add(100, 100, 0, 0);
 
             if (UseStagingIcon)
             {
@@ -280,6 +309,13 @@ namespace NearFutureElectrical
             base.OnFixedUpdate();
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
+                if (FollowThrottle)
+                {
+                    ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle), CurrentPowerPercent);
+                }
+                else {
+                    ActualPowerPercent = CurrentPowerPercent;
+                }
 
                 // Update reactor core integrity readout
                 if (CoreIntegrity > 0)
@@ -334,7 +370,7 @@ namespace NearFutureElectrical
           }
           // Recalculate fuel use Ratio
           // Fuel use is proportional to power setting
-          RecalculateRatios(CurrentPowerPercent / 100f );
+          RecalculateRatios(ActualPowerPercent / 100f );
 
           // Find the time remaining at current rate
           FuelStatus = FindTimeRemaining(
@@ -346,7 +382,7 @@ namespace NearFutureElectrical
         private void DoHeatGeneration()
         {
             // Generate heat from the reaction and apply it
-            SetHeatGeneration((CurrentPowerPercent / 100f * HeatGeneration)* CoreIntegrity/100f);
+            SetHeatGeneration((ActualPowerPercent / 100f * HeatGeneration)* CoreIntegrity/100f);
 
             if (CoreIntegrity <= 0f)
             {
@@ -355,7 +391,7 @@ namespace NearFutureElectrical
             }
             else
             {
-                ReactorOutput = String.Format("{0:F1} kW", CurrentPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f);
+                ReactorOutput = String.Format("{0:F1} kW", ActualPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f);
             }
         }
 
@@ -369,7 +405,7 @@ namespace NearFutureElectrical
         {
             // save some divisions later
             float coreIntegrity = CoreIntegrity / 100f;
-            float reactorThrottle = CurrentPowerPercent / 100f;
+            float reactorThrottle = ActualPowerPercent / 100f;
             if (!base.ModuleIsActive())
                 reactorThrottle = 0f;
             float maxHeatGenerationKW = HeatGeneration / 50f;
@@ -443,10 +479,11 @@ namespace NearFutureElectrical
 
             // The allowed maximum radiator cooling. Should not exceed the heat generation
             float coolingCap = HeatGeneration / 50f;
-
-            float maxRadiatorCooling = Mathf.Clamp(curTempScale * (HeatGeneration / 50f) * (CoreIntegrity/100f) *(CurrentPowerPercent/100f),
-                0f,
-                coolingCap);
+          
+            float maxRadiatorCooling = Mathf.Clamp(curTempScale * (HeatGeneration / 50f) * (CoreIntegrity/100f) *(ActualPowerPercent/100f),
+                0f, 
+                coolingCap);            
+            
 
             // Determine power available to transfer to components
             // This can be unstable so smooth it.

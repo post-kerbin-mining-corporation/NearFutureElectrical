@@ -97,6 +97,11 @@ namespace NearFutureElectrical
         {
             Enabled = !Enabled;
         }
+        [KSPAction("Toggle Capacitor Panel")]
+        public void TogglePanelAction(KSPActionParam param)
+        {
+            ShowCapacitorControl();
+        }
 
         // Tweakable parameters
         [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Percent Power"), UI_FloatRange(minValue = 50f, maxValue = 100f , stepIncrement = 0.1f)]

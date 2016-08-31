@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.UI.Screens;
 
 namespace NearFutureElectrical
 {
     [KSPAddon(KSPAddon.Startup.Flight, false)] 
     public class DischargeCapacitorUI:MonoBehaviour
     {
+        Vessel activeVessel;
+        int partCount = 0;
+
         public void Start()
         {
+            if (ApplicationLauncher.Ready)
+                OnGUIAppLauncherReady();
             if (HighLogic.LoadedSceneIsFlight)
             {
                 //RenderingManager.AddToPostDrawQueue(0, DrawCapacitorGUI);
@@ -28,7 +34,8 @@ namespace NearFutureElectrical
 
         public void FindCapacitors()
         {
-            
+            activeVessel = FlightGlobals.ActiveVessel;
+            partCount = activeVessel.parts.Count;
             //Debug.Log("NFE: Capacitor Manager: Finding Capcitors");
             List<DischargeCapacitor> unsortedCapacitorList = new List<DischargeCapacitor>();
             // Get all parts
@@ -60,7 +67,8 @@ namespace NearFutureElectrical
         int windowID = new System.Random(325671).Next();
         bool initStyles = false;
 
-
+        // Stock toolbar button
+        private static ApplicationLauncherButton stockToolbarButton = null;
 
         // styles
         GUIStyle progressBarBG;
@@ -102,6 +110,12 @@ namespace NearFutureElectrical
 
             initStyles = true;
         }
+        public void Awake()
+        {
+            Utils.Log("UI: Awake");
+            GameEvents.onGUIApplicationLauncherReady.Add(OnGUIAppLauncherReady);
+            GameEvents.onGUIApplicationLauncherDestroyed.Add(OnGUIAppLauncherDestroyed);
+        }
 
         private void OnGUI()
         {
@@ -141,7 +155,7 @@ namespace NearFutureElectrical
         {
             GUI.skin = HighLogic.Skin;
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Capacitors", gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f));
+            GUILayout.Label("Capacitors", gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f), GUILayout.MinWidth(120f));
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("X", GUILayout.MaxWidth(26f), GUILayout.MinWidth(26f), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f)))
             {
@@ -336,5 +350,121 @@ namespace NearFutureElectrical
             }
             return totalEc;
         }
+
+        void Update()
+        {
+            if (FlightGlobals.ActiveVessel != null)
+            {
+                if (activeVessel != null)
+                {
+                    if (partCount != activeVessel.parts.Count || activeVessel != FlightGlobals.ActiveVessel)
+                    {
+                        ResetAppLauncher();
+                    }
+                }
+                else
+                {
+                    ResetAppLauncher();
+                }
+
+            }
+            if (activeVessel != null)
+            {
+                if (partCount != activeVessel.parts.Count || activeVessel != FlightGlobals.ActiveVessel)
+                {
+                    ResetAppLauncher();
+
+                }
+            }
+        }
+
+        void ResetAppLauncher()
+        {
+            FindCapacitors();
+            if (stockToolbarButton == null)
+            {
+                if (capacitorList.Count > 0)
+                {
+                    stockToolbarButton = ApplicationLauncher.Instance.AddModApplication(
+                    OnToolbarButtonToggle,
+                    OnToolbarButtonToggle,
+                    DummyVoid,
+                    DummyVoid,
+                    DummyVoid,
+                    DummyVoid,
+                    ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.FLIGHT,
+                    (Texture)GameDatabase.Instance.GetTexture("NearFutureElectrical/UI/reactor_toolbar_off", false));
+                }
+                else
+                {
+                }
+            }
+            else
+            {
+                if (capacitorList.Count > 0)
+                {
+                }
+                else
+                {
+                    showCapWindow = false;
+                    GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
+                    ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
+                }
+            }
+
+        }
+
+        // Stock toolbar handling methods
+        public void OnDestroy()
+        {
+
+            // Remove the stock toolbar button
+            GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
+            if (stockToolbarButton != null)
+            {
+                ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
+            }
+
+        }
+
+        private void OnToolbarButtonToggle()
+        {
+            ToggleCapWindow();
+            stockToolbarButton.SetTexture((Texture)GameDatabase.Instance.GetTexture(showCapWindow ? "NearFutureElectrical/UI/cap_toolbar_on" : "NearFutureElectrical/UI/cap_toolbar_off", false));
+
+        }
+
+
+        void OnGUIAppLauncherReady()
+        {
+            if (ApplicationLauncher.Ready && stockToolbarButton == null && capacitorList.Count > 0)
+            {
+                stockToolbarButton = ApplicationLauncher.Instance.AddModApplication(
+                    OnToolbarButtonToggle,
+                    OnToolbarButtonToggle,
+                    DummyVoid,
+                    DummyVoid,
+                    DummyVoid,
+                    DummyVoid,
+                    ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.FLIGHT,
+                    (Texture)GameDatabase.Instance.GetTexture("NearFutureElectrical/UI/cap_toolbar_off", false));
+            }
+        }
+
+        void OnGUIAppLauncherDestroyed()
+        {
+            if (stockToolbarButton != null)
+            {
+                ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
+                stockToolbarButton = null;
+            }
+        }
+
+        void onAppLaunchToggleOff()
+        {
+            stockToolbarButton.SetTexture((Texture)GameDatabase.Instance.GetTexture("NearFutureElectrical/UI/cap_toolbar_off", false));
+        }
+
+        void DummyVoid() { }
     }
 }
