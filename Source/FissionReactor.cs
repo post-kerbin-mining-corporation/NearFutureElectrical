@@ -686,7 +686,7 @@ namespace NearFutureElectrical
         // Check the current EVA engineer's level
         private bool CheckEVAEngineerLevel(int level)
         {
-            ProtoCrewMember kerbal = FlightGlobals.ActiveVessel.rootPart.GetVesselCrew()[0];
+            ProtoCrewMember kerbal = FlightGlobals.ActiveVessel.GetVesselCrew()[0];
             if (kerbal.experienceTrait.Title == "Engineer" && kerbal.experienceLevel >= level)
             {
                 return true;
