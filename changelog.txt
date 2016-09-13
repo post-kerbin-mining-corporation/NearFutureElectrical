@@ -1,3 +1,9 @@
+v0.7.9
+------
+- KSP 1.2
+- Removed Radioactivity patch (should really be *in* Radioactivity)
+- Updated MM
+
 v0.7.8
 ------
 - Fixed some bugs with reactor repair
