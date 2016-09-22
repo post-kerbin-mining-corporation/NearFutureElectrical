@@ -7,7 +7,7 @@ using KSP.UI.Screens;
 
 namespace NearFutureElectrical
 {
-    [KSPAddon(KSPAddon.Startup.Flight, false)] 
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class DischargeCapacitorUI:MonoBehaviour
     {
         Vessel activeVessel;
@@ -27,7 +27,7 @@ namespace NearFutureElectrical
 
         public static void ToggleCapWindow()
         {
-            
+
             //Debug.Log("NFT: Toggle Reactor Window");
             showCapWindow = !showCapWindow;
         }
@@ -60,7 +60,7 @@ namespace NearFutureElectrical
         }
 
         // GUI VARS
-        // ---------- 
+        // ----------
         public Rect windowPos = new Rect(200f, 200f, 500f, 200f);
         public Vector2 scrollPosition = Vector2.zero;
         static bool showCapWindow = false;
@@ -142,7 +142,7 @@ namespace NearFutureElectrical
                     // Debug.Log(windowPos.ToString());
                     GUI.skin = HighLogic.Skin;
                     gui_window.padding.top = 5;
-                    
+
                     windowPos = GUI.Window(windowID, windowPos, CapacitorWindow, new GUIContent(), gui_window);
                 }
             }
@@ -178,12 +178,12 @@ namespace NearFutureElectrical
                         }
                     GUILayout.EndVertical();
                     GUILayout.BeginVertical();
-                    GUILayout.Label(String.Format("Current total recharge rate: {0:F2}/s",GetAllChargeRatesCurrent()), 
+                    GUILayout.Label(String.Format("Current total recharge rate: {0:F2}/s",GetAllChargeRatesCurrent()),
                         gui_text, GUILayout.MaxWidth(950f), GUILayout.MinWidth(190f));
 
-                    
 
-                    GUILayout.Label(String.Format("Current total discharge rate: {0:F2}/s",GetAllDischargeRatesCurrent()), 
+
+                    GUILayout.Label(String.Format("Current total discharge rate: {0:F2}/s",GetAllDischargeRatesCurrent()),
                         gui_text, GUILayout.MaxWidth(190f), GUILayout.MinWidth(190f));
                     GUILayout.EndVertical();
 
@@ -192,22 +192,22 @@ namespace NearFutureElectrical
                     {
                         DischargeAll();
                     }
-                        
-                   
+
+
                 GUILayout.EndHorizontal();
-                
+
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(525f), GUILayout.Height(175f));
                 GUILayout.BeginVertical();
                     //windowPos.height = 175f + 70f;
-                    foreach (DischargeCapacitor c in capacitorList)
+                    for(int i = 0; i <capacitorList.Count; i++)
                     {
-                        DrawCapacitor(c);
+                        DrawCapacitor(capacitorList[i]);
                     }
                GUILayout.EndVertical();
                GUILayout.EndScrollView();
-             
-                
-                
+
+
+
             }
             else
             {
@@ -216,7 +216,7 @@ namespace NearFutureElectrical
             GUI.DragWindow();
         }
 
-       
+
         private List<DischargeCapacitor> capacitorList;
 
 
@@ -231,7 +231,7 @@ namespace NearFutureElectrical
                 GUILayout.Label(String.Format("{0:F0} Sc/s",  GetCurrentRate(cap)), gui_text);
             GUILayout.EndVertical();
             // Changeables
-            
+
             GUILayout.BeginVertical();
             // Bar
             GUILayout.BeginHorizontal();
@@ -248,9 +248,9 @@ namespace NearFutureElectrical
                     cap.Discharge();
                 }
             GUILayout.EndHorizontal();
-            
+
             GUILayout.EndVertical();
-            
+
             GUILayout.EndHorizontal();
 
         }
@@ -277,46 +277,46 @@ namespace NearFutureElectrical
         private float GetAllChargeRatesCurrent()
         {
             float chargeRate = 0f;
-            foreach (DischargeCapacitor cap in capacitorList)
+            for(int i = 0; i <capacitorList.Count; i++)
             {
-                if (cap.Enabled && cap.CurrentCharge < cap.MaximumCharge)
-                    chargeRate = chargeRate + cap.ChargeRate*cap.ChargeRatio;
+                if (capacitorList[i].Enabled && capacitorList[i].CurrentCharge < capacitorList[i].MaximumCharge)
+                    chargeRate = chargeRate + capacitorList[i].ChargeRate*capacitorList[i].ChargeRatio;
             }
             return chargeRate;
         }
         private float GetAllDischargeRatesCurrent()
         {
             float dischargeRate = 0f;
-            foreach (DischargeCapacitor cap in capacitorList)
+            for(int i = 0; i <capacitorList.Count; i++)
             {
-                if (cap.Discharging)
-                    dischargeRate = dischargeRate + cap.dischargeActual;
+                if (capacitorList[i].Discharging)
+                    dischargeRate = dischargeRate + capacitorList[i].dischargeActual;
             }
             return dischargeRate;
         }
-        
+
         private void DischargeAll()
         {
-            foreach (DischargeCapacitor cap in capacitorList)
+            for(int i = 0; i <capacitorList.Count; i++)
             {
-                cap.Discharge();
+                capacitorList[i].Discharge();
             }
         }
         private void ChargeAll()
         {
-            foreach (DischargeCapacitor cap in capacitorList)
+            for(int i = 0; i <capacitorList.Count; i++)
             {
-                cap.Enable();
+                capacitorList[i].Enable();
             }
         }
         private void StopChargeAll()
         {
-             foreach (DischargeCapacitor cap in capacitorList)
+             for(int i = 0; i <capacitorList.Count; i++)
             {
-                cap.Disable();
+                capacitorList[i].Disable();
             }
         }
-        
+
 
         private float getTotalEc()
         {
@@ -327,12 +327,12 @@ namespace NearFutureElectrical
 
             List<PartResource> resources = new List<PartResource>();
             FlightGlobals.ActiveVessel.parts[0].GetConnectedResources(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id, ResourceFlowMode.ALL_VESSEL, resources);
-            float totalEc = 0f;
-            foreach (PartResource res in resources)
+            double totalEc = 0d;
+            for (int i=0; i < resources.Count; i++)
             {
-                totalEc = (float)res.amount + totalEc;
+                totalEc = resources[i].amount + totalEc;
             }
-            return totalEc;
+            return (float)totalEc;
         }
         private float getTotalSc()
         {
@@ -343,12 +343,12 @@ namespace NearFutureElectrical
 
             List<PartResource> resources = new List<PartResource>();
             FlightGlobals.ActiveVessel.parts[0].GetConnectedResources(PartResourceLibrary.Instance.GetDefinition("StoredCharge").id, ResourceFlowMode.ALL_VESSEL, resources);
-            float totalEc = 0f;
-            foreach (PartResource res in resources)
+            double totalEc = 0d;
+            for (int i=0; i < resources.Count; i++)
             {
-                totalEc = (float)res.amount + totalEc;
+                totalEc = resources[i].amount + totalEc;
             }
-            return totalEc;
+            return (float)totalEc;
         }
 
         void Update()

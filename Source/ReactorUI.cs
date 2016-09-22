@@ -7,7 +7,7 @@ using KSP.UI.Screens;
 
 namespace NearFutureElectrical
 {
-    [KSPAddon(KSPAddon.Startup.Flight, false)] 
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class ReactorUI:MonoBehaviour
     {
         Vessel activeVessel;
@@ -28,7 +28,7 @@ namespace NearFutureElectrical
 
         public static void ToggleReactorWindow()
         {
-            
+
             //Debug.Log("NFT: Toggle Reactor Window");
             showReactorWindow = !showReactorWindow;
         }
@@ -42,12 +42,13 @@ namespace NearFutureElectrical
             List<FissionReactor> unsortedReactorList = new List<FissionReactor>();
             // Get all parts
             List<Part> allParts = FlightGlobals.ActiveVessel.parts;
-            foreach (Part pt in allParts)
+            for (int i = 0; i<allParts.Count; i++)
             {
-                if (pt.GetComponent<FissionReactor>() != null)
+                FissionReactor toAdd = allParts[i].GetComponent<FissionReactor>();
+                if (toAdd != null)
                 {
-                        unsortedReactorList.Add(pt.GetComponent<FissionReactor>());
-                   
+                        unsortedReactorList.Add(toAdd);
+
                 }
             }
 
@@ -58,7 +59,7 @@ namespace NearFutureElectrical
         }
 
         // GUI VARS
-        // ---------- 
+        // ----------
         public Rect windowPos = new Rect(200f, 200f, 500f, 200f);
         public Vector2 scrollPosition = Vector2.zero;
         static bool showReactorWindow = false;
@@ -101,7 +102,7 @@ namespace NearFutureElectrical
             gui_text = new GUIStyle(HighLogic.Skin.label);
             gui_text.fontSize = 11;
             gui_text.alignment = TextAnchor.MiddleLeft;
-            
+
             gui_bg = new GUIStyle(HighLogic.Skin.textArea);
             gui_bg.active = gui_bg.hover = gui_bg.normal;
 
@@ -177,13 +178,13 @@ namespace NearFutureElectrical
 
             if (reactorList != null && reactorList.Count > 0)
             {
-                    
+
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(600f), GUILayout.MinHeight(271f));
                     GUILayout.BeginVertical();
                         //windowPos.height = 175f + 70f;
-                        foreach (FissionReactor r in reactorList)
+                        for (int i = 0; i <reactorList.Count; i++)
                         {
-                            DrawReactor(r);
+                            DrawReactor(reactorList[i]);
                         }
                    GUILayout.EndVertical();
                GUILayout.EndScrollView();
@@ -292,7 +293,7 @@ namespace NearFutureElectrical
                // GUI.Label(new Rect(20f+tempBarWidth, 30f, 40f, 20f), String.Format("{0:F0} K", meltdownTemp), gui_text);
              GUI.EndGroup();
              GUILayout.EndHorizontal();
-         
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Safety Status", gui_header2, GUILayout.MaxWidth(110f), GUILayout.MinWidth(110f));
             reactor.CurrentSafetyOverride = GUILayout.HorizontalSlider(reactor.CurrentSafetyOverride, 700f, 6000f, GUILayout.MinWidth(150f));
@@ -302,7 +303,7 @@ namespace NearFutureElectrical
                 GUILayout.Label("Fuel Status", gui_header2, GUILayout.MaxWidth(110f), GUILayout.MinWidth(110f));
                 GUILayout.Label(reactor.FuelStatus, gui_text);
             GUILayout.EndHorizontal();
-         
+
 
             GUILayout.EndVertical();
 
@@ -332,7 +333,7 @@ namespace NearFutureElectrical
                 if (partCount != activeVessel.parts.Count || activeVessel != FlightGlobals.ActiveVessel)
                 {
                     ResetAppLauncher();
-                    
+
                 }
             }
         }
@@ -425,6 +426,6 @@ namespace NearFutureElectrical
 
         void DummyVoid() { }
     }
-        
-    
+
+
 }

@@ -203,9 +203,9 @@ namespace NearFutureElectrical
         public override string GetInfo()
         {
             double baseRate = 0d;
-            foreach (ResourceRatio input in inputList)
+            for (int i = 0 ;i < inputList.Count;i++)
             {
-                if (input.ResourceName == FuelName)
+                if (inputList[i].ResourceName == FuelName)
                     baseRate = input.Ratio;
             }
             return
@@ -222,13 +222,13 @@ namespace NearFutureElectrical
             inputs = new List<ResourceBaseRatio>();
             outputs = new List<ResourceBaseRatio>();
 
-            foreach (ResourceRatio input in inputList)
+            for (int i = 0 ;i < inputList.Count;i++)
             {
-                inputs.Add(new ResourceBaseRatio(input.ResourceName, input.Ratio));
+                inputs.Add(new ResourceBaseRatio(inputList[i].ResourceName, inputList[i].Ratio));
             }
-            foreach (ResourceRatio output in outputList)
+            for (int i = 0 ;i < outputList.Count;i++)
             {
-                outputs.Add(new ResourceBaseRatio(output.ResourceName, output.Ratio));
+                outputs.Add(new ResourceBaseRatio(outputList[i].ResourceName, outputList[i].Ratio));
             }
         }
 
@@ -363,10 +363,10 @@ namespace NearFutureElectrical
         {
           // Get current resource consumption
           double rate = 0d;
-          foreach (ResourceRatio input in inputList)
+          for (int i = 0 ;i < inputList.Count;i++)
           {
-            if (input.ResourceName == FuelName)
-                rate = input.Ratio;
+            if (inputList[i].ResourceName == FuelName)
+                rate = inputList[i].Ratio;
           }
           // Recalculate fuel use Ratio
           // Fuel use is proportional to power setting
@@ -446,11 +446,11 @@ namespace NearFutureElectrical
             //Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
             float remainingPower = AvailablePower;
             // Iterate through all consumers and allocate available thermal power
-            foreach (FissionConsumer consumer in consumers)
+            for (int i= 0; i < consumers.Count; i++)
             {
-                if (consumer.Status)
+                if (consumers[i].Status)
                 {
-                    remainingPower = consumer.ConsumeHeat(remainingPower);
+                    remainingPower = consumers[i].ConsumeHeat(remainingPower);
                     //totalWaste = totalWaste + consumer.GetWaste();
 
                     if (remainingPower <= 0f)
@@ -479,11 +479,11 @@ namespace NearFutureElectrical
 
             // The allowed maximum radiator cooling. Should not exceed the heat generation
             float coolingCap = HeatGeneration / 50f;
-          
+
             float maxRadiatorCooling = Mathf.Clamp(curTempScale * (HeatGeneration / 50f) * (CoreIntegrity/100f) *(ActualPowerPercent/100f),
-                0f, 
-                coolingCap);            
-            
+                0f,
+                coolingCap);
+
 
             // Determine power available to transfer to components
             // This can be unstable so smooth it.
@@ -528,11 +528,11 @@ namespace NearFutureElectrical
             //Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
             float remainingPower = AvailablePower;
             // Iterate through all consumers and allocate available thermal power
-            foreach (FissionConsumer consumer in consumers)
+            for (int i= 0; i < consumers.Count; i++)
             {
-                if (consumer.Status)
+                if (consumers[i].Status)
                 {
-                    remainingPower = consumer.ConsumeHeat(remainingPower);
+                    remainingPower = consumers[i].ConsumeHeat(remainingPower);
                     //totalWaste = totalWaste + consumer.GetWaste();
 
                     if (remainingPower <= 0f)
@@ -548,9 +548,9 @@ namespace NearFutureElectrical
         private float ListMean(List<float> theList)
         {
             float sum = 0f;
-            foreach (float i in theList)
+            for (int i = 0; i < theList.Count;i++)
             {
-                sum += i;
+                sum += theList[i];
             }
             return sum / (float)theList.Count;
         }
@@ -607,9 +607,10 @@ namespace NearFutureElectrical
 
           if (OverheatAnimation != "")
           {
-              foreach (AnimationState cState in overheatStates)
+            for (int i = 0;i<overheatStates.Length;i++)
+
               {
-                  cState.normalizedTime = 1f - tempNetScale;
+                  overheatStates[i].normalizedTime = 1f - tempNetScale;
               }
           }
         }
@@ -617,23 +618,23 @@ namespace NearFutureElectrical
         // Set ModuleResourceConverter ratios based on an input scale
         private void RecalculateRatios(float fuelInputScale)
         {
-            foreach (ResourceRatio input in inputList)
+            for (int i = 0; i < inputList.Count; i++)
             {
-                foreach (ResourceBaseRatio baseInput in inputs)
+                for (int j = 0; j < inputs.Count; j++)
                 {
-                    if (baseInput.ResourceName == input.ResourceName)
+                    if (inputs[j].ResourceName == inputList[i].ResourceName)
                     {
-                        input.Ratio = baseInput.ResourceRatio * fuelInputScale;
+                        inputList[i].Ratio = inputs[j].ResourceRatio * fuelInputScale;
                     }
                 }
             }
-            foreach (ResourceRatio output in outputList)
+            for (int i = 0; i < outputList.Count; i++)
             {
-                foreach (ResourceBaseRatio baseOutput in outputs)
+                for (int j = 0; j < outputs.Count; j++)
                 {
-                    if (baseOutput.ResourceName == output.ResourceName)
+                    if (outputs[j].ResourceName == outputList[i].ResourceName)
                     {
-                          output.Ratio = baseOutput.ResourceRatio * fuelInputScale;
+                        outputList[i].Ratio = outputs[j].ResourceRatio * fuelInputScale;
                     }
                 }
             }

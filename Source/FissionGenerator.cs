@@ -38,15 +38,16 @@ namespace NearFutureElectrical
 
               if (Status)
               {
-                  
+
                   double generated = (double)(Mathf.Clamp01(CurrentHeatUsed / HeatUsed) * PowerGeneration);
 
                   double delta = 0d;
-                  foreach (Part p in this.vessel.parts)
+                  for (int i = 0; i < this.vessel.parts.Count; i++)
+
                   {
-                      if (p.Resources.Get(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id) != null)
-                           delta += p.Resources.Get(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id).maxAmount - 
-                                p.Resources.Get(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id).amount;
+                      if (this.vessel.parts[i].Resources.Get(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id) != null)
+                           delta += this.vessel.parts[i].Resources.Get(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id).maxAmount -
+                                this.vessel.parts[i].Resources.Get(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id).amount;
                   }
 
                   double generatedActual = Math.Min(delta, TimeWarp.fixedDeltaTime * generated);
