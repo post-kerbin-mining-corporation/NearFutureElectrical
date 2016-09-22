@@ -206,7 +206,7 @@ namespace NearFutureElectrical
             for (int i = 0 ;i < inputList.Count;i++)
             {
                 if (inputList[i].ResourceName == FuelName)
-                    baseRate = input.Ratio;
+                    baseRate = inputList[i].Ratio;
             }
             return
                 String.Format("Required Cooling: {0:F0} kW", HeatGeneration/50f) + "\n"

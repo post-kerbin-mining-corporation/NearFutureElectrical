@@ -325,14 +325,10 @@ namespace NearFutureElectrical
                 return 0f;
             }
 
-            List<PartResource> resources = new List<PartResource>();
-            FlightGlobals.ActiveVessel.parts[0].GetConnectedResources(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id, ResourceFlowMode.ALL_VESSEL, resources);
-            double totalEc = 0d;
-            for (int i=0; i < resources.Count; i++)
-            {
-                totalEc = resources[i].amount + totalEc;
-            }
-            return (float)totalEc;
+            double ec = 0;
+            double maxEc = 0;
+            FlightGlobals.ActiveVessel.resourcePartSet.GetConnectedResourceTotals(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id, out ec, out maxEc, true);
+            return (float)ec;
         }
         private float getTotalSc()
         {
@@ -341,14 +337,10 @@ namespace NearFutureElectrical
                 return 0f;
             }
 
-            List<PartResource> resources = new List<PartResource>();
-            FlightGlobals.ActiveVessel.parts[0].GetConnectedResources(PartResourceLibrary.Instance.GetDefinition("StoredCharge").id, ResourceFlowMode.ALL_VESSEL, resources);
-            double totalEc = 0d;
-            for (int i=0; i < resources.Count; i++)
-            {
-                totalEc = resources[i].amount + totalEc;
-            }
-            return (float)totalEc;
+            double sc = 0;
+            double maxSc = 0;
+            FlightGlobals.ActiveVessel.resourcePartSet.GetConnectedResourceTotals(PartResourceLibrary.Instance.GetDefinition("StoredCharge").id, out sc, out maxSc, true);
+            return (float)sc;
         }
 
         void Update()

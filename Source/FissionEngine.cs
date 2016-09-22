@@ -79,7 +79,7 @@ namespace NearFutureElectrical
                     // If the engine is off, it will have the maximum Isp available
                     if (!engineData[i].engineFX.isActiveAndEnabled || (engineData[i].engineFX.isActiveAndEnabled && engineData[i].engineFX.throttleSetting <= 0f))
                     {
-                        engineData[i].engineFX.atmosphereCurve = eengineData[i].ispCurve;
+                        engineData[i].engineFX.atmosphereCurve = engineData[i].ispCurve;
                         maxFlowScalar = Mathf.Max(maxFlowScalar, 0.0f);
                     }
                     else
