@@ -1,7 +1,7 @@
 ﻿/// DischargeCapacitor
 /// ---------------------------------------------------
-/// A module that discharges 
-/// 
+/// A module that discharges
+///
 
 using System;
 using System.Collections.Generic;
@@ -69,7 +69,7 @@ namespace NearFutureElectrical
         [KSPEvent(guiActive = true, guiName = "Disable Recharge", active = false)]
         public void Disable()
         {
-           
+
             Enabled = false;
         }
 
@@ -81,7 +81,7 @@ namespace NearFutureElectrical
         {
             DischargeCapacitorUI.ToggleCapWindow();
         }
-            
+
 
         [KSPAction("Discharge Capacitor")]
         public void DischargeAction(KSPActionParam param) { Discharge(); }
@@ -119,7 +119,7 @@ namespace NearFutureElectrical
 
 
 
-        
+
 
 
         public override void OnStart(PartModule.StartState state)
@@ -127,13 +127,13 @@ namespace NearFutureElectrical
             this.part.force_activate();
             capacityState = Utils.SetUpAnimation(ChargeAnimation, this.part);
 
-            foreach (AnimationState cState in capacityState)
+            for (int i = 0; i < capacityState.Length; i++)
             {
-                cState.normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
+                capacityState[i].normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
             }
 
-            
-            
+
+
         }
 
 
@@ -144,14 +144,14 @@ namespace NearFutureElectrical
 
         public override void OnUpdate()
         {
-   
+
             if (Events["Enable"].active == Enabled || Events["Disable"].active != Enabled)
             {
                 Events["Disable"].active = Enabled;
                 Events["Enable"].active = !Enabled;
 
            }
-            
+
         }
 
         public float CurrentCharge
@@ -160,16 +160,16 @@ namespace NearFutureElectrical
             {
                 return (float)this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition("StoredCharge").id).amount;
             }
-            
+
         }
         public override void OnFixedUpdate()
         {
             if (Discharging)
             {
-                foreach (AnimationState cState in capacityState)
+                for (int i = 0; i < capacityState.Length; i++)
                 {
 
-                    cState.normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
+                    capacityState[i].normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
                 }
 
 
@@ -179,7 +179,7 @@ namespace NearFutureElectrical
                 {
                     this.part.AddThermalFlux((double)HeatRate);
                 }
-    
+
                 this.part.RequestResource("StoredCharge", amt);
                 this.part.RequestResource("ElectricCharge", -amt);
 
@@ -189,14 +189,14 @@ namespace NearFutureElectrical
                 if (CurrentCharge <= 0f)
                 {
                     Discharging = false;
-                    
+
                 }
             }
             else if (Enabled && CurrentCharge < MaximumCharge)
             {
-                foreach (AnimationState cState in capacityState)
+                for (int i = 0; i < capacityState.Length; i++)
                 {
-                    cState.normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
+                    capacityState[i].normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
                 }
                 double amt = this.part.RequestResource("ElectricCharge", TimeWarp.fixedDeltaTime * ChargeRate);
 
@@ -213,19 +213,19 @@ namespace NearFutureElectrical
             else if (CurrentCharge == 0f)
             {
                 CapacitorStatus = "Discharged!";
-            } else 
+            } else
             {
                 CapacitorStatus = String.Format("Ready");
             }
 
 
-           
-           
-            
+
+
+
         }
-        
-       
-        
+
+
+
 
     }
 }

@@ -24,9 +24,9 @@ namespace NearFutureElectrical
             {
                 ticker = ticker + 1;
             }
-            
-             
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.EDITOR)   
+
+
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.EDITOR)
             {
                 foreach (BaseField fld in base.Fields)
                 {
@@ -43,10 +43,10 @@ namespace NearFutureElectrical
                 if (Events["Shutdown"].active == true)
                     Events["Shutdown"].active = false;
             }
-            
-            
+
+
         }
-        
+
 
 
         public void ChangeRadiatorTransfer(float scale)
