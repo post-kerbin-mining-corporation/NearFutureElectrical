@@ -29,6 +29,12 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public int EngineerLevelForDangerous = 3;
 
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Waste Xfer Status")]
+        public string WasteTransferStatus;
+
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Fuel XFer Status")]
+        public string FuelTransferStatus;
+
         // Maximum heat level at which a transfer can be made
         [KSPField(isPersistant = false)]
         public float MaxTempForTransfer = 300;
@@ -157,14 +163,27 @@ namespace NearFutureElectrical
         }
 
         // Privacy
+        private bool crewWasteFlag = false;
+        private bool crewFuelFlag = false;
+
         private bool transferring = false;
         private string curTransferType = "";
         private ScreenMessage transferMessage;
 
+        private void Start()
+        {
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+              
+            }
+
+        }
+
         private void FixedUpdate()
         {
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            if (HighLogic.LoadedSceneIsFlight)
             {
+                
                 // Generate heat
                 if (TimeWarp.CurrentRate <= 100f)
                 {
@@ -187,6 +206,7 @@ namespace NearFutureElectrical
                 }
             }
         }
+       
         private bool VesselConnected(Part targetPart)
         {
             if (this.part.vessel.id == targetPart.vessel.id)

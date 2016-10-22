@@ -1,9 +1,11 @@
-v0.7.9
+v0.8.0
 ------
 - KSP 1.2
+- Some performance and code improvements
 - Removed Radioactivity patch (should really be *in* Radioactivity)
 - Updated MM
 - Updated CRP
+- Updated B9PartSwitch
 
 v0.7.8
 ------
