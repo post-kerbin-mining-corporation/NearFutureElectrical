@@ -210,8 +210,10 @@ namespace NearFutureElectrical
             }
             return
                 String.Format("Required Cooling: {0:F0} kW", HeatGeneration/50f) + "\n"
-                + String.Format("Optimal Temperature: {0:F0} K", NominalTemperature) + "\n"
-                + String.Format("Critical Temperature: {0:F0} K", CriticalTemperature) + "\n"
+                + String.Format("\n<color=#99ff00>Temperature Parameters:</color>\n")
+                + String.Format("- Optimal: {0:F0} K", NominalTemperature) + "\n"
+                + String.Format("- Core Damage: > {0:F0} K", CriticalTemperature) + "\n"
+                + String.Format("- Core Meltdown: {0:F0} K", MaximumTemperature) + "\n\n"
                 + "Estimated Core Life: " +
                 FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount, baseRate) + base.GetInfo();
         }
@@ -234,6 +236,13 @@ namespace NearFutureElectrical
 
         public override void OnStart(PartModule.StartState state)
         {
+            var range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlEditor;
+            range.minValue = 0f;
+            range.maxValue = MaximumTemperature;
+
+            range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlFlight;
+            range.minValue = 0f;
+            range.maxValue = MaximumTemperature;
 
             throttleCurve = new FloatCurve();
             throttleCurve.Add(0, 0, 0, 0);
