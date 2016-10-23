@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 namespace NearFutureElectrical
 {
@@ -28,6 +28,12 @@ namespace NearFutureElectrical
         // Level of engie needed for transferring dangerous fuel
         [KSPField(isPersistant = false)]
         public int EngineerLevelForDangerous = 3;
+
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Waste Xfer Status")]
+        public string WasteTransferStatus;
+
+        [KSPField(isPersistant = false, guiActive = true, guiName = "Fuel XFer Status")]
+        public string FuelTransferStatus;
 
         // Maximum heat level at which a transfer can be made
         [KSPField(isPersistant = false)]
@@ -157,14 +163,27 @@ namespace NearFutureElectrical
         }
 
         // Privacy
+        private bool crewWasteFlag = false;
+        private bool crewFuelFlag = false;
+
         private bool transferring = false;
         private string curTransferType = "";
         private ScreenMessage transferMessage;
 
+        private void Start()
+        {
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+              
+            }
+
+        }
+
         private void FixedUpdate()
         {
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            if (HighLogic.LoadedSceneIsFlight)
             {
+                
                 // Generate heat
                 if (TimeWarp.CurrentRate <= 100f)
                 {
@@ -187,7 +206,13 @@ namespace NearFutureElectrical
                 }
             }
         }
-
+       
+        private bool VesselConnected(Part targetPart)
+        {
+            if (this.part.vessel.id == targetPart.vessel.id)
+                return true;
+            return false;
+        }
         private void AttemptTransfer()
         {
             Part targetPart = GetPartClicked();
@@ -200,7 +225,7 @@ namespace NearFutureElectrical
             else
             {
                 // part cannot be on another vessel
-                if (targetPart.vessel != part.vessel)
+                if (!VesselConnected(targetPart))
                 {
                     ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer to an unconnected vessel, exiting transfer mode...", 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     EndTransfer();
@@ -216,8 +241,10 @@ namespace NearFutureElectrical
                 }
                 else
                 {
+                    Debug.Log("A");
                     ModuleResourceConverter converter = container.GetComponent<ModuleResourceConverter>();
                     FissionReactor reactor = container.GetComponent<FissionReactor>();
+                    Debug.Log("B");
                     if (part.temperature > container.MaxTempForTransfer)
                     {
                         ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Selected part must be below {0:F0} K to transfer!",container.MaxTempForTransfer), 5.0f, ScreenMessageStyle.UPPER_CENTER));
@@ -235,14 +262,15 @@ namespace NearFutureElectrical
                     }
                     else
                     {
+                        Debug.Log("s");
                         // get available space in the target container
                         double availableSpace = container.GetResourceAmount(curTransferType, true) - container.GetResourceAmount(curTransferType);
                         double availableResource = this.GetResourceAmount(curTransferType);
-
+                        Debug.Log("1");
                         // transfer as much as possible
                         double amount = this.part.RequestResource(curTransferType, availableSpace);
                         container.part.RequestResource(curTransferType, -amount);
-
+                        Debug.Log("2");
                         ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Transferred {0:F0} ",amount ) + curTransferType + " to container!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     }
                 }
@@ -254,11 +282,20 @@ namespace NearFutureElectrical
         {
             Camera flightCam = Camera.main;
             Ray clickRay = flightCam.ScreenPointToRay(Input.mousePosition);
+            
+            LayerMask mask;
+            LayerMask maskA = 1 << LayerMask.NameToLayer("Default");
+            LayerMask maskB = 1 << LayerMask.NameToLayer("TerrainColliders");
+            LayerMask maskC = 1 << LayerMask.NameToLayer("Local Scenery");
+
+            mask = maskA | maskB | maskC;
 
             RaycastHit hitInfo;
-            if (Physics.Raycast(clickRay, out hitInfo, 2500f))
+            if (Physics.Raycast(clickRay, out hitInfo, 2500f, mask ))
             {
+                
                 Part hitPart = hitInfo.rigidbody.gameObject.GetComponent<Part>();
+                
                 //ScreenMessages.PostScreenMessage(new ScreenMessage("Hit! hit was " + hitInfo.rigidbody.gameObject.name, 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 if (hitPart != null)
                 {
@@ -269,10 +306,7 @@ namespace NearFutureElectrical
                     return null;
                 }
             } 
-
-
             return null;
-            
         }
     }    
 }

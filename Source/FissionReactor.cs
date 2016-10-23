@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.UI;
 
 namespace NearFutureElectrical
 {
@@ -29,6 +30,10 @@ namespace NearFutureElectrical
         /// CONFIGURABLE FIELDS
         // ----------------------
 
+        // Whether reactor power settings should follow the throttle setting
+        [KSPField(isPersistant = false)]
+        public bool FollowThrottle = false;
+
         // Whether to use a staging icon or not
         [KSPField(isPersistant = false)]
         public bool UseStagingIcon = true;
@@ -36,6 +41,10 @@ namespace NearFutureElectrical
         // Force activate on load or not
         [KSPField(isPersistant = false)]
         public bool UseForcedActivation = true;
+
+        // Engage safety override
+        [KSPField(isPersistant = true, guiActive = true, guiName = "Auto-Shutdown Temp"), UI_FloatRange(minValue = 700f, maxValue = 6000f, stepIncrement = 100f)]
+        public float CurrentSafetyOverride = 1000f;
 
         // Heat generation at full power
         [KSPField(isPersistant = false)]
@@ -56,6 +65,10 @@ namespace NearFutureElectrical
         // Current reactor power setting (0-100, tweakable)
         [KSPField(isPersistant = true, guiActive = true, guiName = "Power Setting"), UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
         public float CurrentPowerPercent = 100f;
+
+        // Actual reactor power setting used (0-100, read-only)
+        [KSPField(isPersistant = false)]
+        public float ActualPowerPercent = 100f;
 
         // Curve relating available power to temperature. Generally should be of the form
         // AmbientTemp  0
@@ -101,6 +114,20 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float MaxTempForRepair = 325;
 
+        /// UI ACTIONS
+        /// --------------------
+        /// Toggle control panel
+        [KSPEvent(guiActive = true, guiName = "Toggle Reactor Control", active = true)]
+        public void ShowReactorControl()
+        {
+            ReactorUI.ToggleReactorWindow();
+        }
+        [KSPAction("Toggle Reactor Panel")]
+        public void TogglePanelAction(KSPActionParam param)
+        {
+            ShowReactorControl();
+        }
+
         // Try to fix the reactor
         [KSPEvent(externalToEVAOnly = true, guiActiveUnfocused = true, unfocusedRange = 3.5f, guiName = "Repair Reactor")]
         public void RepairReactor()
@@ -137,7 +164,7 @@ namespace NearFutureElectrical
         /// PRIVATE VARIABLES
         /// ----------------------
         // the info staging box
-        private VInfoBox infoBox;
+        private KSP.UI.Screens.ProtoStageIconInfo infoBox;
 
         private ModuleCoreHeat core;
 
@@ -146,6 +173,8 @@ namespace NearFutureElectrical
         // base paramters
         private List<ResourceBaseRatio> inputs;
         private List<ResourceBaseRatio> outputs;
+
+        private FloatCurve throttleCurve;
 
         /// UI FIELDS
         /// --------------------
@@ -174,12 +203,12 @@ namespace NearFutureElectrical
         public override string GetInfo()
         {
             double baseRate = 0d;
-            foreach (ResourceRatio input in inputList)
+            for (int i = 0 ;i < inputList.Count;i++)
             {
-                if (input.ResourceName == FuelName)
-                    baseRate = input.Ratio;
+                if (inputList[i].ResourceName == FuelName)
+                    baseRate = inputList[i].Ratio;
             }
-            return 
+            return
                 String.Format("Required Cooling: {0:F0} kW", HeatGeneration/50f) + "\n"
                 + String.Format("Optimal Temperature: {0:F0} K", NominalTemperature) + "\n"
                 + String.Format("Critical Temperature: {0:F0} K", CriticalTemperature) + "\n"
@@ -193,53 +222,66 @@ namespace NearFutureElectrical
             inputs = new List<ResourceBaseRatio>();
             outputs = new List<ResourceBaseRatio>();
 
-            foreach (ResourceRatio input in inputList)
+            for (int i = 0 ;i < inputList.Count;i++)
             {
-                inputs.Add(new ResourceBaseRatio(input.ResourceName, input.Ratio));
+                inputs.Add(new ResourceBaseRatio(inputList[i].ResourceName, inputList[i].Ratio));
             }
-            foreach (ResourceRatio output in outputList)
+            for (int i = 0 ;i < outputList.Count;i++)
             {
-                outputs.Add(new ResourceBaseRatio(output.ResourceName, output.Ratio));
+                outputs.Add(new ResourceBaseRatio(outputList[i].ResourceName, outputList[i].Ratio));
             }
         }
 
         public override void OnStart(PartModule.StartState state)
         {
-            
+
+            throttleCurve = new FloatCurve();
+            throttleCurve.Add(0, 0, 0, 0);
+            throttleCurve.Add(70, 10, 0, 0);
+            throttleCurve.Add(100, 100, 0, 0);
+
             if (UseStagingIcon)
-                this.part.stagingIcon = "FUEL_TANK";
+            {
+                //this.part.stackIcon.CreateIcon();
+                //this.part.stackIcon.SetIcon(DefaultIcons.FUEL_TANK);
+            }
             else
                 Utils.LogWarn("Fission Reactor: Staging Icon Disabled!");
 
             if (state != StartState.Editor)
             {
-                
                 core = this.GetComponent<ModuleCoreHeat>();
                 if (core == null)
                     Utils.LogError("Fission Reactor: Could not find core heat module!");
 
-                
                 SetupResourceRatios();
                 // Set up staging icon heat bar
+
                 if (UseStagingIcon)
                 {
                     infoBox = this.part.stackIcon.DisplayInfo();
-                    infoBox.SetMsgBgColor(XKCDColors.RedOrange);
-                    infoBox.SetMsgTextColor(XKCDColors.Orange);
-                    infoBox.SetLength(1.0f);
-                    infoBox.SetValue(0.0f);
-                    infoBox.SetMessage("Meltdwn");
-                    infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
-                    infoBox.SetProgressBarColor(XKCDColors.Orange);
+
+                    //infoBox.SetMsgBgColor(XKCDColors.RedOrange);
+                    //infoBox.SetMsgTextColor(XKCDColors.Orange);
+                    //infoBox.SetLength(1.0f);
+                    //infoBox.SetValue(0.0f);
+                    //infoBox.SetMessage("Meltdwn");
+                    //infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
+                    //infoBox.SetProgressBarColor(XKCDColors.Orange);
                 }
 
                 if (OverheatAnimation != "")
-                {
                     overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
-                }
+
                 if (UseForcedActivation)
                     this.part.force_activate();
+
+            } else
+            {
+                this.CurrentSafetyOverride = this.NominalTemperature;
             }
+
+
             base.OnStart(state);
         }
 
@@ -255,6 +297,11 @@ namespace NearFutureElectrical
                         fld.guiActive = false;
 
                 }
+                if (core != null)
+                {
+                    core.CoreShutdownTemp = (double)CurrentSafetyOverride+10d;
+
+                }
             }
         }
         public override void OnFixedUpdate()
@@ -262,6 +309,13 @@ namespace NearFutureElectrical
             base.OnFixedUpdate();
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
+                if (FollowThrottle)
+                {
+                    ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle), CurrentPowerPercent);
+                }
+                else {
+                    ActualPowerPercent = CurrentPowerPercent;
+                }
 
                 // Update reactor core integrity readout
                 if (CoreIntegrity > 0)
@@ -309,14 +363,14 @@ namespace NearFutureElectrical
         {
           // Get current resource consumption
           double rate = 0d;
-          foreach (ResourceRatio input in inputList)
+          for (int i = 0 ;i < inputList.Count;i++)
           {
-            if (input.ResourceName == FuelName)
-                rate = input.Ratio;
+            if (inputList[i].ResourceName == FuelName)
+                rate = inputList[i].Ratio;
           }
           // Recalculate fuel use Ratio
           // Fuel use is proportional to power setting
-          RecalculateRatios(CurrentPowerPercent / 100f );
+          RecalculateRatios(ActualPowerPercent / 100f );
 
           // Find the time remaining at current rate
           FuelStatus = FindTimeRemaining(
@@ -328,7 +382,7 @@ namespace NearFutureElectrical
         private void DoHeatGeneration()
         {
             // Generate heat from the reaction and apply it
-            SetHeatGeneration((CurrentPowerPercent / 100f * HeatGeneration)* CoreIntegrity/100f);
+            SetHeatGeneration((ActualPowerPercent / 100f * HeatGeneration)* CoreIntegrity/100f);
 
             if (CoreIntegrity <= 0f)
             {
@@ -337,7 +391,7 @@ namespace NearFutureElectrical
             }
             else
             {
-                ReactorOutput = String.Format("{0:F1} kW", CurrentPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f);
+                ReactorOutput = String.Format("{0:F1} kW", ActualPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f);
             }
         }
 
@@ -351,7 +405,7 @@ namespace NearFutureElectrical
         {
             // save some divisions later
             float coreIntegrity = CoreIntegrity / 100f;
-            float reactorThrottle = CurrentPowerPercent / 100f;
+            float reactorThrottle = ActualPowerPercent / 100f;
             if (!base.ModuleIsActive())
                 reactorThrottle = 0f;
             float maxHeatGenerationKW = HeatGeneration / 50f;
@@ -367,7 +421,7 @@ namespace NearFutureElectrical
             // The fraction of generation that is possible.
             float curTempScale = Mathf.Clamp(temperatureDiff / (maxPoint - zeroPoint),0f,1f);
 
-            // Fraction showing amount of power available to 
+            // Fraction showing amount of power available to
             float powerScale = Mathf.Min(reactorThrottle, curTempScale)*coreIntegrity;
 
             AvailablePower = powerScale * maxHeatGenerationKW;
@@ -392,11 +446,11 @@ namespace NearFutureElectrical
             //Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
             float remainingPower = AvailablePower;
             // Iterate through all consumers and allocate available thermal power
-            foreach (FissionConsumer consumer in consumers)
+            for (int i= 0; i < consumers.Count; i++)
             {
-                if (consumer.Status)
+                if (consumers[i].Status)
                 {
-                    remainingPower = consumer.ConsumeHeat(remainingPower);
+                    remainingPower = consumers[i].ConsumeHeat(remainingPower);
                     //totalWaste = totalWaste + consumer.GetWaste();
 
                     if (remainingPower <= 0f)
@@ -420,16 +474,17 @@ namespace NearFutureElectrical
 
             float temperatureDiff = Mathf.Clamp((float)core.CoreTemperature - zeroPoint, 0f, NominalTemperature);
 
-            // The ratio (0 to 1+) of radiator capacity to use at the moment. 
+            // The ratio (0 to 1+) of radiator capacity to use at the moment.
             float curTempScale = Mathf.Clamp(temperatureDiff / (maxPoint - zeroPoint),0f,1f);
 
-            // The allowed maximum radiator cooling. Should not exceed the heat generation 
+            // The allowed maximum radiator cooling. Should not exceed the heat generation
             float coolingCap = HeatGeneration / 50f;
-          
-            float maxRadiatorCooling = Mathf.Clamp(curTempScale * (HeatGeneration / 50f) * (CoreIntegrity/100f) *(CurrentPowerPercent/100f),
-                0f, 
-                coolingCap);            
-            
+
+            float maxRadiatorCooling = Mathf.Clamp(curTempScale * (HeatGeneration / 50f) * (CoreIntegrity/100f) *(ActualPowerPercent/100f),
+                0f,
+                coolingCap);
+
+
             // Determine power available to transfer to components
             // This can be unstable so smooth it.
             float frameAvailablePower = 0f;
@@ -441,7 +496,7 @@ namespace NearFutureElectrical
                     framePowerList.RemoveAt(0);
                 }
             }
-            
+
             float smoothedPower = ListMean(framePowerList);
 
             float maxFudge = (float)core.MaxCoolant;
@@ -473,11 +528,11 @@ namespace NearFutureElectrical
             //Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
             float remainingPower = AvailablePower;
             // Iterate through all consumers and allocate available thermal power
-            foreach (FissionConsumer consumer in consumers)
+            for (int i= 0; i < consumers.Count; i++)
             {
-                if (consumer.Status)
+                if (consumers[i].Status)
                 {
-                    remainingPower = consumer.ConsumeHeat(remainingPower);
+                    remainingPower = consumers[i].ConsumeHeat(remainingPower);
                     //totalWaste = totalWaste + consumer.GetWaste();
 
                     if (remainingPower <= 0f)
@@ -485,7 +540,7 @@ namespace NearFutureElectrical
                     //Utils.Log ("FissionReactor: Consumer left "+ remainingPower.ToString()+ " kW");
                 }
             }
-            
+
             //Utils.Log ("FissionReactor: END CYCLE with "+totalWaste.ToString() + " waste, and " + AvailablePower.ToString() +" spare");
         }
 
@@ -493,14 +548,14 @@ namespace NearFutureElectrical
         private float ListMean(List<float> theList)
         {
             float sum = 0f;
-            foreach (float i in theList)
+            for (int i = 0; i < theList.Count;i++)
             {
-                sum += i;
+                sum += theList[i];
             }
             return sum / (float)theList.Count;
         }
 
-        
+
 
         private List<FissionConsumer> GetOrderedConsumers()
         {
@@ -520,17 +575,13 @@ namespace NearFutureElectrical
             {
                 reactorFudgeFactor = 0f;
             }
-            
+
             TemperatureModifier = new FloatCurve();
             TemperatureModifier.Add(0f, heat + reactorFudgeFactor * 50f);
 
             D_RealHeat = String.Format("{0:F2}",heat/50f + reactorFudgeFactor);
-            
+
         }
-
-
-
-
 
         // track and set core damage
         private void HandleCoreDamage()
@@ -550,13 +601,16 @@ namespace NearFutureElectrical
 
           // update staging bar if in use
           if (UseStagingIcon)
-              infoBox.SetValue(1f-tempNetScale);
+          {
+              //infoBox.SetValue(1f - tempNetScale);
+          }
 
           if (OverheatAnimation != "")
           {
-              foreach (AnimationState cState in overheatStates)
+            for (int i = 0;i<overheatStates.Length;i++)
+
               {
-                  cState.normalizedTime = 1f - tempNetScale;
+                  overheatStates[i].normalizedTime = 1f - tempNetScale;
               }
           }
         }
@@ -564,23 +618,25 @@ namespace NearFutureElectrical
         // Set ModuleResourceConverter ratios based on an input scale
         private void RecalculateRatios(float fuelInputScale)
         {
-            foreach (ResourceRatio input in inputList)
+            for (int i = 0; i < inputList.Count; i++)
             {
-                foreach (ResourceBaseRatio baseInput in inputs)
+                for (int j = 0; j < inputs.Count; j++)
                 {
-                    if (baseInput.ResourceName == input.ResourceName)
+                    if (inputs[j].ResourceName == inputList[i].ResourceName)
                     {
-                        input.Ratio = baseInput.ResourceRatio * fuelInputScale;
+
+                        inputList[i] = new ResourceRatio(inputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, inputList[i].DumpExcess);
+                        
                     }
                 }
             }
-            foreach (ResourceRatio output in outputList)
+            for (int i = 0; i < outputList.Count; i++)
             {
-                foreach (ResourceBaseRatio baseOutput in outputs)
+                for (int j = 0; j < outputs.Count; j++)
                 {
-                    if (baseOutput.ResourceName == output.ResourceName)
+                    if (outputs[j].ResourceName == outputList[i].ResourceName)
                     {
-                          output.Ratio = baseOutput.ResourceRatio * fuelInputScale;
+                        outputList[i] = new ResourceRatio(outputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, outputList[i].DumpExcess);
                     }
                 }
             }
@@ -600,7 +656,7 @@ namespace NearFutureElectrical
           }
           if (!CheckEVAEngineerLevel(EngineerLevelForRepair))
           {
-              ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core repair requires a Level {0:F0} Engineer."), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+              ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core repair requires a Level {0:F0} Engineer.",EngineerLevelForRepair), 5.0f, ScreenMessageStyle.UPPER_CENTER));
               return false;
           }
           if (base.ModuleIsActive())
@@ -633,7 +689,7 @@ namespace NearFutureElectrical
         // Check the current EVA engineer's level
         private bool CheckEVAEngineerLevel(int level)
         {
-            ProtoCrewMember kerbal = FlightGlobals.ActiveVessel.rootPart.protoModuleCrew[0];
+            ProtoCrewMember kerbal = FlightGlobals.ActiveVessel.GetVesselCrew()[0];
             if (kerbal.experienceTrait.Title == "Engineer" && kerbal.experienceLevel >= level)
             {
                 return true;

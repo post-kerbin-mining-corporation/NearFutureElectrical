@@ -1,3 +1,76 @@
+v0.8.0
+------
+- KSP 1.2
+- Some performance and code improvements
+- Removed Radioactivity patch (should really be *in* Radioactivity)
+- Updated MM
+- Updated CRP
+- Updated B9PartSwitch
+
+v0.7.8
+------
+- Fixed some bugs with reactor repair
+- Added a MM patch for Radioactivity development
+
+v0.7.7
+------
+- Many improvements to the handling on the capacitor and reactor UI panels
+
+v0.7.6
+------
+- USI reactor patch will now operate correctly even if the old patch is present
+- Improvments to KerbalAtomics NTR patch mechanics courtesy of henrybauer 
+- Added more RTGs to the DecayingRTGs patch
+- Reactor/Capacitor UIs won't appear if there are no reactors or capacitors on the craft
+
+v0.7.5
+------
+- KSP 1.1.3
+- Updated bundled CRP to 0.5.4
+- Updated bundled B9PartSwitch to 1.4.3
+- Added conversion patch for USI Core reactors
+- Added a first pass at the Reactor UI
+- Added toolbar icons to access the Capacitor UI and Reactor UI
+- Added the ability to toggle the Capacitor UI with a hotkey
+- Fixed a couple minor bugs in transfers for reactor fuel
+
+v0.7.4
+------
+- Fixed wrong dll
+
+v0.7.3
+------
+- Updated MM version
+- Updated B9PartSwitch version
+- Added revised model for Excalibur reactor
+- Added colliders to "new" reactor models' structural areas when the structural node is enabled
+- Fixed a bug where reactors would auto-shutdown on load when running
+- Core safety override now starts in the editor set to just over the reactor's nominal temperature
+- FissionEngine is now tied to reactor throttle; for full thrust power the reactor must be running as well as hot
+- FissionFlowRadiator no longer needs to be activated and has its on/off UI switch removed
+
+v0.7.2
+------
+- Updated CRP version
+
+v0.7.1
+------
+- KSP 1.1.2
+- Updated B9PartSwitch version
+- Updated ModuleManager version
+
+v0.7.0
+------
+- KSP 1.1 repack
+- Updated CRP version
+- Updated ModuleManager version
+- Re-added missing DecayingRTGs patch
+- Many balance tweaks to reactors
+- Converted NodeMesh to B9PartSwitch for the conical reactors. Will improve drag calculations if you need to use one as a nosecone
+- Added part search tags to parts
+- Removed staging icon from reactors (temporarily)
+- Added adjustable auto-shutdown slider (temperature-based) to reactors
+
 v0.6.2
 ------
 - Updated CRP version
