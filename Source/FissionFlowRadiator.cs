@@ -11,6 +11,12 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float passiveCooling = 0f;
 
+        public override string GetInfo()
+        {
+            return String.Format("Exhaust Cooling: {0:F0} kW", base.maxEnergyTransfer/50f) + "\n" +
+                String.Format("Passive Cooling: {0:F0} kW", passiveCooling);
+        }
+
         int ticker = 0;
         void Update()
         {

@@ -28,7 +28,7 @@ namespace NearFutureElectrical
 
         public override string GetInfo()
         {
-            return String.Format("Maximum Generation: {0:F0} Ec/s", PowerGeneration);
+            return String.Format("Power Generated: {0:F0} Ec/s", PowerGeneration);
         }
 
         public void FixedUpdate()
