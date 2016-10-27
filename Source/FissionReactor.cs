@@ -176,6 +176,8 @@ namespace NearFutureElectrical
 
         private FloatCurve throttleCurve;
 
+        private FissionEngine reactorEngine;
+
         /// UI FIELDS
         /// --------------------
 
@@ -282,6 +284,9 @@ namespace NearFutureElectrical
                 if (OverheatAnimation != "")
                     overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
 
+                if (FollowThrottle)
+                    reactorEngine = this.GetComponent<FissionEngine>();
+
                 if (UseForcedActivation)
                     this.part.force_activate();
 
@@ -320,7 +325,8 @@ namespace NearFutureElectrical
             {
                 if (FollowThrottle)
                 {
-                    ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle), CurrentPowerPercent);
+                    if (reactorEngine != null)
+                      ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle * reactorEngine.GetThrustLimiterFraction()), CurrentPowerPercent);
                 }
                 else {
                     ActualPowerPercent = CurrentPowerPercent;
@@ -635,7 +641,7 @@ namespace NearFutureElectrical
                     {
 
                         inputList[i] = new ResourceRatio(inputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, inputList[i].DumpExcess);
-                        
+
                     }
                 }
             }

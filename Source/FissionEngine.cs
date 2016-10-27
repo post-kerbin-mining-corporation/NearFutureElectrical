@@ -43,6 +43,16 @@ namespace NearFutureElectrical
             return "";
         }
 
+        public float GetThrustLimiterFraction()
+        {
+          for (int i = 0; i < engineData.Count; i++)
+          {
+              if (engineData[i].engineFX.isActiveAndEnabled )
+                return engineData[i].thrustPercentage/100f;
+          }
+          return 1.0f;
+        }
+
         public override void OnStart(PartModule.StartState state)
         {
             SetupEngines();
