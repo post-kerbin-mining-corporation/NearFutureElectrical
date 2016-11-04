@@ -112,15 +112,13 @@ namespace NearFutureElectrical
 
         private AnimationState[] capacityState;
 
+        [KSPField(isPersistant = true)]
+        public double lastUpdateTime = 0;
+
         public override string GetInfo()
         {
             return String.Format("Maximum Discharge Rate: {0:F2}/s", DischargeRate) + "\n" + String.Format("Charge Rate: {0:F2}/s", ChargeRate) + "\n" + String.Format("Efficiency: {0:F2}%", ChargeRatio*100f);
         }
-
-
-
-
-
 
         public override void OnStart(PartModule.StartState state)
         {
@@ -132,10 +130,31 @@ namespace NearFutureElectrical
                 capacityState[i].normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
             }
 
-
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+              DoCatchup();
+            }
 
         }
+        private void DoCatchup()
+        {
+          if (lastUpdateTime < vessel.missionTime)
+          {
+            if (Enabled)
+            {
+              int ECID = PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id;
+              double ec = 0d;
+              double outEc = 0d;
+                GetConnectedResourceTotals(ECID, out ec, out maxEc, true);
+                if (ec/Max >= 0.25d)
+                {
+                  double amt = (vessel.missionTime -lastUpdateTime) * ChargeRate;
+                  this.part.RequestResource("StoredCharge", -amt * ChargeRatio);
 
+                }
+            }
+          }
+        }
 
         private void Update()
         {

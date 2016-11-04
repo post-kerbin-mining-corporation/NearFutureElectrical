@@ -1,3 +1,12 @@
+v0.8.2
+------
+- Marked for KSP 1.2.1
+- Fixed reactor UI panel's hardcoded max safety shutdown temp (adapts to reactor)
+- Capacitors now recharge in the background if ship EC is > 25%
+- FissionFlowRadiator now shows current cooling in its UI
+- FissionReactor auto-throttle obeys engine tweakable throttle
+- New models for all nuclear fuel containers
+
 v0.8.1
 ------
 - Updated CRP to v6.0.1
@@ -26,7 +35,7 @@ v0.7.7
 v0.7.6
 ------
 - USI reactor patch will now operate correctly even if the old patch is present
-- Improvments to KerbalAtomics NTR patch mechanics courtesy of henrybauer 
+- Improvments to KerbalAtomics NTR patch mechanics courtesy of henrybauer
 - Added more RTGs to the DecayingRTGs patch
 - Reactor/Capacitor UIs won't appear if there are no reactors or capacitors on the craft
 
@@ -112,7 +121,7 @@ v0.5.2
 ------
 - Upgraded bundled CRP version
 - Retuned radiator and reactor parts to work with stock radiator system
-- Removed conformal radiators; they will later return in Heat Control 
+- Removed conformal radiators; they will later return in Heat Control
 - Tuned heat parameters for other parts
 
 v0.5.1
@@ -129,14 +138,14 @@ v0.5.0
 - KSP 1.02 Update
 - Bundled CRP
 - All parts have had their attach nodes reworked with correct bulkhead sizes
-- RTGs 
+- RTGs
 -- New RTG decay is available as an optional patch (applies to stock RTG and ASRTG)
 -- RTGs decay to 0.05% of max power (can be overridden in cfg) over a certain half life
 - Capacitors
 -- Removed old automation panel
 -- Replaced with ship capacitor summary window
 -- Fixed dischargeability when storage empty
--- Discharge can now generate heat 
+-- Discharge can now generate heat
 - Nuclear reprocessor
 -- Uses stock resource converters (background processing)
 -- Can now convert Ore into EnrichedUranium, at a very slow rate
