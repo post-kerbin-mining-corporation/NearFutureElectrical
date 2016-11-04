@@ -159,6 +159,7 @@ namespace NearFutureElectrical
         private void Update()
         {
             dischargeActual = (dischargeSlider / 100f) * DischargeRate;
+            lastUpdateTime = vessel.missionTime;
         }
 
         public override void OnUpdate()
