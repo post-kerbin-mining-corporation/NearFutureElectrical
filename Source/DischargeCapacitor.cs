@@ -103,11 +103,7 @@ namespace NearFutureElectrical
             ShowCapacitorControl();
         }
 
-        // Tweakable parameters
-        [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Percent Power"), UI_FloatRange(minValue = 50f, maxValue = 100f , stepIncrement = 0.1f)]
-        public float dischargeSlider = 100f;
-
-        [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Adjusted Discharge Rate")]
+        [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Discharge Rate"), UI_FloatRange(minValue = 50f, maxValue = 100f , stepIncrement = 0.1f)]
         public float dischargeActual = 100f;
 
         private AnimationState[] capacityState;
@@ -124,6 +120,14 @@ namespace NearFutureElectrical
         {
             this.part.force_activate();
             capacityState = Utils.SetUpAnimation(ChargeAnimation, this.part);
+
+            var range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlEditor;
+            range.minValue = DischargeRate/2f;
+            range.maxValue = DischargeRate;
+
+            range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlFlight;
+            range.minValue = DischargeRate/2f;
+            range.maxValue = DischargeRate;
 
             for (int i = 0; i < capacityState.Length; i++)
             {
@@ -158,11 +162,6 @@ namespace NearFutureElectrical
           }
         }
 
-        private void Update()
-        {
-            dischargeActual = (dischargeSlider / 100f) * DischargeRate;
-            
-        }
 
         public override void OnUpdate()
         {
@@ -195,7 +194,7 @@ namespace NearFutureElectrical
                 }
 
 
-                float amt = TimeWarp.fixedDeltaTime * (dischargeSlider/100f )* DischargeRate;
+                float amt = TimeWarp.fixedDeltaTime * dischargeActual;
 
                 if (DischargeGeneratesHeat && TimeWarp.CurrentRate <= 100f)
                 {
@@ -205,7 +204,7 @@ namespace NearFutureElectrical
                 this.part.RequestResource("StoredCharge", amt);
                 this.part.RequestResource("ElectricCharge", -amt);
 
-                CapacitorStatus = String.Format("Discharging: {0:F2}/s", DischargeRate*(dischargeSlider / 100f));
+                CapacitorStatus = String.Format("Discharging: {0:F2}/s", dischargeActual);
 
                 // if the amount returned is zero, disable discharging
                 if (CurrentCharge <= 0f)

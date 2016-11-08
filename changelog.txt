@@ -3,6 +3,7 @@ v0.8.2
 - Marked for KSP 1.2.1
 - Fixed reactor UI panel's hardcoded max safety shutdown temp (adapts to reactor)
 - Capacitors now recharge in the background if ship EC is > 25%
+- Capacitor discharge slider is now directly tied to discharge instead of being a percentage
 - FissionFlowRadiator now shows current cooling in its UI
 - FissionReactor auto-throttle obeys engine tweakable throttle
 - New models for all nuclear fuel containers
