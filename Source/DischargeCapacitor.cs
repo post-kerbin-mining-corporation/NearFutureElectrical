@@ -140,15 +140,17 @@ namespace NearFutureElectrical
         {
           if (lastUpdateTime < vessel.missionTime)
           {
-            if (Enabled)
+            if (Enabled && !Discharging)
             {
+                Utils.Log(String.Format("Recharged capacitor in background: {0}", vessel.missionTime -lastUpdateTime));
               int ECID = PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id;
               double ec = 0d;
               double outEc = 0d;
-                GetConnectedResourceTotals(ECID, out ec, out maxEc, true);
-                if (ec/Max >= 0.25d)
+              part.GetConnectedResourceTotals(ECID, out ec, out outEc, true);
+              if (ec / outEc >= 0.25d)
                 {
                   double amt = (vessel.missionTime -lastUpdateTime) * ChargeRate;
+                  Utils.Log(String.Format("Recharged: {0}", amt));
                   this.part.RequestResource("StoredCharge", -amt * ChargeRatio);
 
                 }
@@ -159,7 +161,7 @@ namespace NearFutureElectrical
         private void Update()
         {
             dischargeActual = (dischargeSlider / 100f) * DischargeRate;
-            lastUpdateTime = vessel.missionTime;
+            
         }
 
         public override void OnUpdate()
@@ -229,6 +231,7 @@ namespace NearFutureElectrical
                 {
                     CapacitorStatus = String.Format("Not enough ElectricCharge!");
                 }
+                lastUpdateTime = vessel.missionTime;
             }
             else if (CurrentCharge == 0f)
             {

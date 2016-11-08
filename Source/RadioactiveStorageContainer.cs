@@ -29,10 +29,10 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public int EngineerLevelForDangerous = 3;
 
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Waste Xfer Status")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "Waste Xfer Status")]
         public string WasteTransferStatus;
 
-        [KSPField(isPersistant = false, guiActive = true, guiName = "Fuel XFer Status")]
+        [KSPField(isPersistant = false, guiActive = false, guiName = "Fuel XFer Status")]
         public string FuelTransferStatus;
 
         // Maximum heat level at which a transfer can be made

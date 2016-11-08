@@ -48,7 +48,7 @@ namespace NearFutureElectrical
           for (int i = 0; i < engineData.Count; i++)
           {
               if (engineData[i].engineFX.isActiveAndEnabled )
-                return engineData[i].thrustPercentage/100f;
+                return engineData[i].engineFX.thrustPercentage/100f;
           }
           return 1.0f;
         }
