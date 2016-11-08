@@ -292,7 +292,7 @@ namespace NearFutureElectrical
 
             } else
             {
-                this.CurrentSafetyOverride = this.NominalTemperature;
+                //this.CurrentSafetyOverride = this.NominalTemperature;
             }
 
 
