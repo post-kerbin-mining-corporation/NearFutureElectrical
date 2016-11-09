@@ -107,7 +107,7 @@ namespace NearFutureElectrical
                         engineData[i].engineFX.atmosphereCurve.Add(4f, engineData[i].ispCurve.Evaluate(4f) * ispRatio);
 
                         //Utils.Log(String.Format("{0} ui {1} max {2} reqested",eData.engineFX.fuelFlowGui,eData.engineFX.maxFuelFlow,eData.engineFX.requestedMassFlow));
-                        maxFlowScalar = Mathf.Max(maxFlowScalar, (engineData[i].engineFX.requestedMassFlow/engineData[i].engineFX.maxFuelFlow));
+                        maxFlowScalar = Mathf.Max(maxFlowScalar, (engineData[i].engineFX.finalThrust/engineData[i].engineFX.maxThrust);
 
                     }
 
