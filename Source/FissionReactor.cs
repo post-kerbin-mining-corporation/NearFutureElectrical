@@ -248,7 +248,7 @@ namespace NearFutureElectrical
 
             throttleCurve = new FloatCurve();
             throttleCurve.Add(0, 0, 0, 0);
-            throttleCurve.Add(70, 10, 0, 0);
+            throttleCurve.Add(50, 20, 0, 0);
             throttleCurve.Add(100, 100, 0, 0);
 
             if (UseStagingIcon)
@@ -271,14 +271,6 @@ namespace NearFutureElectrical
                 if (UseStagingIcon)
                 {
                     infoBox = this.part.stackIcon.DisplayInfo();
-
-                    //infoBox.SetMsgBgColor(XKCDColors.RedOrange);
-                    //infoBox.SetMsgTextColor(XKCDColors.Orange);
-                    //infoBox.SetLength(1.0f);
-                    //infoBox.SetValue(0.0f);
-                    //infoBox.SetMessage("Meltdwn");
-                    //infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
-                    //infoBox.SetProgressBarColor(XKCDColors.Orange);
                 }
 
                 if (OverheatAnimation != "")

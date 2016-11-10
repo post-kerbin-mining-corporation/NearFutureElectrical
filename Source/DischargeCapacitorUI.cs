@@ -236,7 +236,7 @@ namespace NearFutureElectrical
             // Bar
             GUILayout.BeginHorizontal();
                 GUILayout.Label("Customize Discharge Rate", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
-                cap.dischargeActual = GUILayout.HorizontalSlider(dischargeActual, cap.ChargeRate/2f, cap.ChargeRate, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
+                cap.dischargeActual = GUILayout.HorizontalSlider(cap.dischargeActual, cap.ChargeRate/2f, cap.ChargeRate, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
                 GUILayout.Label(String.Format("Rate: {0:F0} Ec/s", cap.dischargeActual), gui_text);
             GUILayout.EndHorizontal();
             // Buttons

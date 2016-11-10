@@ -9,6 +9,9 @@ namespace NearFutureElectrical
     class FissionFlowRadiator: ModuleActiveRadiator
     {
         [KSPField(isPersistant = false)]
+        public float exhaustCooling = 0f;
+
+        [KSPField(isPersistant = false)]
         public float passiveCooling = 0f;
 
         // Radiator Status string
@@ -17,7 +20,7 @@ namespace NearFutureElectrical
 
         public override string GetInfo()
         {
-            return String.Format("Exhaust Cooling: {0:F0} kW", base.maxEnergyTransfer/50f) + "\n" +
+            return String.Format("Exhaust Cooling: {0:F0} kW", exhaustCooling) + "\n" +
                 String.Format("Passive Cooling: {0:F0} kW", passiveCooling);
         }
 
@@ -54,8 +57,8 @@ namespace NearFutureElectrical
 
         public void ChangeRadiatorTransfer(float scale)
         {
-            base.maxEnergyTransfer = (scale + passiveCooling) * 50d;
-            RadiatorStatus = String.Format("{0:F0} kW", scale + passiveCooling);
+            base.maxEnergyTransfer = (scale*exhaustCooling + passiveCooling) * 50d;
+            RadiatorStatus = String.Format("{0:F0} kW", scale * exhaustCooling + passiveCooling);
         }
     }
 }
