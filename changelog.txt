@@ -1,7 +1,7 @@
 v0.8.2
 ------
 - Marked for KSP 1.2.1
-- Updated bundled MM to 2.7.3
+- Updated bundled MM to 2.7.4
 - Updated bundled CRP
 - Fixed reactor UI panel's hardcoded max safety shutdown temp (adapts to reactor)
 - Capacitors now recharge in the background if ship EC is > 25%
