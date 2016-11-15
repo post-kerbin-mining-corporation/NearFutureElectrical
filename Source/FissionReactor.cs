@@ -114,6 +114,9 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float MaxTempForRepair = 325;
 
+        [KSPField(isPersistant = true)]
+        public bool FirstLoad = true;
+
         /// UI ACTIONS
         /// --------------------
         /// Toggle control panel
@@ -258,6 +261,12 @@ namespace NearFutureElectrical
             }
             else
                 Utils.LogWarn("Fission Reactor: Staging Icon Disabled!");
+
+            if (FirstLoad)
+            {
+              this.CurrentSafetyOverride = this.CriticalTemperature;
+              FirstLoad = false;
+            }
 
             if (state != StartState.Editor)
             {
