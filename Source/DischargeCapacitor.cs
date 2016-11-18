@@ -103,44 +103,66 @@ namespace NearFutureElectrical
             ShowCapacitorControl();
         }
 
-        // Tweakable parameters
-        [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Percent Power"), UI_FloatRange(minValue = 50f, maxValue = 100f , stepIncrement = 0.1f)]
-        public float dischargeSlider = 100f;
-
-        [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Adjusted Discharge Rate")]
+        [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Discharge Rate"), UI_FloatRange(minValue = 50f, maxValue = 100f , stepIncrement = 0.1f)]
         public float dischargeActual = 100f;
 
         private AnimationState[] capacityState;
+
+        [KSPField(isPersistant = true)]
+        public double lastUpdateTime = 0;
 
         public override string GetInfo()
         {
             return String.Format("Maximum Discharge Rate: {0:F2}/s", DischargeRate) + "\n" + String.Format("Charge Rate: {0:F2}/s", ChargeRate) + "\n" + String.Format("Efficiency: {0:F2}%", ChargeRatio*100f);
         }
 
-
-
-
-
-
         public override void OnStart(PartModule.StartState state)
         {
             this.part.force_activate();
             capacityState = Utils.SetUpAnimation(ChargeAnimation, this.part);
+
+            var range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlEditor;
+            range.minValue = DischargeRate/2f;
+            range.maxValue = DischargeRate;
+
+            range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlFlight;
+            range.minValue = DischargeRate/2f;
+            range.maxValue = DischargeRate;
 
             for (int i = 0; i < capacityState.Length; i++)
             {
                 capacityState[i].normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
             }
 
-
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+              DoCatchup();
+            }
 
         }
-
-
-        private void Update()
+        private void DoCatchup()
         {
-            dischargeActual = (dischargeSlider / 100f) * DischargeRate;
+          if (lastUpdateTime < Planetarium.fetch.time)
+          {
+            if (Enabled && !Discharging)
+            {
+                Utils.Log(String.Format("Recharged capacitor in background: {0}", Planetarium.fetch.time -lastUpdateTime));
+              int ECID = PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id;
+              double ec = 0d;
+              double outEc = 0d;
+              part.GetConnectedResourceTotals(ECID, out ec, out outEc, true);
+              if (ec / outEc >= 0.25d)
+                {
+                  float amtScaled = Mathf.Clamp((float)( Planetarium.fetch.time -lastUpdateTime) * ChargeRate, 0f, MaximumCharge);
+
+                  Utils.Log(String.Format("Recharged: {0}", -amtScaled * ChargeRatio));
+                  this.part.RequestResource("StoredCharge", -amtScaled * ChargeRatio, ResourceFlowMode.NO_FLOW);
+
+                }
+            }
+          }
         }
+
 
         public override void OnUpdate()
         {
@@ -173,7 +195,7 @@ namespace NearFutureElectrical
                 }
 
 
-                float amt = TimeWarp.fixedDeltaTime * (dischargeSlider/100f )* DischargeRate;
+                float amt = TimeWarp.fixedDeltaTime * dischargeActual;
 
                 if (DischargeGeneratesHeat && TimeWarp.CurrentRate <= 100f)
                 {
@@ -183,7 +205,7 @@ namespace NearFutureElectrical
                 this.part.RequestResource("StoredCharge", amt);
                 this.part.RequestResource("ElectricCharge", -amt);
 
-                CapacitorStatus = String.Format("Discharging: {0:F2}/s", DischargeRate*(dischargeSlider / 100f));
+                CapacitorStatus = String.Format("Discharging: {0:F2}/s", dischargeActual);
 
                 // if the amount returned is zero, disable discharging
                 if (CurrentCharge <= 0f)
@@ -209,6 +231,7 @@ namespace NearFutureElectrical
                 {
                     CapacitorStatus = String.Format("Not enough ElectricCharge!");
                 }
+                lastUpdateTime = Planetarium.fetch.time;
             }
             else if (CurrentCharge == 0f)
             {

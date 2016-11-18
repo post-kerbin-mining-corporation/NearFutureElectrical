@@ -296,7 +296,7 @@ namespace NearFutureElectrical
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Safety Status", gui_header2, GUILayout.MaxWidth(110f), GUILayout.MinWidth(110f));
-            reactor.CurrentSafetyOverride = GUILayout.HorizontalSlider(reactor.CurrentSafetyOverride, 700f, 6000f, GUILayout.MinWidth(150f));
+            reactor.CurrentSafetyOverride = GUILayout.HorizontalSlider(reactor.CurrentSafetyOverride, 700f, reactor.MaximumTemperature, GUILayout.MinWidth(150f));
             GUILayout.Label(String.Format("{0:F0} K", reactor.CurrentSafetyOverride), gui_text);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();

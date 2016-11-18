@@ -114,6 +114,9 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float MaxTempForRepair = 325;
 
+        [KSPField(isPersistant = true)]
+        public bool FirstLoad = true;
+
         /// UI ACTIONS
         /// --------------------
         /// Toggle control panel
@@ -175,6 +178,8 @@ namespace NearFutureElectrical
         private List<ResourceBaseRatio> outputs;
 
         private FloatCurve throttleCurve;
+
+        private FissionEngine reactorEngine;
 
         /// UI FIELDS
         /// --------------------
@@ -246,7 +251,7 @@ namespace NearFutureElectrical
 
             throttleCurve = new FloatCurve();
             throttleCurve.Add(0, 0, 0, 0);
-            throttleCurve.Add(70, 10, 0, 0);
+            throttleCurve.Add(50, 20, 0, 0);
             throttleCurve.Add(100, 100, 0, 0);
 
             if (UseStagingIcon)
@@ -256,6 +261,12 @@ namespace NearFutureElectrical
             }
             else
                 Utils.LogWarn("Fission Reactor: Staging Icon Disabled!");
+
+            if (FirstLoad)
+            {
+              this.CurrentSafetyOverride = this.CriticalTemperature;
+              FirstLoad = false;
+            }
 
             if (state != StartState.Editor)
             {
@@ -269,25 +280,20 @@ namespace NearFutureElectrical
                 if (UseStagingIcon)
                 {
                     infoBox = this.part.stackIcon.DisplayInfo();
-
-                    //infoBox.SetMsgBgColor(XKCDColors.RedOrange);
-                    //infoBox.SetMsgTextColor(XKCDColors.Orange);
-                    //infoBox.SetLength(1.0f);
-                    //infoBox.SetValue(0.0f);
-                    //infoBox.SetMessage("Meltdwn");
-                    //infoBox.SetProgressBarBgColor(XKCDColors.RedOrange);
-                    //infoBox.SetProgressBarColor(XKCDColors.Orange);
                 }
 
                 if (OverheatAnimation != "")
                     overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
+
+                if (FollowThrottle)
+                    reactorEngine = this.GetComponent<FissionEngine>();
 
                 if (UseForcedActivation)
                     this.part.force_activate();
 
             } else
             {
-                this.CurrentSafetyOverride = this.NominalTemperature;
+                //this.CurrentSafetyOverride = this.NominalTemperature;
             }
 
 
@@ -320,7 +326,8 @@ namespace NearFutureElectrical
             {
                 if (FollowThrottle)
                 {
-                    ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle), CurrentPowerPercent);
+                    if (reactorEngine != null)
+                      ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle * reactorEngine.GetThrustLimiterFraction()), CurrentPowerPercent);
                 }
                 else {
                     ActualPowerPercent = CurrentPowerPercent;
@@ -635,7 +642,7 @@ namespace NearFutureElectrical
                     {
 
                         inputList[i] = new ResourceRatio(inputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, inputList[i].DumpExcess);
-                        
+
                     }
                 }
             }

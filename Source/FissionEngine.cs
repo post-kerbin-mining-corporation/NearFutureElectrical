@@ -43,6 +43,16 @@ namespace NearFutureElectrical
             return "";
         }
 
+        public float GetThrustLimiterFraction()
+        {
+          for (int i = 0; i < engineData.Count; i++)
+          {
+              if (engineData[i].engineFX.isActiveAndEnabled )
+                return engineData[i].engineFX.thrustPercentage/100f;
+          }
+          return 1.0f;
+        }
+
         public override void OnStart(PartModule.StartState state)
         {
             SetupEngines();
@@ -96,14 +106,16 @@ namespace NearFutureElectrical
                         engineData[i].engineFX.atmosphereCurve.Add(1f, engineData[i].ispCurve.Evaluate(1f) * ispRatio);
                         engineData[i].engineFX.atmosphereCurve.Add(4f, engineData[i].ispCurve.Evaluate(4f) * ispRatio);
 
-                        //Utils.Log(String.Format("{0} ui {1} max {2} reqested",eData.engineFX.fuelFlowGui,eData.engineFX.maxFuelFlow,eData.engineFX.requestedMassFlow));
-                        maxFlowScalar = Mathf.Max(maxFlowScalar, (engineData[i].engineFX.requestedMassFlow/engineData[i].engineFX.maxFuelFlow));
+                        //Utils.Log(String.Format("{0} ui {1} max {2} reqested", engineData[i].engineFX.fuelFlowGui, engineData[i].engineFX.maxFuelFlow, engineData[i].engineFX.requestedMassFlow));
+                        //Utils.Log(String.Format("{0} t_setting {1} normTr {2} normout", engineData[i].engineFX.throttleSetting, engineData[i].engineFX.normalizedThrustOutput, engineData[i].engineFX.normalizedOutput));
+                        maxFlowScalar = Mathf.Max(maxFlowScalar, (engineData[i].engineFX.throttleSetting));
 
                     }
 
                 }
                 float heat = reactor.ActualPowerPercent / 100f * reactor.HeatGeneration / 50f * reactor.CoreIntegrity / 100f;
-                flowRadiator.ChangeRadiatorTransfer(Mathf.Max(base.CurrentHeatUsed, heat) * maxFlowScalar);
+                //flowRadiator.ChangeRadiatorTransfer(Mathf.Max(base.CurrentHeatUsed, heat) * maxFlowScalar);
+                flowRadiator.ChangeRadiatorTransfer(maxFlowScalar);
             }
 
           }
