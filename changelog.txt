@@ -2,7 +2,8 @@ v0.8.3
 ------
 - Marked for KSP 1.2.2
 - Updated bundled MM to 2.7.5
-- Significant improvements, fixes to USI integrations from Wyzard256 
+- Spelling/comprehension fixes
+- Significant improvements, fixes to USI integrations from Wyzard256
 
 v0.8.2
 ------
