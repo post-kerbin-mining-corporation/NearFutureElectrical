@@ -640,7 +640,7 @@ namespace NearFutureElectrical
                 {
                     if (inputs[j].ResourceName == inputList[i].ResourceName)
                     {
-
+                        
                         inputList[i] = new ResourceRatio(inputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, inputList[i].DumpExcess);
 
                     }
@@ -652,11 +652,17 @@ namespace NearFutureElectrical
                 {
                     if (outputs[j].ResourceName == outputList[i].ResourceName)
                     {
+                        Debug.Log("OUT: edited " + outputList[i].ResourceName + " ratio to " + (outputs[j].ResourceRatio * fuelInputScale).ToString());
                         outputList[i] = new ResourceRatio(outputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, outputList[i].DumpExcess);
                     }
                 }
             }
+            for (int i = 0; i < inputList.Count; i++)
+            {
+                Debug.Log("IN: edited " + inputList[i].ResourceName + " ratio to " + (inputList[i].Ratio).ToString());
+            }
         }
+
 
 
         // ####################################
