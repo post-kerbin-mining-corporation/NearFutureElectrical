@@ -4,6 +4,8 @@ v0.8.3
 - Updated bundled MM to 2.7.5
 - Updated bundled B9PartSwitch to 1.5.3
 - Updated bundled CRP to 0.6.4
+- Fixed capacitor discharge rate not being correct
+- Fixed nuclear reactors not properly adjusting their fuel use
 - Spelling/comprehension fixes
 - Significant improvements, fixes to USI integrations from Wyzard256
 

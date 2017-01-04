@@ -56,7 +56,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FissionFlowRadiator.cs" />
-    <Compile Include="NodeTriggeredMesh.cs" />
     <Compile Include="DischargeCapacitor.cs" />
     <Compile Include="FissionConsumer.cs" />
     <Compile Include="FissionEngine.cs" />

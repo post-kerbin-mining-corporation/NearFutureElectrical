@@ -381,8 +381,8 @@ namespace NearFutureElectrical
           double rate = 0d;
           for (int i = 0 ;i < inputList.Count;i++)
           {
-            if (inputList[i].ResourceName == FuelName)
-                rate = inputList[i].Ratio;
+            if (_recipe.Inputs[i].ResourceName == FuelName)
+                rate = _recipe.Inputs[i].Ratio;
           }
           // Recalculate fuel use Ratio
           // Fuel use is proportional to power setting
@@ -634,26 +634,25 @@ namespace NearFutureElectrical
         // Set ModuleResourceConverter ratios based on an input scale
         private void RecalculateRatios(float fuelInputScale)
         {
-            for (int i = 0; i < inputList.Count; i++)
+            for (int i = 0; i < _recipe.Inputs.Count; i++)
             {
                 for (int j = 0; j < inputs.Count; j++)
                 {
                     if (inputs[j].ResourceName == inputList[i].ResourceName)
                     {
-                        
-                        inputList[i] = new ResourceRatio(inputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, inputList[i].DumpExcess);
-
+                        _recipe.Inputs[i] = new ResourceRatio(inputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, inputList[i].DumpExcess);
+                     
                     }
                 }
             }
-            for (int i = 0; i < outputList.Count; i++)
+            for (int i = 0; i < _recipe.Outputs.Count; i++)
             {
                 for (int j = 0; j < outputs.Count; j++)
                 {
                     if (outputs[j].ResourceName == outputList[i].ResourceName)
                     {
-                        Debug.Log("OUT: edited " + outputList[i].ResourceName + " ratio to " + (outputs[j].ResourceRatio * fuelInputScale).ToString());
-                        outputList[i] = new ResourceRatio(outputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, outputList[i].DumpExcess);
+                        //Debug.Log("OUT: edited " + outputList[i].ResourceName + " ratio to " + (outputs[j].ResourceRatio * fuelInputScale).ToString());
+                        _recipe.Outputs[i] = new ResourceRatio(outputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, outputList[i].DumpExcess);
                     }
                 }
             }
