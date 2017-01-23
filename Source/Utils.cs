@@ -71,6 +71,7 @@ namespace NearFutureElectrical
             int hours = (int)(rem / (3600.0d));
             rem = rem % (3600.0d);
             int minutes = (int)(rem / (60.0d));
+            rem = rem % (60.0d);
             int secs = (int)rem;
 
             string result = "";

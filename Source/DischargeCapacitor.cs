@@ -73,6 +73,9 @@ namespace NearFutureElectrical
             Enabled = false;
         }
 
+        [KSPField(isPersistant = true)]
+        public bool FirstLoad = true;
+
         /// UI ACTIONS
         /// --------------------
         /// Toggle control panel
@@ -121,6 +124,7 @@ namespace NearFutureElectrical
             this.part.force_activate();
             capacityState = Utils.SetUpAnimation(ChargeAnimation, this.part);
 
+
             var range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlEditor;
             range.minValue = DischargeRate/2f;
             range.maxValue = DischargeRate;
@@ -128,6 +132,12 @@ namespace NearFutureElectrical
             range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlFlight;
             range.minValue = DischargeRate/2f;
             range.maxValue = DischargeRate;
+
+            if (FirstLoad)
+            {
+              this.dischargeActual = DischargeRate;
+              FirstLoad = false;
+            }
 
             for (int i = 0; i < capacityState.Length; i++)
             {

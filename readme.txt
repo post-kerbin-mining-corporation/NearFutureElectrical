@@ -1,5 +1,5 @@
 ==================================
-NEAR FUTURE ELECTRICAL PACK v0.8.2
+NEAR FUTURE ELECTRICAL PACK v0.8.3
 ==================================
 
 This pack contains advanced electrical parts - capacitors, nuclear reactors and new battery packs.
@@ -9,9 +9,9 @@ DEPENDENCIES
 ============
 
 Required:
-- B9PartSwitch (1.5.1)
-- Community Resource Pack (0.6.3)
-- ModuleManager (2.7.4)
+- B9PartSwitch (1.5.3)
+- Community Resource Pack (0.6.4)
+- ModuleManager (2.7.5)
 
 Optional
 - Community Tech Tree (v2.2+)
@@ -46,12 +46,11 @@ For a more comprehensive version checking experience, please download the KSP-AV
 LICENSING
 =========
 
-The contents of this pack are distributed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (http://creativecommons.org/licenses/by-nc-sa/4.0/).
-
-You are free to share and adapt the materials only for non-commercial purposes and when providing appropriate attribution. Any derivatives must be distributed under the same license.
+The cfgs and code in this pack are distributed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode). You are free to share and adapt the materials only for non-commercial purposes and when providing appropriate attribution. Any derivatives must be distributed under the same license.
+The art assets in this pack (all models and textures) are distributed under an All Rights Reserved License. You may not redistribute or re-use these assets without express permission from me.
 
 ModuleManager by ialdabaoth and sarbian is distributed under a Creative Commons Sharealike license. More details, including source code, can be found here: http://forum.kerbalspaceprogram.com/threads/31342-0-20-ModuleManager-1-3-for-all-your-stock-modding-needs?p=528607&viewfull=1#post528607
 
-The Community Resource Pack (v0.5.0) by RoverDude is also distributed under its own license.
+The Community Resource Pack by RoverDude is also distributed under its own license.
 
-B9PartSwitch (v1.01) by blowfish is also distributed under its own license.
+B9PartSwitch by blowfish is also distributed under its own license.
