@@ -1,3 +1,7 @@
+v0.8.4
+------
+- Fixed download link in .version file
+
 v0.8.3
 ------
 - Marked for KSP 1.2.2
