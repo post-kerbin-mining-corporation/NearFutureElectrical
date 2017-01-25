@@ -658,7 +658,7 @@ namespace NearFutureElectrical
             }
             for (int i = 0; i < inputList.Count; i++)
             {
-                Debug.Log("IN: edited " + inputList[i].ResourceName + " ratio to " + (inputList[i].Ratio).ToString());
+                //Debug.Log("IN: edited " + inputList[i].ResourceName + " ratio to " + (inputList[i].Ratio).ToString());
             }
         }
 

@@ -1,6 +1,7 @@
 v0.8.4
 ------
 - Fixed download link in .version file
+- Fixed a rogue logging spam
 
 v0.8.3
 ------
