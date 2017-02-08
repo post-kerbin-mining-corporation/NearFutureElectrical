@@ -5,6 +5,7 @@ v0.8.4
 - Fixed download link in .version file
 - Fixed costs of nuclear fuel containers
 - Fixed a rogue logging spam
+- Fixed a null reference exception when starting a reactor for the first time
 
 v0.8.3
 ------
