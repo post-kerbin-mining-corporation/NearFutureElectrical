@@ -8,7 +8,7 @@ using KSP.UI.Screens;
 namespace NearFutureElectrical
 {
 
-    public class NFElectricalReactorVariables;PartModule
+    public class RPMFissionReactorVariables:PartModule
     {
 
       List<FissionReactor> reactors = new List<FissionReactor>();
@@ -60,7 +60,7 @@ namespace NearFutureElectrical
           }
         }
 
-        public void CurrentReactor()
+        public FissionReactor CurrentReactor()
         {
           return reactors[currentReactor];
         }
@@ -85,25 +85,25 @@ namespace NearFutureElectrical
 
             switch (variableName)
             {
-              case  "CORETEMP":
+              case  "NFECORETEMP":
                 return GetCoreTemperature();
-              case "NOMINALTEMP":
+              case "NFENOMINALTEMP":
                 return GetNominalTemperature();
-              case "MELTDOWNTEMP":
+              case "NFEMELTDOWNTEMP":
                 return GetMeltdownTemperature();
-              case "CRITICALTEMP":
+              case "NFECRITICALTEMP":
                 return GetCriticalTemperature();
-              case "AUTOSHUTDOWNTEMP":
+              case "NFEAUTOSHUTDOWNTEMP":
                 return GetShutdownTemperature();
-              case "STATE":
+              case "NFEREACTORSTATE":
                 return  GetReactorState();
-              case "THROTTLE")
+              case "NFEREACTORTHROTTLE":
                 return GetReactorThrottle();
-              case "REALTHROTTLE")
+              case "NFEREACTORREALTHROTTLE":
                   return GetReactorActualThrottle();
-              case "COUNT":
-                return reactorList.Count;
-              case "CURRENT":
+              case "NFEREACTORCOUNT":
+                return reactors.Count;
+              case "NFEREACTORID":
                 return currentReactor;
             }
             return null;
@@ -146,7 +146,7 @@ namespace NearFutureElectrical
           return reactors[currentReactor].CurrentPowerPercent;
         }
 
-        float GetReactorThrottle()
+        float GetReactorActualThrottle()
         {
           return reactors[currentReactor].ActualPowerPercent;
         }
