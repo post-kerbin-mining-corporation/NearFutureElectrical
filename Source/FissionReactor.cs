@@ -638,7 +638,7 @@ namespace NearFutureElectrical
         // Set ModuleResourceConverter ratios based on an input scale
         private void RecalculateRatios(float fuelInputScale)
         {
-            
+
             for (int i = 0; i < _recipe.Inputs.Count; i++)
             {
                 for (int j = 0; j < inputs.Count; j++)
@@ -646,7 +646,7 @@ namespace NearFutureElectrical
                     if (inputs[j].ResourceName == inputList[i].ResourceName)
                     {
                         _recipe.Inputs[i] = new ResourceRatio(inputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, inputList[i].DumpExcess);
-                     
+
                     }
                 }
             }
@@ -724,6 +724,11 @@ namespace NearFutureElectrical
             {
                 return false;
             }
+        }
+
+        public bool GetCoreTemperature()
+        {
+          return core.CoreTemperature;
         }
 
         // ####################################
