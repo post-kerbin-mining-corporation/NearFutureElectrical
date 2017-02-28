@@ -46,6 +46,13 @@ namespace NearFutureElectrical
             reactorController.CurrentReactor().CurrentPowerPercent = percent;
         }
 
+        public void AdjustReactorShutdownTemp(float temperature)
+        {
+          GetController();
+          if (reactorController != null)
+            reactorController.CurrentReactor().CurrentSafetyOverride = temperature;
+        }
+
         private void GetController()
         {
           if (reactorController == null)
