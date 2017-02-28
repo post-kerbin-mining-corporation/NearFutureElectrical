@@ -67,6 +67,8 @@
     <Compile Include="RadioisotopeGenerator.cs" />
     <Compile Include="ReactorUI.cs" />
     <Compile Include="Resources.cs" />
+    <Compile Include="RPMFissionReactorButtons.cs" />
+    <Compile Include="RPMFissionReactorVariables.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -726,9 +726,9 @@ namespace NearFutureElectrical
             }
         }
 
-        public bool GetCoreTemperature()
+        public float GetCoreTemperature()
         {
-          return core.CoreTemperature;
+          return (float)core.CoreTemperature;
         }
 
         // ####################################
