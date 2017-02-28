@@ -68,39 +68,45 @@ namespace NearFutureElectrical
 
         public object ProcessVariable(string variableName)
         {
-            // Supported varibles
+            // Supported variables
             // CORETEMP: Current core temp
             // NOMINALTEMP: Nominal core temp
             // CRITICALTEMP: Critical core temp
             // MELTDOWNTEMP
             // AUTOSHUTDOWNTEMP
-            // STATE: On/Off 0-1
-            // THROTTLE: Reactor throttle 0-100
-            // COUNT: Current number of reactors
-            // CURRENT: Current reactor ID
+            // STATE: On/Off as an integer, 0/1
+            // THROTTLE: Reactor throttle, from 0-100
+            // REALTHROTTLE: Reactor 'real' throttle, from 0-100
+            // COUNT: Current number of reactors on the ship
+            // CURRENT: Current reactor ID as selected
 
             if (currentReactor == -1)
-              return;
+              return null;
 
-            if (variableName == "CORETEMP")
-              return GetCoreTemperature();
-            if (variableName == "NOMINALTEMP")
-              return GetNominalTemperature();
-            if (variableName == "MELTDOWNTEMP")
-              return GetMeltdownTemperature();
-            if (variableName == "CRITICALTEMP")
-              return GetCriticalTemperature();
-            if (variableName == "AUTOSHUTDOWNTEMP")
-              return GetShutdownTemperature();
-            if (variableName == "STATE")
-              return  GetReactorState();
-            if (variableName == "THROTTLE")
-              return GetReactorThrottle();
-
-            if (variableName == "COUNT")
-              return reactorList.Count;
-            if (variableName == "CURRENT")
-              return currentReactor;
+            switch (variableName)
+            {
+              case  "CORETEMP":
+                return GetCoreTemperature();
+              case "NOMINALTEMP":
+                return GetNominalTemperature();
+              case "MELTDOWNTEMP":
+                return GetMeltdownTemperature();
+              case "CRITICALTEMP":
+                return GetCriticalTemperature();
+              case "AUTOSHUTDOWNTEMP":
+                return GetShutdownTemperature();
+              case "STATE":
+                return  GetReactorState();
+              case "THROTTLE")
+                return GetReactorThrottle();
+              case "REALTHROTTLE")
+                  return GetReactorActualThrottle();
+              case "COUNT":
+                return reactorList.Count;
+              case "CURRENT":
+                return currentReactor;
+            }
+            return null;
         }
 
         float GetCoreTemperature()
@@ -138,6 +144,11 @@ namespace NearFutureElectrical
         float GetReactorThrottle()
         {
           return reactors[currentReactor].CurrentPowerPercent;
+        }
+
+        float GetReactorThrottle()
+        {
+          return reactors[currentReactor].ActualPowerPercent;
         }
     }
 
