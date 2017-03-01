@@ -37,7 +37,7 @@ namespace NearFutureElectrical
             }
 
             //sort
-            reactors= unsortedReactorList.OrderByDescending(x => x.HeatGeneration).ToList();
+            reactors = unsortedReactorList.OrderByDescending(x => x.HeatGeneration).ToList();
             reactors = unsortedReactorList;
         }
 
