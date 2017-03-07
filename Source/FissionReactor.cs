@@ -29,6 +29,13 @@ namespace NearFutureElectrical
 
         /// CONFIGURABLE FIELDS
         // ----------------------
+        // The icon to use in the reactor UI
+        [KSPField(isPersistant = true)]
+        public int UIIcon = 1;
+
+        // The
+        [KSPField(isPersistant = true)]
+        public string UIName = "";
 
         // Whether reactor power settings should follow the throttle setting
         [KSPField(isPersistant = false)]
@@ -324,6 +331,8 @@ namespace NearFutureElectrical
             base.OnFixedUpdate();
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
+                if (UIName = "")
+                  UIName = part.partInfo.title;
                 if (FollowThrottle)
                 {
                     if (reactorEngine != null)
