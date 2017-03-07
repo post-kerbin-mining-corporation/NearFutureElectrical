@@ -1,10 +1,15 @@
-
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+using KSP.UI.Screens;
+using NearFutureElectrical;
 
 namespace NearFutureElectrical.UI
 {
     [KSPAddon(KSPAddon.Startup.Flight, false)]
-    public class ReactorUIItem
+    public class ReactorUIEntry
     {
 
       private bool advancedMode = false;
@@ -14,7 +19,7 @@ namespace NearFutureElectrical.UI
       private FissionGenerator generator;
 
       // initialize the UI component
-      public ReactorUIItem(FissionReactor toDraw, ReactorUI host)
+      public ReactorUIEntry(FissionReactor toDraw, ReactorUI host)
       {
         reactor = toDraw;
         generator = reactor.GetComponent<FissionGenerator>();
@@ -135,7 +140,7 @@ namespace NearFutureElectrical.UI
         GUILayout.BeginHorizontal();
         // On/off
         bool y = reactor.ModuleIsActive();
-        bool x = GUILayout.Toggle(reactor.ModuleIsActive(),"Active",host.GUIResources.GetStyle("button_toggle");
+        bool x = GUILayout.Toggle(reactor.ModuleIsActive(),"Active",host.GUIResources.GetStyle("button_toggle"));
         if (x != y)
         {
             reactor.ToggleResourceConverterAction( new KSPActionParam(0,KSPActionType.Activate) );

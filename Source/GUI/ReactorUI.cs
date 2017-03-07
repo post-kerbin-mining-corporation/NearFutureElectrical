@@ -20,7 +20,7 @@ namespace NearFutureElectrical.UI
         static bool showFocusedWindow = false;
         static FissionReactor focusedReactor;
 
-        private List<ReactorUIItem> uiReactors;
+        private List<ReactorUIEntry> uiReactors;
 
         // GUI VARS
         private int mainWindowID = new System.Random(3256231).Next();
@@ -44,7 +44,7 @@ namespace NearFutureElectrical.UI
         {
           showFocusedWindow = true;
           focusedReactor = reactor;
-          
+
         }
 
         public static void ToggleReactorWindow()
@@ -75,10 +75,10 @@ namespace NearFutureElectrical.UI
             reactorList = unsortedReactorList.OrderByDescending(x => x.HeatGeneration).ToList();
             reactorList = unsortedReactorList;
             // Create ui objects
-            uiReactors = new List<ReactorUIItem>();
+            uiReactors = new List<ReactorUIEntry>();
             foreach (FissionReactor reactor in reactorList)
             {
-              uiReactors.Add(new ReactorUIItem(reactor, this));
+              uiReactors.Add(new ReactorUIEntry(reactor, this));
             }
 
         }
