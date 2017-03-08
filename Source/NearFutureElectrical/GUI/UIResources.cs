@@ -17,21 +17,25 @@ namespace NearFutureElectrical.UI
     private Texture generalIcons;
     private Texture reactorIcons;
 
+    // Get any icon, given its name
     public AtlasIcon GetIcon(string name)
     {
       return iconList[name];
     }
 
+    // Get a reactor icon, given its ID
     public AtlasIcon GetReactorIcon(int id)
     {
       return iconList[String.Format("reactor_{0}",id)];
     }
 
+    // Get a style, given its name
     public GUIStyle GetStyle(string name)
     {
       return styleList[name];
     }
 
+    // Constructor
     public UIResources()
     {
       CreateIconList();

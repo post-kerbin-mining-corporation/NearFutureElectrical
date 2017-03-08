@@ -11,7 +11,7 @@ namespace NearFutureElectrical.UI
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class ReactorUIEntry
     {
-
+      // Color of the temperature bar
       private Color nominalColor = Color.green;
       private Color criticalColor = new Color(1.0f, 102f / 255f, 0f);
       private Color meltdownColor = Color.red;
@@ -22,18 +22,20 @@ namespace NearFutureElectrical.UI
       private FissionReactor reactor;
       private FissionGenerator generator;
 
-      // initialize the UI component
+      // Constructor
       public ReactorUIEntry(FissionReactor toDraw, ReactorUI host)
       {
         reactor = toDraw;
         generator = reactor.GetComponent<FissionGenerator>();
       }
+
+      // Draw the main control area
       private void DrawMainControls()
       {
 
         GUILayout.BeginHorizontal();
         // STATIC: Icon
-        Rect iconRect = GUILayoutUtility.GetRect(64f, 64f);
+        Rect iconRect = GUILayoutUtility.GetRect(32f, 32f);
         GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetReactorIcon(reactor.UIIcon).iconAtlas, host.GUIResources.GetReactorIcon(reactor.UIIcon).iconRect);
 
         // STATIC: UI Name
@@ -43,15 +45,15 @@ namespace NearFutureElectrical.UI
 
         GUILayout.BeginHorizontal();
         // BUTTON: Toggle
-        bool y = reactor.ModuleIsActive();
-        bool x = GUILayout.Toggle(reactor.ModuleIsActive(),"Active",host.GUIResources.GetStyle("button_toggle"));
-        if (x != y)
+        bool current = reactor.ModuleIsActive();
+        bool toggled = GUILayout.Toggle(reactor.ModuleIsActive(),"Active",host.GUIResources.GetStyle("button_toggle"));
+        if (current != toggled)
         {
             reactor.ToggleResourceConverterAction( new KSPActionParam(0,KSPActionType.Activate) );
         }
 
         // BUTTON: Settings
-        iconRect = GUILayoutUtility.GetRect(64f, 64f);
+        iconRect = GUILayoutUtility.GetRect(32f, 32f);
         if (GUI.Button(iconRect, "", host.GUIResources.GetStyle("button_overlaid")))
         {
           ReactorUI.ShowFocusedReactorSettings(reactor);
@@ -62,27 +64,22 @@ namespace NearFutureElectrical.UI
 
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
-
       }
 
-
-      private void DrawBasicControls()
+      // Draw the noninteractable components
+      private void DrawReadout()
       {
         GUILayout.BeginVertical();
 
-        // SLIDER: Throttle
-        GUILayout.BeginHorizontal();
-        reactor.CurrentPowerPercent = GUILayout.HorizontalSlider(reactor.CurrentPowerPercent, 0f, 100f, GUILayout.MinWidth(150f));
-        GUILayout.Label(String.Format("{0:F0}%", reactor.CurrentPowerPercent), host.GUIResources.GetStyle("text_basic"));
-        GUILayout.EndHorizontal();
+
         // READOUT: Heat production
         GUILayout.BeginHorizontal();
-        Rect iconRect = GUILayoutUtility.GetRect(64f, 64f);
+        Rect iconRect = GUILayoutUtility.GetRect(32f, 32f);
         GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("fire").iconAtlas, host.GUIResources.GetIcon("fire").iconRect;
         GUILayout.Label(String.Format("{0:F1} kW", reactor.AvailablePower), host.GUIResources.GetStyle("text_basic"), GUILayout.MaxWidth(120f), GUILayout.MinWidth(120f));
         GUILayout.Space(10f);
         // READOUT: Energy production
-        iconRect = GUILayoutUtility.GetRect(64f, 64f);
+        iconRect = GUILayoutUtility.GetRect(32f, 32f);
         GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("lightning").iconAtlas, host.GUIResources.GetIcon("lightning").iconRect;
         if (generator != null)
         {
@@ -93,13 +90,13 @@ namespace NearFutureElectrical.UI
             GUILayout.Label(String.Format("N/A"), host.GUIResources.GetStyle("text_basic"), GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
         }
         // READOUT: Lifetime remaining
-        iconRect = GUILayoutUtility.GetRect(64f, 64f);
+        iconRect = GUILayoutUtility.GetRect(32f, 32f);
         GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("timer").iconAtlas, host.GUIResources.GetIcon("timer").iconRect;
         GUILayout.Label(String.Format("{0}", reactor.FuelStatus), host.GUIResources.GetStyle("text_basic"), GUILayout.MaxWidth(120f), GUILayout.MinWidth(120f));
         GUILayout.EndHorizontal();
         // PROGRESS BAR: Temperature bar
         GUILayout.BeginHorizontal();
-        iconRect = GUILayoutUtility.GetRect(64f, 64f);
+        iconRect = GUILayoutUtility.GetRect(32f, 32f);
         GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("thermometer").iconAtlas, host.GUIResources.GetIcon("thermometer").iconRect;
 
         float coreTemp = (float)reactor.GetCoreTemperature();
@@ -139,47 +136,91 @@ namespace NearFutureElectrical.UI
 
          GUI.EndGroup();
          GUILayout.EndHorizontal();
-
          GUILayout.EndVertical();
-
-
-
-
       }
-      private void DrawAdvancedControls()
+
+      // Draw the basic control set
+      private void DrawBasicControls()
       {
-        // Auto-shutdown slider
+        // SLIDER: Throttle
         GUILayout.BeginHorizontal();
-        GUILayout.Label("Safety Status",  host.GUIResources.GetStyle("header_center"), GUILayout.MaxWidth(110f), GUILayout.MinWidth(110f));
-        reactor.CurrentSafetyOverride = GUILayout.HorizontalSlider(reactor.CurrentSafetyOverride, 700f, reactor.MaximumTemperature, GUILayout.MinWidth(150f));
-        GUILayout.Label(String.Format("{0:F0} K", reactor.CurrentSafetyOverride), host.GUIResources.GetStyle("text_basic"));
-        GUILayout.EndHorizontal();
-        GUILayout.BeginHorizontal();
-            GUILayout.Label("Fuel Status",  host.GUIResources.GetStyle("header_center"), GUILayout.MaxWidth(110f), GUILayout.MinWidth(110f));
-            GUILayout.Label(reactor.FuelStatus, host.GUIResources.GetStyle("text_basic"));
+        Rect iconRect = GUILayoutUtility.GetRect(32f, 32f);
+        GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("throttle").iconRect;
+        reactor.CurrentPowerPercent = GUILayout.HorizontalSlider(reactor.CurrentPowerPercent, 0f, 100f, GUILayout.MinWidth(75f));
+        GUILayout.Label(String.Format("{0:F0}%", reactor.CurrentPowerPercent), host.GUIResources.GetStyle("text_basic"));
         GUILayout.EndHorizontal();
 
-        // Time warp cutoff slider
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Safety Status",  host.GUIResources.GetStyle("header_center"), GUILayout.MaxWidth(110f), GUILayout.MinWidth(110f));
-        reactor.CurrentSafetyOverride = GUILayout.HorizontalSlider(reactor.CurrentSafetyOverride, 700f, reactor.MaximumTemperature, GUILayout.MinWidth(150f));
-        GUILayout.Label(String.Format("{0:F0} K", reactor.CurrentSafetyOverride), host.GUIResources.GetStyle("text_basic"));
-        GUILayout.EndHorizontal();
-        GUILayout.BeginHorizontal();
-            GUILayout.Label("Fuel Status",  host.GUIResources.GetStyle("header_center"), GUILayout.MaxWidth(110f), GUILayout.MinWidth(110f));
-            GUILayout.Label(reactor.FuelStatus, host.GUIResources.GetStyle("text_basic"));
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginVertical();
-        GUILayout.Label("Reactor Status", host.GUIResources.GetStyle("header_center"), GUILayout.MaxWidth(110f), GUILayout.MinWidth(110f));
+        // PROGRESS BAR: Adjusted Throttle
         if (reactor.FollowThrottle)
         {
-            GUILayout.Label(String.Format("Actual: {0:F0}%", reactor.ActualPowerPercent), host.GUIResources.GetStyle("text_basic"));
+          GUILayout.BeginHorizontal();
+          iconRect = GUILayoutUtility.GetRect(32f, 32f);
+          GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("thermometer").iconRect;
+
+          float powerFraction = reactor.ActualPowerPercent/100f;
+
+          Vector2 readoutSize = new Vector2(150f, 20f);
+          Vector2 barBackgroundSize = new Vector2(130f, 10f);
+          Vector2 barForegroundSize = new Vector2(barBackgroundSize.x * powerFraction, 7f);
+
+          Rect readoutRect = GUILayoutUtility.GetRect(readoutSize.x, readoutSize.y);
+          Rect barBackgroundRect = new Rect(0f, 0f, barBackgroundSize.x, barBackgroundSize.y);
+          Rect barForeroundRect = new Rect(0f, 0f, barForegroundSize.x, barForegroundSize.y);
+
+          Color barColor = Color.green;
+
+          GUI.BeginGroup(readoutRect);
+          GUI.Box(barBackgroundRect, "", host.GUIResources.GetStyle("bar_background"));
+          GUI.color = barColor;
+          GUI.Box(barForeroundRect, "", host.GUIResources.GetStyle("bar_foreground"));
+          GUI.color = Color.white;
+           GUI.EndGroup();
+
+           GUILayout.Label(String.Format("{0:F0}%", reactor.ActualPowerPercent), host.GUIResources.GetStyle("text_basic"));
+           GUILayout.EndHorizontal();
         }
         GUILayout.EndVertical();
+
       }
 
+      // Draw the advanced control set
+      private void DrawAdvancedControls()
+      {
+        // SLIDER: Shutdown Temperature
+        GUILayout.BeginHorizontal();
+        reactor.AutoShutdown = GUILayout.Toggle(reactor.AutoShutdown, "Safety Override", host.GUIResources.GetStyle("button_toggle"));
 
+        reactor.CurrentSafetyOverride = GUILayout.HorizontalSlider(reactor.CurrentSafetyOverride, 700f, reactor.MaximumTemperature, GUILayout.MinWidth(150f));
+        GUILayout.Label(String.Format("{0:F0} K", reactor.CurrentSafetyOverride), host.GUIResources.GetStyle("text_basic"));
+        GUILayout.EndHorizontal();
+
+        // SLIDER: Time Warp Shutdown
+        GUILayout.BeginHorizontal();
+        reactor.TimewarpShutdown = GUILayout.Toggle(reactor.TimewarpShutdown, "Warp Shutdown", host.GUIResources.GetStyle("button_toggle"));
+        reactor.CurrentSafetyOverride = GUILayout.HorizontalSlider(reactor.CurrentSafetyOverride, 700f, reactor.MaximumTemperature, GUILayout.MinWidth(150f));
+        GUILayout.Label(String.Format("{0:F0} K", reactor.CurrentSafetyOverride), host.GUIResources.GetStyle("text_basic"));
+        GUILayout.EndHorizontal();
+      }
+      // Draws the button that unhides the advanced controls
+      private void DrawAdvancedControlButton(bool maximized)
+      {
+        GUILayout.BeginHorizontal();
+        if (maximized)
+        {
+          if (GUILayout.Button("[-] ADVANCED", host.GUIResources.GetStyle("header_basic")))
+          {
+            advancedMode = false;
+          }
+        }
+        else
+        {
+          if (GUILayout.Button("[+] ADVANCED", host.GUIResources.GetStyle("header_basic")))
+          {
+            advancedMode = true;
+          }
+        }
+        GUILayout.EndHorizontal();
+      }
 
       // Draw the UI component
       public void Draw()
@@ -189,9 +230,11 @@ namespace NearFutureElectrical.UI
 
 
         DrawMainControls();
+        DrawReadout();
 
         GUILayout.BeginVertical();
         DrawBasicControls();
+        DrawAdvancedControlButton(advancedMode);
         if (advancedMode)
         {
           DrawAdvancedControls();
