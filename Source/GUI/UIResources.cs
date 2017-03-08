@@ -24,7 +24,7 @@ namespace NearFutureElectrical.UI
 
     public AtlasIcon GetReactorIcon(int id)
     {
-      return null;
+      return iconList[String.Format("reactor_{0}", id)];
     }
 
     public GUIStyle GetStyle(string name)
