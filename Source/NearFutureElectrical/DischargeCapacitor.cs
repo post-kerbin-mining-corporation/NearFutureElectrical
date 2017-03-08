@@ -15,7 +15,7 @@ namespace NearFutureElectrical
     {
         // The trigger group this capacitor belongs to
         [KSPField(isPersistant = true)]
-        public string CapacitorGroups = "0"
+        public string CapacitorGroups = "0";
 
         // Is capacitor online
         [KSPField(isPersistant = true)]
@@ -133,8 +133,8 @@ namespace NearFutureElectrical
         }
         public void RemoveFromGroup(int toRemove)
         {
-          if (assignedGroups.Contains(toAssign))
-            assignedGroups.Remove(toAssign);
+          if (assignedGroups.Contains(toRemove))
+            assignedGroups.Remove(toRemove);
         }
 
         public override string GetInfo()
@@ -173,7 +173,7 @@ namespace NearFutureElectrical
               DoCatchup();
 
               assignedGroups = new List<int>();
-              for (int i =0; i< CapacitorGroups.length ;i++)
+              for (int i =0; i< CapacitorGroups.Length ;i++)
               {
                 assignedGroups.Add((int)CapacitorGroups[i]);
               }

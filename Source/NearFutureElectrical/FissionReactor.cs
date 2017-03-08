@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP.UI;
+using NearFutureElectrical.UI;
 
 namespace NearFutureElectrical
 {
@@ -346,7 +347,7 @@ namespace NearFutureElectrical
             base.OnFixedUpdate();
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
-                if (UIName = "")
+                if (UIName == "")
                   UIName = part.partInfo.title;
                 if (FollowThrottle)
                 {
