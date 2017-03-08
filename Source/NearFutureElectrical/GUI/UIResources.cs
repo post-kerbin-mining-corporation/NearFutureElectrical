@@ -53,7 +53,6 @@ namespace NearFutureElectrical.UI
       iconList.Add("timer", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
       iconList.Add("notch", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
       iconList.Add("gear", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("throttle", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
       iconList.Add("capacitor", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
 
       // Add the reactor icons

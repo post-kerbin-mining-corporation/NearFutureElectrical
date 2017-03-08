@@ -29,8 +29,8 @@ namespace NearFutureElectrical.UI
         private Rect popupWindowPos = new Rect(200f, 200f, 200f, 200f);
         private Vector2 scrollPosition = Vector2.zero;
 
+        private int iconID;
         private string textVariable;
-
 
         bool initStyles = false;
         private UIResources resources;
@@ -44,7 +44,6 @@ namespace NearFutureElectrical.UI
         {
           showFocusedWindow = true;
           focusedReactor = reactor;
-
         }
 
         public static void ToggleReactorWindow()
@@ -153,13 +152,48 @@ namespace NearFutureElectrical.UI
             //Debug.Log("NFE: Stop Capacitor UI Draw");
         }
 
+        // Draws the popup windows
         private void ReactorPopup(int windowId)
         {
+          // Text Area
+          GUILayout.BeginVertical()
           textVariable = GUILayout.TextArea(textVariable, 150);
+
+          GUILayout.BeginHorizontal();
+
+          Rect iconRect = GUILayoutUtility.GetRect(64f, 64f);
+          Texture sharedIcon = GUIResources.GetIcon("reactor_basic").iconAtlas;
+          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_basic").iconRect);
+          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
+            iconID = 0;
+          iconRect = GUILayoutUtility.GetRect(64f, 64f);
+          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_basic").iconRect);
+          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
+            iconID = 1;
+          iconRect = GUILayoutUtility.GetRect(64f, 64f);
+          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_basic").iconRect);
+          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
+            iconID = 2;
+          iconRect = GUILayoutUtility.GetRect(64f, 64f);
+          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_basic").iconRect);
+          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
+            iconID = 3;
+          iconRect = GUILayoutUtility.GetRect(64f, 64f);
+          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_basic").iconRect);
+          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
+            iconID = 4;
+          iconRect = GUILayoutUtility.GetRect(64f, 64f);
+          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_basic").iconRect);
+          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
+            iconID = 5;
+          GUILayout.EndHorizontal();
+
+          // Cancel/Accept
           GUILayout.BeginHorizontal();
           if (GUILayout.Button("Accept"))
           {
             focusedReactor.UIName = textVariable;
+            focusedReactor.UIIcon = iconID;
             showFocusedWindow = false;
           }
           if (GUILayout.Button("Cancel"))
@@ -167,8 +201,10 @@ namespace NearFutureElectrical.UI
             showFocusedWindow = false;
           }
           GUILayout.EndHorizontal();
+          GUILayout.EndVertical()
         }
-        // GUI function for the window
+
+        // Draws the main window
         private void ReactorWindow(int windowId)
         {
             GUILayout.BeginHorizontal();
@@ -198,11 +234,6 @@ namespace NearFutureElectrical.UI
                 GUILayout.Label("No nuclear reactors found!");
             }
             GUI.DragWindow();
-        }
-
-        private void ReactorOptionsWindow()
-        {
-
         }
 
         void Update()
