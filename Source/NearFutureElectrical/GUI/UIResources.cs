@@ -47,13 +47,19 @@ namespace NearFutureElectrical.UI
       iconList = new Dictionary<string, AtlasIcon>();
 
       // Add the general icons
-      iconList.Add("lightning", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("fire", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("thermometer", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("timer", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("notch", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("gear", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("capacitor", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("lightning", new AtlasIcon(generalIcons, 0.00f, 0.75f, 0.25f, 0.25f));
+      iconList.Add("fire", new AtlasIcon(generalIcons, 0.25f, 0.75f, 0.25f, 0.25f));
+      iconList.Add("thermometer", new AtlasIcon(generalIcons, 0.50f, 0.75f, 0.25f, 0.25f));
+      iconList.Add("timer", new AtlasIcon(generalIcons, 0.75f, 0.75f, 0.25f, 0.25f));
+
+      iconList.Add("notch", new AtlasIcon(generalIcons, 0.0f, 0.50f, 0.25f, 0.25f));
+      iconList.Add("gear", new AtlasIcon(generalIcons, 0.25f, 0.50f, 0.25f, 0.25f));
+      iconList.Add("capacitor", new AtlasIcon(generalIcons, 0.50f, 0.50f, 0.25f, 0.25f));
+      iconList.Add("throttle", new AtlasIcon(generalIcons, 0.75f, 0.50f, 0.25f, 0.25f));
+
+      iconList.Add("throttle_auto", new AtlasIcon(generalIcons, 0.00f, 0.25f, 0.25f, 0.25f));
+      iconList.Add("warp_limit", new AtlasIcon(generalIcons, 0.25f, 0.25f, 0.25f, 0.25f));
+      iconList.Add("heat_limit", new AtlasIcon(generalIcons, 0.50f, 0.25f, 0.25f, 0.25f));
 
       // Add the reactor icons
       iconList.Add("reactor_1", new AtlasIcon(reactorIcons, 0.00f, 0.66f, 0.33f, 0.33f));
