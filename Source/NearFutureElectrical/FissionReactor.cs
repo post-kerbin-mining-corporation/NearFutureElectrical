@@ -99,6 +99,12 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public int smoothingInterval = 25;
 
+        [KSPField(isPersistant = true)]
+        public bool TimewarpShutdown = false;
+
+        [KSPField(isPersistant = true)]
+        public float TimewarpShutdownFactor  = 1000f;
+
         // REPAIR VARIABLES
         // integrity of the core
         [KSPField(isPersistant = true)]
@@ -211,6 +217,15 @@ namespace NearFutureElectrical
         // Fuel Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Core Life")]
         public string FuelStatus;
+
+        // Sets whether auto-shutdown is possible
+        public ModuleCoreHeat Core{ get {return core;}}
+
+        // Sets whether time wwarp shutdown is enabled
+        public void SetTimewarpShutdownStatus(bool status)
+        {
+
+        }
 
         public override string GetInfo()
         {
