@@ -24,7 +24,7 @@ namespace NearFutureElectrical.UI
 
     public AtlasIcon GetReactorIcon(int id)
     {
-      return null;
+      return iconList[String.Format("reactor_{0}", id)];
     }
 
     public GUIStyle GetStyle(string name)
@@ -53,15 +53,16 @@ namespace NearFutureElectrical.UI
       iconList.Add("timer", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
       iconList.Add("notch", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
       iconList.Add("gear", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("throttle", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
       iconList.Add("capacitor", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
 
       // Add the reactor icons
-      iconList.Add("reactor_1", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("reactor_2", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("reactor_3", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("reactor_4", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("reactor_5", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("reactor_6", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("reactor_1", new AtlasIcon(reactorIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("reactor_2", new AtlasIcon(reactorIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("reactor_3", new AtlasIcon(reactorIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("reactor_4", new AtlasIcon(reactorIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("reactor_5", new AtlasIcon(reactorIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("reactor_6", new AtlasIcon(reactorIcons, 0.0f, 0.0f, 0.25f, 0.25f));
 
     }
 
@@ -98,6 +99,10 @@ namespace NearFutureElectrical.UI
         draftStyle = new GUIStyle(HighLogic.Skin.toggle);
         draftStyle.normal.textColor = draftStyle.normal.textColor;
         styleList.Add("button_toggle", new GUIStyle(draftStyle));
+        // Button with an overlay icon
+        draftStyle = new GUIStyle(HighLogic.Skin.button);
+        draftStyle.normal.textColor = draftStyle.normal.textColor;
+        styleList.Add("button_overlaid", new GUIStyle(draftStyle));
         // Progress bar
         // background
         draftStyle = new GUIStyle(HighLogic.Skin.textField);
