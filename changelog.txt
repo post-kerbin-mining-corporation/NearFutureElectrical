@@ -1,6 +1,7 @@
-v0.8.4
+v0.8.5
 ------
-- Fixed USIPatch PDU fuel rate
+- Changed surface attach mode of Whirlijig to allow surface attachments on some areas of the part
+- Fixed USI Patch PDU fuel rate
 
 v0.8.4
 ------
