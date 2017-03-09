@@ -1,3 +1,17 @@
+v0.8.5
+------
+- Changed surface attach mode of Whirlijig to allow surface attachments on some areas of the part
+- Fixed USI Patch PDU fuel rate
+
+v0.8.4
+------
+- Update B9PartSwitch to 1.7.1
+- Updated CRP to 0.6.6
+- Fixed download link in .version file
+- Fixed costs of nuclear fuel containers
+- Fixed a rogue logging spam
+- Fixed a null reference exception when starting a reactor for the first time
+
 v0.8.3
 ------
 - Marked for KSP 1.2.2

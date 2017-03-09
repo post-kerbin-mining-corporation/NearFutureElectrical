@@ -377,21 +377,25 @@ namespace NearFutureElectrical
 
         private void DoFuelConsumption()
         {
-          // Get current resource consumption
-          double rate = 0d;
-          for (int i = 0 ;i < inputList.Count;i++)
-          {
-            if (_recipe.Inputs[i].ResourceName == FuelName)
-                rate = _recipe.Inputs[i].Ratio;
-          }
-          // Recalculate fuel use Ratio
-          // Fuel use is proportional to power setting
-          RecalculateRatios(ActualPowerPercent / 100f );
+            if (_recipe != null && _recipe.Inputs != null)
+            {
 
-          // Find the time remaining at current rate
-          FuelStatus = FindTimeRemaining(
-            this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,
-            rate);
+                // Get current resource consumption
+                double rate = 0d;
+                for (int i = 0; i < inputList.Count; i++)
+                {
+                    if (_recipe.Inputs[i].ResourceName == FuelName)
+                        rate = _recipe.Inputs[i].Ratio;
+                }
+                // Recalculate fuel use Ratio
+                // Fuel use is proportional to power setting
+                RecalculateRatios(ActualPowerPercent / 100f);
+
+                // Find the time remaining at current rate
+                FuelStatus = FindTimeRemaining(
+                  this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount,
+                  rate);
+            }
         }
 
         // Creates heat from the reaction
@@ -634,6 +638,7 @@ namespace NearFutureElectrical
         // Set ModuleResourceConverter ratios based on an input scale
         private void RecalculateRatios(float fuelInputScale)
         {
+            
             for (int i = 0; i < _recipe.Inputs.Count; i++)
             {
                 for (int j = 0; j < inputs.Count; j++)
@@ -658,7 +663,7 @@ namespace NearFutureElectrical
             }
             for (int i = 0; i < inputList.Count; i++)
             {
-                Debug.Log("IN: edited " + inputList[i].ResourceName + " ratio to " + (inputList[i].Ratio).ToString());
+                //Debug.Log("IN: edited " + inputList[i].ResourceName + " ratio to " + (inputList[i].Ratio).ToString());
             }
         }
 

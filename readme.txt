@@ -1,5 +1,5 @@
 ==================================
-NEAR FUTURE ELECTRICAL PACK v0.8.3
+NEAR FUTURE ELECTRICAL PACK v0.8.5
 ==================================
 
 This pack contains advanced electrical parts - capacitors, nuclear reactors and new battery packs.
@@ -9,8 +9,8 @@ DEPENDENCIES
 ============
 
 Required:
-- B9PartSwitch (1.5.3)
-- Community Resource Pack (0.6.4)
+- B9PartSwitch (1.7.1)
+- Community Resource Pack (0.6.6)
 - ModuleManager (2.7.5)
 
 Optional
