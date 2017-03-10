@@ -1,3 +1,8 @@
+v0.8.6
+------
+- Fixed animation corruption on Whirlijig model
+- Fixed obsolete normal map on Whirlijig model
+
 v0.8.5
 ------
 - Changed surface attach mode of Whirlijig to allow surface attachments on some areas of the part
