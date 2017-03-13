@@ -28,6 +28,11 @@ namespace NearFutureElectrical.UI
     {
       return iconList[String.Format("reactor_{0}",id+1)];
     }
+    // Get a capacitor icon, given its ID
+    public AtlasIcon GetCapacitorIcon(int id)
+    {
+      return iconList[String.Format("capacitor_{0}",id+1)];
+    }
 
     // Get a style, given its name
     public GUIStyle GetStyle(string name)
@@ -47,6 +52,7 @@ namespace NearFutureElectrical.UI
     {
       generalIcons = (Texture)GameDatabase.Instance.GetTexture("NearFutureElectrical/UI/icon_general", false);
       reactorIcons = (Texture)GameDatabase.Instance.GetTexture("NearFutureElectrical/UI/icon_reactor", false);
+      capacitorIcons = (Texture)GameDatabase.Instance.GetTexture("NearFutureElectrical/UI/icon_capacitor", false);
 
       iconList = new Dictionary<string, AtlasIcon>();
 
@@ -58,15 +64,15 @@ namespace NearFutureElectrical.UI
 
       iconList.Add("notch", new AtlasIcon(generalIcons, 0.0f, 0.50f, 0.25f, 0.25f));
       iconList.Add("gear", new AtlasIcon(generalIcons, 0.25f, 0.50f, 0.25f, 0.25f));
-      iconList.Add("capacitor", new AtlasIcon(generalIcons, 0.50f, 0.50f, 0.25f, 0.25f));
+      iconList.Add("capacitor_charge", new AtlasIcon(generalIcons, 0.50f, 0.50f, 0.25f, 0.25f));
       iconList.Add("throttle", new AtlasIcon(generalIcons, 0.75f, 0.50f, 0.25f, 0.25f));
 
       iconList.Add("throttle_auto", new AtlasIcon(generalIcons, 0.00f, 0.25f, 0.25f, 0.25f));
       iconList.Add("warp_limit", new AtlasIcon(generalIcons, 0.25f, 0.25f, 0.25f, 0.25f));
       iconList.Add("heat_limit", new AtlasIcon(generalIcons, 0.50f, 0.25f, 0.25f, 0.25f));
-      iconList.Add("heata_limit", new AtlasIcon(generalIcons, 0.75f, 0.25f, 0.25f, 0.25f));
+      iconList.Add("capacitor_rate", new AtlasIcon(generalIcons, 0.75f, 0.25f, 0.25f, 0.25f));
 
-      iconList.Add("heatb_limit", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("capacitor_charging", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
       iconList.Add("heatc_limit", new AtlasIcon(generalIcons, 0.25f, 0.0f, 0.25f, 0.25f));
       iconList.Add("accept", new AtlasIcon(generalIcons, 0.50f, 0.0f, 0.25f, 0.25f));
       iconList.Add("cancel", new AtlasIcon(generalIcons, 0.75f, 0.0f, 0.25f, 0.25f));
@@ -81,6 +87,17 @@ namespace NearFutureElectrical.UI
       iconList.Add("reactor_7", new AtlasIcon(reactorIcons, 0.00f, 0.00f, 0.33f, 0.33f));
       iconList.Add("reactor_8", new AtlasIcon(reactorIcons, 0.33f, 0.00f, 0.33f, 0.33f));
       iconList.Add("reactor_9", new AtlasIcon(reactorIcons, 0.66f, 0.00f, 0.33f, 0.33f));
+
+      // Add the capacitor icons
+      iconList.Add("capacitor_1", new AtlasIcon(capacitorIcons, 0.00f, 0.66f, 0.33f, 0.33f));
+      iconList.Add("capacitor_2", new AtlasIcon(capacitorIcons, 0.33f, 0.66f, 0.33f, 0.33f));
+      iconList.Add("capacitor_3", new AtlasIcon(capacitorIcons, 0.66f, 0.66f, 0.33f, 0.33f));
+      iconList.Add("capacitor_4", new AtlasIcon(capacitorIcons, 0.00f, 0.33f, 0.33f, 0.33f));
+      iconList.Add("capacitor_5", new AtlasIcon(capacitorIcons, 0.33f, 0.33f, 0.33f, 0.33f));
+      iconList.Add("capacitor_6", new AtlasIcon(capacitorIcons, 0.66f, 0.33f, 0.33f, 0.33f));
+      iconList.Add("capacitor_7", new AtlasIcon(capacitorIcons, 0.00f, 0.00f, 0.33f, 0.33f));
+      iconList.Add("capacitor_8", new AtlasIcon(capacitorIcons, 0.33f, 0.00f, 0.33f, 0.33f));
+      iconList.Add("capacitor_9", new AtlasIcon(capacitorIcons, 0.66f, 0.00f, 0.33f, 0.33f));
 
     }
 
