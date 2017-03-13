@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP.UI;
+using NearFutureElectrical.UI;
 
 namespace NearFutureElectrical
 {
@@ -29,6 +30,13 @@ namespace NearFutureElectrical
 
         /// CONFIGURABLE FIELDS
         // ----------------------
+        // The icon to use in the reactor UI
+        [KSPField(isPersistant = true)]
+        public int UIIcon = 1;
+
+        // The
+        [KSPField(isPersistant = true)]
+        public string UIName = "";
 
         // Whether reactor power settings should follow the throttle setting
         [KSPField(isPersistant = false)]
@@ -91,6 +99,12 @@ namespace NearFutureElectrical
 
         [KSPField(isPersistant = false)]
         public int smoothingInterval = 25;
+
+        [KSPField(isPersistant = true)]
+        public bool TimewarpShutdown = false;
+
+        [KSPField(isPersistant = true)]
+        public float TimewarpShutdownFactor  = 1000f;
 
         // REPAIR VARIABLES
         // integrity of the core
@@ -204,6 +218,15 @@ namespace NearFutureElectrical
         // Fuel Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Core Life")]
         public string FuelStatus;
+
+        // Sets whether auto-shutdown is possible
+        public ModuleCoreHeat Core{ get {return core;}}
+
+        // Sets whether time wwarp shutdown is enabled
+        public void SetTimewarpShutdownStatus(bool status)
+        {
+
+        }
 
         public override string GetInfo()
         {
@@ -324,6 +347,8 @@ namespace NearFutureElectrical
             base.OnFixedUpdate();
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
             {
+                if (UIName == "")
+                  UIName = part.partInfo.title;
                 if (FollowThrottle)
                 {
                     if (reactorEngine != null)
@@ -638,7 +663,7 @@ namespace NearFutureElectrical
         // Set ModuleResourceConverter ratios based on an input scale
         private void RecalculateRatios(float fuelInputScale)
         {
-            
+
             for (int i = 0; i < _recipe.Inputs.Count; i++)
             {
                 for (int j = 0; j < inputs.Count; j++)
@@ -646,7 +671,7 @@ namespace NearFutureElectrical
                     if (inputs[j].ResourceName == inputList[i].ResourceName)
                     {
                         _recipe.Inputs[i] = new ResourceRatio(inputList[i].ResourceName, inputs[j].ResourceRatio * fuelInputScale, inputList[i].DumpExcess);
-                     
+
                     }
                 }
             }
@@ -724,6 +749,11 @@ namespace NearFutureElectrical
             {
                 return false;
             }
+        }
+
+        public float GetCoreTemperature()
+        {
+          return (float)core.CoreTemperature;
         }
 
         // ####################################
