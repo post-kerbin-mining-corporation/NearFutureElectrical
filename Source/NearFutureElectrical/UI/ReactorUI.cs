@@ -156,65 +156,79 @@ namespace NearFutureElectrical.UI
         // Draws the popup windows
         private void ReactorPopup(int windowId)
         {
-          // Text Area
-          GUILayout.BeginVertical();
-          textVariable = GUILayout.TextArea(textVariable, 150);
 
-          GUILayout.BeginHorizontal();
+          Rect windowRect = GUILayoutUtility.GetRect(200f,160f);
 
-          Rect iconRect = GUILayoutUtility.GetRect(32f, 32f);
+          Rect iconRect = new Rect(0f, 0f, 0f, 0f);
+          Rect textAreaRect = new Rect(0f, 0f, 0f, 0f);
+          Rect chooserAreaRect = new Rect(0f, 0f, 0f, 0f);
+
+          Rect acceptButtonRect = new Rect(0f, 0f, 24f, 24f);
+          Rect cancelButtonRect = new Rect(0f, 0f, 24f, 24f);
+
           Texture sharedIcon = GUIResources.GetIcon("reactor_1").iconAtlas;
-          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_1").iconRect);
-          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
-            iconID = 0;
-          iconRect = GUILayoutUtility.GetRect(32f, 32f);
-          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_2").iconRect);
-          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
-            iconID = 1;
-          iconRect = GUILayoutUtility.GetRect(32f, 32f);
-          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_3").iconRect);
-          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
-            iconID = 2;
-          iconRect = GUILayoutUtility.GetRect(32f, 32f);
-          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_4").iconRect);
-          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
-            iconID = 3;
-          iconRect = GUILayoutUtility.GetRect(32f, 32f);
-          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_5").iconRect);
-          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
-            iconID = 4;
-          iconRect = GUILayoutUtility.GetRect(32f, 32f);
-          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetIcon("reactor_6").iconRect);
-          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
-            iconID = 5;
-          GUILayout.EndHorizontal();
+
+          GUI.BeginGroup(windowRect);
+
+          // Big icon
+          GUI.DrawTextureWithTexCoords(iconRect, sharedIcon, GUIResources.GetReactorIcon(iconID).iconRect);
+
+          // Text Area
+          textVariable = GUI.TextArea(textAreaRect, textVariable, 150);
+
+          // Select icon area
+          GUI.BeginGroup(chooserAreaRect)
+          DrawChoiceIcon(0, sharedIcon, 0, 0);
+          DrawChoiceIcon(1, sharedIcon, 1, 0);
+          DrawChoiceIcon(2, sharedIcon, 2, 0);
+          DrawChoiceIcon(3, sharedIcon, 3, 0);
+          DrawChoiceIcon(4, sharedIcon, 0, 1);
+          DrawChoiceIcon(5, sharedIcon, 1, 1);
+          DrawChoiceIcon(6, sharedIcon, 2, 1);
+          DrawChoiceIcon(7, sharedIcon, 3, 1);
+          GUI.EndGroup();
 
           // Cancel/Accept
-          GUILayout.BeginHorizontal();
-          if (GUILayout.Button("Accept"))
+          GUI.DrawTextureWithTexCoords(acceptButtonRect, GUIResources.GetIcon("accept"), GUIResources.GetIcon("accept").iconRect);
+          if (GUI.Button(acceptButtonRect, "", GUIResources.GetStyle("button_accept")))
           {
             focusedReactor.UIName = textVariable;
             focusedReactor.UIIcon = iconID;
             showFocusedWindow = false;
           }
-          if (GUILayout.Button("Cancel"))
+
+          GUI.DrawTextureWithTexCoords(cancelButtonRect, GUIResources.GetIcon("cancel"), GUIResources.GetIcon("cancel").iconRect);
+
+          if (GUILayout.Button(cancelButtonRect, "",GUIResources.GetStyle("button_cancel")))
           {
             showFocusedWindow = false;
           }
-          GUILayout.EndHorizontal();
-          GUILayout.EndVertical();
+
+          GUI.EndGroup();
+        }
+
+        private void DrawChoiceIcon(int id, Texture texture, int x_id, int y_id)
+        {
+          Rect iconRect = new Rect(x_id*21f, y_id*21f, 20f, 20f)
+          GUI.DrawTextureWithTexCoords(iconRect, texture, GUIResources.GetReactorIcon(id).iconRect);
+          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
+            iconID = id;
         }
 
         // Draws the main window
         private void ReactorWindow(int windowId)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Near Future Electrical Reactor Control Panel (v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(120f));
+            GUILayout.Label("Reactor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(120f));
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("X", GUILayout.MaxWidth(26f), GUILayout.MinWidth(26f), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f)))
+                Rect buttonRect = GUILayoutUtility.GetRect(24f, 24f);
+
+                GUI.DrawTextureWithTexCoords(cancelButtonRect, GUIResources.GetIcon("cancel"), GUIResources.GetIcon("cancel").iconRect);
+                if (GUI.Button(buttonRect, "", GUIResources.GetStyle("button_cancel")))
                 {
                     ToggleReactorWindow();
                 }
+
             GUILayout.EndHorizontal();
 
             if (reactorList != null && reactorList.Count > 0)
@@ -232,7 +246,7 @@ namespace NearFutureElectrical.UI
             }
             else
             {
-                GUILayout.Label("No nuclear reactors found!");
+                GUILayout.Label("No nuclear reactors found");
             }
             GUI.DragWindow();
         }

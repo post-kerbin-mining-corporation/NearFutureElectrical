@@ -121,6 +121,14 @@ namespace NearFutureElectrical.UI
         draftStyle = new GUIStyle(HighLogic.Skin.button);
         draftStyle.normal.textColor = draftStyle.normal.textColor;
         styleList.Add("button_overlaid", new GUIStyle(draftStyle));
+        // Accept button
+        draftStyle = new GUIStyle(HighLogic.Skin.button);
+        draftStyle.normal.textColor = draftStyle.normal.textColor;
+        styleList.Add("button_accept", new GUIStyle(draftStyle));
+        // Cancel button
+        draftStyle = new GUIStyle(HighLogic.Skin.button);
+        draftStyle.normal.textColor = draftStyle.normal.textColor;
+        styleList.Add("button_cancel", new GUIStyle(draftStyle));
         // Progress bar
         // background
         draftStyle = new GUIStyle(HighLogic.Skin.textField);
