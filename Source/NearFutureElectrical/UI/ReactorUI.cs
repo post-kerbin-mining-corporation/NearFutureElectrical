@@ -141,10 +141,10 @@ namespace NearFutureElectrical.UI
                     if (showFocusedWindow)
                     {
                       GUI.Window(popupWindowID, popupWindowPos, ReactorPopup, new GUIContent(), GUIResources.GetStyle("window_main") );
-                      
+
                     } else
                     {
-                   
+
                     }
 
                     windowPos = GUI.Window(mainWindowID, windowPos, ReactorWindow, new GUIContent(), GUIResources.GetStyle("window_main"));
@@ -209,7 +209,7 @@ namespace NearFutureElectrical.UI
         private void ReactorWindow(int windowId)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Nuclear Reactors", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(120f));
+            GUILayout.Label("Near Future Electrical Reactor Control Panel (v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(120f));
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("X", GUILayout.MaxWidth(26f), GUILayout.MinWidth(26f), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f)))
                 {

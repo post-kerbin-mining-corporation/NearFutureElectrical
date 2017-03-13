@@ -64,6 +64,12 @@ namespace NearFutureElectrical.UI
       iconList.Add("throttle_auto", new AtlasIcon(generalIcons, 0.00f, 0.25f, 0.25f, 0.25f));
       iconList.Add("warp_limit", new AtlasIcon(generalIcons, 0.25f, 0.25f, 0.25f, 0.25f));
       iconList.Add("heat_limit", new AtlasIcon(generalIcons, 0.50f, 0.25f, 0.25f, 0.25f));
+      iconList.Add("heata_limit", new AtlasIcon(generalIcons, 0.75f, 0.25f, 0.25f, 0.25f));
+
+      iconList.Add("heatb_limit", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("heatc_limit", new AtlasIcon(generalIcons, 0.25f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("accept", new AtlasIcon(generalIcons, 0.50f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("cancel", new AtlasIcon(generalIcons, 0.75f, 0.0f, 0.25f, 0.25f));
 
       // Add the reactor icons
       iconList.Add("reactor_1", new AtlasIcon(reactorIcons, 0.00f, 0.66f, 0.33f, 0.33f));
