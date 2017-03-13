@@ -3,6 +3,12 @@ v0.8.7
 - New MX-5 'Hermes' nuclear reactor
 - New model for 3.75m FLAT nuclear reactor
 - Radial capacitors are now physicsless
+- Reactor UI rewrite:
+-- Significant visual improvements
+-- Reactors can now be given a persistent custom icon and name
+-- Better data display and controls
+-- Advanced control mode allowing the setting of the AutoShutdown temperature and a new AutoShutdown warp factor
+
 
 v0.8.6
 ------
