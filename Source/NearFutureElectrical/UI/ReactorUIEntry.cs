@@ -8,7 +8,7 @@ using NearFutureElectrical;
 
 namespace NearFutureElectrical.UI
 {
-    [KSPAddon(KSPAddon.Startup.Flight, false)]
+
     public class ReactorUIEntry
     {
       // Color of the temperature bar
@@ -186,6 +186,7 @@ namespace NearFutureElectrical.UI
           GUI.Label(realThrotleTextRect, String.Format("{0:F0}%", reactor.ActualPowerPercent), host.GUIResources.GetStyle("text_basic"));
 
         }
+        GUI.EndGroup();
       }
 
       // Draw the advanced control set
