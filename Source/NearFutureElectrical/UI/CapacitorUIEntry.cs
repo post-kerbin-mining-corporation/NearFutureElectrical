@@ -35,7 +35,7 @@ namespace NearFutureElectrical.UI
         // STATIC: Icon
         GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetCapacitorIcon(0).iconAtlas, host.GUIResources.GetCapacitorIcon(0).iconRect);
         // STATIC: UI Name
-        GUI.Label(titleRect = capacitor.part.partInfo.title, host.GUIResources.GetStyle("header_basic"));
+        GUI.Label(titleRect, capacitor.part.partInfo.title, host.GUIResources.GetStyle("header_basic"));
         GUI.EndGroup();
       }
 
@@ -78,7 +78,7 @@ namespace NearFutureElectrical.UI
         Rect barForeroundRect = new Rect(0f, 6f, barForegroundSize.x, barForegroundSize.y);
 
         Color barColor = new Color();
-            GUI.BeginGroup(temperaturePanelRect);
+            GUI.BeginGroup(chargeBarPanelRect);
             GUI.Box(barBackgroundRect, "", host.GUIResources.GetStyle("bar_background"));
             GUI.color = Color.green;
             GUI.Box(barForeroundRect, "", host.GUIResources.GetStyle("bar_foreground"));

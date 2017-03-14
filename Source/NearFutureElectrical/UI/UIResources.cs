@@ -16,6 +16,7 @@ namespace NearFutureElectrical.UI
 
     private Texture generalIcons;
     private Texture reactorIcons;
+    private Texture capacitorIcons;
 
     // Get any icon, given its name
     public AtlasIcon GetIcon(string name)

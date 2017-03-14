@@ -8,10 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using NearFutureElectrical.UI;
 
 namespace NearFutureElectrical
 {
-    class DischargeCapacitor : PartModule
+    public class DischargeCapacitor : PartModule
     {
         // The trigger group this capacitor belongs to
         [KSPField(isPersistant = true)]

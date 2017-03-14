@@ -4,15 +4,17 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP.UI.Screens;
+using NearFutureElectrical;
 
-namespace NearFutureElectrical
+namespace NearFutureElectrical.UI
 {
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class DischargeCapacitorUI:MonoBehaviour
     {
         Vessel activeVessel;
         int partCount = 0;
-
+        private UIResources resources;
+        public UIResources GUIResources { get { return resources; } }
         public void Start()
         {
             if (ApplicationLauncher.Ready)

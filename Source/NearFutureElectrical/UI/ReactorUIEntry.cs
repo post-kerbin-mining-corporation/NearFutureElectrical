@@ -45,7 +45,7 @@ namespace NearFutureElectrical.UI
         GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetReactorIcon(reactor.UIIcon).iconAtlas, host.GUIResources.GetReactorIcon(reactor.UIIcon).iconRect);
 
         // STATIC: UI Name
-        GUI.Label(titleRect = reactor.UIName, host.GUIResources.GetStyle("header_basic"));
+        GUI.Label(titleRect, reactor.UIName, host.GUIResources.GetStyle("header_basic"));
 
         // BUTTON: Toggle
         bool current = reactor.ModuleIsActive();
@@ -158,13 +158,13 @@ namespace NearFutureElectrical.UI
 
         // SLIDER: Throttle
         GUI.DrawTextureWithTexCoords(throttleIconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("throttle").iconRect);
-        reactor.CurrentPowerPercent = GUI.HorizontalSlider(throttleSliderRect reactor.CurrentPowerPercent, 0f, 100f);
+        reactor.CurrentPowerPercent = GUI.HorizontalSlider(throttleSliderRect, reactor.CurrentPowerPercent, 0f, 100f);
         GUI.Label(throttleTextRect, String.Format("{0:F0}%", reactor.CurrentPowerPercent), host.GUIResources.GetStyle("text_basic"));
 
         // PROGRESS BAR: Adjusted Throttle
         if (reactor.FollowThrottle)
         {
-          GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("thermometer").iconRect);
+          GUI.DrawTextureWithTexCoords(realThrottleIconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("thermometer").iconRect);
 
           float powerFraction = reactor.ActualPowerPercent/100f;
 
@@ -215,7 +215,7 @@ namespace NearFutureElectrical.UI
 
         reactor.TimewarpShutdown = GUI.Toggle(autoWarpOffToggleRect, reactor.TimewarpShutdown, "Warp Shutdown", host.GUIResources.GetStyle("button_toggle"));
         reactor.CurrentSafetyOverride = GUI.HorizontalSlider(autoWarpOffSliderRect, reactor.CurrentSafetyOverride, 700f, reactor.MaximumTemperature);
-        GUI.Label(String.Format(autoWarpOffTextRect, "{0:F0} K", reactor.CurrentSafetyOverride), host.GUIResources.GetStyle("text_basic"));
+        GUI.Label(autoWarpOffTextRect, String.Format("{0:F0} K", reactor.CurrentSafetyOverride), host.GUIResources.GetStyle("text_basic"));
 
         GUI.EndGroup();
       }

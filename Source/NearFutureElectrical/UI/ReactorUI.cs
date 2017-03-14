@@ -157,14 +157,14 @@ namespace NearFutureElectrical.UI
         private void ReactorPopup(int windowId)
         {
 
-          Rect windowRect = GUILayoutUtility.GetRect(200f,160f);
+          Rect windowRect = GUILayoutUtility.GetRect(200f,180f);
 
-          Rect iconRect = new Rect(0f, 0f, 0f, 0f);
-          Rect textAreaRect = new Rect(0f, 0f, 0f, 0f);
-          Rect chooserAreaRect = new Rect(0f, 0f, 0f, 0f);
+          Rect iconRect = new Rect(0f, 0f, 64f, 64f);
+          Rect textAreaRect = new Rect(64f, 0f, 128f, 64f);
+          Rect chooserAreaRect = new Rect(0f, 64f, 200f, 86f);
 
-          Rect acceptButtonRect = new Rect(0f, 0f, 24f, 24f);
-          Rect cancelButtonRect = new Rect(0f, 0f, 24f, 24f);
+          Rect acceptButtonRect = new Rect(64f, 150f, 24f, 24f);
+          Rect cancelButtonRect = new Rect(88f, 150f, 24f, 24f);
 
           Texture sharedIcon = GUIResources.GetIcon("reactor_1").iconAtlas;
 
@@ -177,7 +177,7 @@ namespace NearFutureElectrical.UI
           textVariable = GUI.TextArea(textAreaRect, textVariable, 150);
 
           // Select icon area
-          GUI.BeginGroup(chooserAreaRect)
+          GUI.BeginGroup(chooserAreaRect);
           DrawChoiceIcon(0, sharedIcon, 0, 0);
           DrawChoiceIcon(1, sharedIcon, 1, 0);
           DrawChoiceIcon(2, sharedIcon, 2, 0);
@@ -189,7 +189,7 @@ namespace NearFutureElectrical.UI
           GUI.EndGroup();
 
           // Cancel/Accept
-          GUI.DrawTextureWithTexCoords(acceptButtonRect, GUIResources.GetIcon("accept"), GUIResources.GetIcon("accept").iconRect);
+          GUI.DrawTextureWithTexCoords(acceptButtonRect, GUIResources.GetIcon("accept").iconAtlas, GUIResources.GetIcon("accept").iconRect);
           if (GUI.Button(acceptButtonRect, "", GUIResources.GetStyle("button_accept")))
           {
             focusedReactor.UIName = textVariable;
@@ -197,9 +197,9 @@ namespace NearFutureElectrical.UI
             showFocusedWindow = false;
           }
 
-          GUI.DrawTextureWithTexCoords(cancelButtonRect, GUIResources.GetIcon("cancel"), GUIResources.GetIcon("cancel").iconRect);
+          GUI.DrawTextureWithTexCoords(cancelButtonRect, GUIResources.GetIcon("cancel").iconAtlas, GUIResources.GetIcon("cancel").iconRect);
 
-          if (GUILayout.Button(cancelButtonRect, "",GUIResources.GetStyle("button_cancel")))
+          if (GUI.Button(cancelButtonRect, "", GUIResources.GetStyle("button_cancel")))
           {
             showFocusedWindow = false;
           }
@@ -209,7 +209,7 @@ namespace NearFutureElectrical.UI
 
         private void DrawChoiceIcon(int id, Texture texture, int x_id, int y_id)
         {
-          Rect iconRect = new Rect(x_id*21f, y_id*21f, 20f, 20f)
+            Rect iconRect = new Rect(x_id * 21f, y_id * 21f, 20f, 20f);
           GUI.DrawTextureWithTexCoords(iconRect, texture, GUIResources.GetReactorIcon(id).iconRect);
           if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
             iconID = id;
@@ -223,7 +223,7 @@ namespace NearFutureElectrical.UI
                 GUILayout.FlexibleSpace();
                 Rect buttonRect = GUILayoutUtility.GetRect(24f, 24f);
 
-                GUI.DrawTextureWithTexCoords(cancelButtonRect, GUIResources.GetIcon("cancel"), GUIResources.GetIcon("cancel").iconRect);
+                GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("cancel").iconAtlas, GUIResources.GetIcon("cancel").iconRect);
                 if (GUI.Button(buttonRect, "", GUIResources.GetStyle("button_cancel")))
                 {
                     ToggleReactorWindow();

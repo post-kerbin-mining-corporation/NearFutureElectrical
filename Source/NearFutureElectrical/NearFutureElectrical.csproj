@@ -52,6 +52,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\CapacitorUIEntry.cs" />
     <Compile Include="UI\DischargeCapacitorUI.cs">
       <SubType>Code</SubType>
     </Compile>
