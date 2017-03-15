@@ -34,11 +34,11 @@ namespace NearFutureElectrical.UI
       private void DrawMainControls()
       {
 
-        Rect controlRect = GUILayoutUtility.GetRect(110f, 64f);
+        Rect controlRect = GUILayoutUtility.GetRect(145f, 64f);
         Rect iconRect = new Rect(0f, 0f, 64f, 64f);
-        Rect titleRect = new Rect(64f, 0f, 56f, 32f);
-        Rect toggleRect = new Rect(64f, 32f, 56f, 32f);
-        Rect settingsButtonRect = new Rect(94f, 32f, 32f, 32f);
+        Rect titleRect = new Rect(64f, 0f, 81f, 32f);
+        Rect toggleRect = new Rect(64f, 32f, 32f, 32f);
+        Rect settingsButtonRect = new Rect(113f, 32f, 32f, 32f);
 
         GUI.BeginGroup(controlRect);
         // STATIC: Icon
@@ -144,15 +144,18 @@ namespace NearFutureElectrical.UI
       // Draw the basic control set
       private void DrawBasicControls()
       {
-        Rect controlRect = GUILayoutUtility.GetRect(130f, 64f);
-
+        Rect controlRect;
+        if (reactor.FollowThrottle)
+          controlRect = GUILayoutUtility.GetRect(130f, 64f);
+        else
+          controlRect = GUILayoutUtility.GetRect(130f, 32f);
         Rect throttleIconRect = new Rect(0f, 0f, 20f, 20f);
-        Rect throttleSliderRect = new Rect(20f, 0f, 80f, 20f);
-        Rect throttleTextRect = new Rect(100f, 0f, 30f, 20f);
+        Rect throttleSliderRect = new Rect(23f, 5f, 80f, 20f);
+        Rect throttleTextRect = new Rect(103f, 2f, 30f, 20f);
 
         Rect realThrottleIconRect = new Rect(0f, 30f, 20f, 20f);
-        Rect realThrotlePanelRect = new Rect(20f, 30f, 110f, 20f);
-        Rect realThrotleTextRect = new Rect(80f, 30f, 30f, 20f);
+        Rect realThrotlePanelRect = new Rect(23f, 30f, 110f, 20f);
+        Rect realThrotleTextRect = new Rect(133f, 30f, 30f, 20f);
 
         GUI.BeginGroup(controlRect);
 
@@ -246,11 +249,12 @@ namespace NearFutureElectrical.UI
 
         GUILayout.BeginHorizontal();
 
-
+        GUILayout.BeginHorizontal(host.GUIResources.GetStyle("item_box"));
         DrawMainControls();
         DrawReadout();
+        GUILayout.EndHorizontal();
 
-        GUILayout.BeginVertical();
+        GUILayout.BeginVertical(host.GUIResources.GetStyle("item_box"));
         DrawBasicControls();
         DrawAdvancedControlButton(advancedMode);
         if (advancedMode)

@@ -219,7 +219,7 @@ namespace NearFutureElectrical.UI
         private void ReactorWindow(int windowId)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Reactor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(120f));
+            GUILayout.Label("Reactor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(240f));
                 GUILayout.FlexibleSpace();
                 Rect buttonRect = GUILayoutUtility.GetRect(24f, 24f);
 

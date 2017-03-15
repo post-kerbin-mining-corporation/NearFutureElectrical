@@ -112,6 +112,10 @@ namespace NearFutureElectrical.UI
         // Window
         draftStyle = new GUIStyle(HighLogic.Skin.window);
         styleList.Add("window_main", new GUIStyle(draftStyle));
+        // Box
+        draftStyle = new GUIStyle(HighLogic.Skin.textArea);
+        draftStyle.normal.background = null;
+        styleList.Add("item_box", new GUIStyle(draftStyle));
         // Header1
         draftStyle = new GUIStyle(HighLogic.Skin.label);
         draftStyle.fontStyle = FontStyle.Bold;
