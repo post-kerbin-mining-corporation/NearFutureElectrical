@@ -104,7 +104,7 @@ namespace NearFutureElectrical
         public bool TimewarpShutdown = false;
 
         [KSPField(isPersistant = true)]
-        public float TimewarpShutdownFactor  = 1000f;
+        public int TimewarpShutdownFactor  = 5;
 
         // REPAIR VARIABLES
         // integrity of the core

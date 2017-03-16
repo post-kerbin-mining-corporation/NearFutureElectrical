@@ -69,8 +69,8 @@ namespace NearFutureElectrical.UI
       iconList.Add("throttle", new AtlasIcon(generalIcons, 0.75f, 0.50f, 0.25f, 0.25f));
 
       iconList.Add("throttle_auto", new AtlasIcon(generalIcons, 0.00f, 0.25f, 0.25f, 0.25f));
-      iconList.Add("warp_limit", new AtlasIcon(generalIcons, 0.25f, 0.25f, 0.25f, 0.25f));
-      iconList.Add("heat_limit", new AtlasIcon(generalIcons, 0.50f, 0.25f, 0.25f, 0.25f));
+      iconList.Add("heat_limit", new AtlasIcon(generalIcons, 0.25f, 0.25f, 0.25f, 0.25f));
+      iconList.Add("warp_limit", new AtlasIcon(generalIcons, 0.50f, 0.25f, 0.25f, 0.25f));
       iconList.Add("capacitor_rate", new AtlasIcon(generalIcons, 0.75f, 0.25f, 0.25f, 0.25f));
 
       iconList.Add("capacitor_charging", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
@@ -111,6 +111,7 @@ namespace NearFutureElectrical.UI
 
         // Window
         draftStyle = new GUIStyle(HighLogic.Skin.window);
+        draftStyle.padding = new RectOffset(draftStyle.padding.left, draftStyle.padding.right, 2, draftStyle.padding.bottom);
         styleList.Add("window_main", new GUIStyle(draftStyle));
         // Box
         draftStyle = new GUIStyle(HighLogic.Skin.textArea);
@@ -131,9 +132,15 @@ namespace NearFutureElectrical.UI
         draftStyle.fontSize = 12;
         draftStyle.alignment = TextAnchor.MiddleLeft;
         styleList.Add("text_basic", new GUIStyle(draftStyle));
+        // Text area
+        draftStyle = new GUIStyle(HighLogic.Skin.textArea);
+        draftStyle.active = draftStyle.hover = draftStyle.normal;
+        draftStyle.fontSize = 11;
+        styleList.Add("text_area", new GUIStyle(draftStyle));
         // Area Background
         draftStyle = new GUIStyle(HighLogic.Skin.textArea);
         draftStyle.active = draftStyle.hover = draftStyle.normal;
+        draftStyle.padding = new RectOffset(0,0,0,0);
         styleList.Add("block_background", new GUIStyle(draftStyle));
         // Toggle
         draftStyle = new GUIStyle(HighLogic.Skin.toggle);

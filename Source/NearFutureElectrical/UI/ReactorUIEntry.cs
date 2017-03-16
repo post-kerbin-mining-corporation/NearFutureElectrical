@@ -34,11 +34,11 @@ namespace NearFutureElectrical.UI
       private void DrawMainControls()
       {
 
-        Rect controlRect = GUILayoutUtility.GetRect(145f, 64f);
+        Rect controlRect = GUILayoutUtility.GetRect(165f, 64f);
         Rect iconRect = new Rect(0f, 0f, 64f, 64f);
-        Rect titleRect = new Rect(64f, 0f, 81f, 32f);
+        Rect titleRect = new Rect(64f, 0f, 101f, 32f);
         Rect toggleRect = new Rect(64f, 32f, 32f, 32f);
-        Rect settingsButtonRect = new Rect(113f, 32f, 32f, 32f);
+        Rect settingsButtonRect = new Rect(133f, 36f, 20f, 20f);
 
         GUI.BeginGroup(controlRect);
         // STATIC: Icon
@@ -74,9 +74,9 @@ namespace NearFutureElectrical.UI
         Rect powerIconRect = new Rect(80f, 0f, 20f, 20f);
         Rect powerTextRect = new Rect(100f, 0f, 60f, 20f);
         Rect lifetimeIconRect = new Rect(160f, 0f, 20f, 20f);
-        Rect lifetimeTextRect = new Rect(180f, 0f, 60f, 20f);
+        Rect lifetimeTextRect = new Rect(180f, 0f, 90f, 20f);
 
-        Rect temperatureIconRect = new Rect(0f, 30f, 20f, 30f);
+        Rect temperatureIconRect = new Rect(0f, 30f, 20f, 20f);
         Rect temperaturePanelRect = new Rect(20f, 30f, 200f, 30f);
 
         GUI.BeginGroup(controlRect);
@@ -132,10 +132,10 @@ namespace NearFutureElectrical.UI
             GUI.color = barColor;
             GUI.Box(barForeroundRect, "", host.GUIResources.GetStyle("bar_foreground"));
             GUI.color = Color.white;
-            GUI.Label(new Rect(barBackgroundRect.xMax+7f , 3f, 40f, 20f), String.Format("{0:F0} K", coreTemp), host.GUIResources.GetStyle("text_basic"));
+            GUI.Label(new Rect(barBackgroundRect.xMax+7f , 1f, 40f, 20f), String.Format("{0:F0} K", coreTemp), host.GUIResources.GetStyle("text_basic"));
 
-            GUI.DrawTextureWithTexCoords(new Rect(nominalXLoc - 7f, 10f, 15f, 20f), host.GUIResources.GetIcon("notch").iconAtlas, host.GUIResources.GetIcon("notch").iconRect);
-            GUI.DrawTextureWithTexCoords(new Rect(criticalXLoc - 7f, 10f, 15f, 20f), host.GUIResources.GetIcon("notch").iconAtlas, host.GUIResources.GetIcon("notch").iconRect);
+            GUI.DrawTextureWithTexCoords(new Rect(nominalXLoc - 7f, 5f, 15f, 20f), host.GUIResources.GetIcon("notch").iconAtlas, host.GUIResources.GetIcon("notch").iconRect);
+            GUI.DrawTextureWithTexCoords(new Rect(criticalXLoc - 7f, 5f, 15f, 20f), host.GUIResources.GetIcon("notch").iconAtlas, host.GUIResources.GetIcon("notch").iconRect);
 
          GUI.EndGroup();
          GUI.EndGroup();
@@ -144,18 +144,19 @@ namespace NearFutureElectrical.UI
       // Draw the basic control set
       private void DrawBasicControls()
       {
+          GUILayout.Button(" BASIC CONTROLS", host.GUIResources.GetStyle("header_basic"));
         Rect controlRect;
         if (reactor.FollowThrottle)
-          controlRect = GUILayoutUtility.GetRect(130f, 64f);
+          controlRect = GUILayoutUtility.GetRect(180f, 64f);
         else
-          controlRect = GUILayoutUtility.GetRect(130f, 32f);
+          controlRect = GUILayoutUtility.GetRect(180f, 28f);
         Rect throttleIconRect = new Rect(0f, 0f, 20f, 20f);
-        Rect throttleSliderRect = new Rect(23f, 5f, 80f, 20f);
-        Rect throttleTextRect = new Rect(103f, 2f, 30f, 20f);
+        Rect throttleSliderRect = new Rect(28f, 5f, 100f, 20f);
+        Rect throttleTextRect = new Rect(135f, 2f, 40f, 20f);
 
         Rect realThrottleIconRect = new Rect(0f, 30f, 20f, 20f);
         Rect realThrotlePanelRect = new Rect(23f, 30f, 110f, 20f);
-        Rect realThrotleTextRect = new Rect(133f, 30f, 30f, 20f);
+        Rect realThrotleTextRect = new Rect(133f, 30f, 40f, 20f);
 
         GUI.BeginGroup(controlRect);
 
@@ -167,7 +168,7 @@ namespace NearFutureElectrical.UI
         // PROGRESS BAR: Adjusted Throttle
         if (reactor.FollowThrottle)
         {
-          GUI.DrawTextureWithTexCoords(realThrottleIconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("thermometer").iconRect);
+          GUI.DrawTextureWithTexCoords(realThrottleIconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("throttle").iconRect);
 
           float powerFraction = reactor.ActualPowerPercent/100f;
 
@@ -195,30 +196,33 @@ namespace NearFutureElectrical.UI
       // Draw the advanced control set
       private void DrawAdvancedControls()
       {
-        Rect controlRect = GUILayoutUtility.GetRect(130f, 64f);
+          
+        Rect controlRect = GUILayoutUtility.GetRect(180f, 64f);
 
-        Rect autoTempOffToggleRect = new Rect(0f, 0f, 40f, 20f);
-        Rect autoTempOffSliderRect = new Rect(20f, 0f, 70f, 20f);
-        Rect autoTempOffTextRect = new Rect(110f, 0f, 20f, 20f);
+        Rect autoTempOffToggleRect = new Rect(30f, 0f, 20f, 20f);
+        Rect autoTempOffIconRect = new Rect(0f, 0f, 28f, 28f);
+        Rect autoTempOffSliderRect = new Rect(60f, 10f, 70f, 20f);
+        Rect autoTempOffTextRect = new Rect(140f, 8f, 40f, 20f);
 
-        Rect autoWarpOffToggleRect = new Rect(0f, 30f, 40f, 20f);
-        Rect autoWarpOffSliderRect = new Rect(20f, 30f, 70f, 20f);
-        Rect autoWarpOffTextRect = new Rect(110f, 30f, 20f, 20f);
+        Rect autoWarpOffToggleRect = new Rect(30f, 30f, 20f, 20f);
+        Rect autoWarpOffIconRect = new Rect(0f, 30f, 28f, 28f);
+        Rect autoWarpOffSliderRect = new Rect(60f, 40f, 70f, 20f);
+        Rect autoWarpOffTextRect = new Rect(140f, 38f, 30f, 20f);
 
         GUI.BeginGroup(controlRect);
         // SLIDER: Shutdown Temperature
 
-        reactor.AutoShutdown = GUI.Toggle(autoTempOffToggleRect, reactor.AutoShutdown, "Safety Override", host.GUIResources.GetStyle("button_toggle"));
-
+        GUI.DrawTextureWithTexCoords(autoTempOffIconRect, host.GUIResources.GetIcon("heat_limit").iconAtlas, host.GUIResources.GetIcon("heat_limit").iconRect);
+        reactor.AutoShutdown = GUI.Toggle(autoTempOffToggleRect, reactor.AutoShutdown, "", host.GUIResources.GetStyle("button_toggle"));
         reactor.CurrentSafetyOverride = GUI.HorizontalSlider(autoTempOffSliderRect, reactor.CurrentSafetyOverride, 700f, reactor.MaximumTemperature);
-        GUI.Label(autoWarpOffTextRect, String.Format("{0:F0} K", reactor.CurrentSafetyOverride), host.GUIResources.GetStyle("text_basic"));
+        GUI.Label(autoTempOffTextRect, String.Format("{0:F0} K", reactor.CurrentSafetyOverride), host.GUIResources.GetStyle("text_basic"));
 
 
         // SLIDER: Time Warp Shutdown
-
-        reactor.TimewarpShutdown = GUI.Toggle(autoWarpOffToggleRect, reactor.TimewarpShutdown, "Warp Shutdown", host.GUIResources.GetStyle("button_toggle"));
-        reactor.CurrentSafetyOverride = GUI.HorizontalSlider(autoWarpOffSliderRect, reactor.CurrentSafetyOverride, 700f, reactor.MaximumTemperature);
-        GUI.Label(autoWarpOffTextRect, String.Format("{0:F0} K", reactor.CurrentSafetyOverride), host.GUIResources.GetStyle("text_basic"));
+        GUI.DrawTextureWithTexCoords(autoWarpOffIconRect, host.GUIResources.GetIcon("warp_limit").iconAtlas, host.GUIResources.GetIcon("warp_limit").iconRect);
+        reactor.TimewarpShutdown = GUI.Toggle(autoWarpOffToggleRect, reactor.TimewarpShutdown, "", host.GUIResources.GetStyle("button_toggle"));
+        reactor.TimewarpShutdownFactor = (int)GUI.HorizontalSlider(autoWarpOffSliderRect, reactor.TimewarpShutdownFactor, 0, TimeWarp.fetch.warpRates.Length-1);
+        GUI.Label(autoWarpOffTextRect, String.Format("{0:F0}x", TimeWarp.fetch.warpRates[reactor.TimewarpShutdownFactor]), host.GUIResources.GetStyle("text_basic"));
 
         GUI.EndGroup();
       }
@@ -228,14 +232,14 @@ namespace NearFutureElectrical.UI
         GUILayout.BeginHorizontal();
         if (maximized)
         {
-          if (GUILayout.Button("[-] ADVANCED", host.GUIResources.GetStyle("header_basic")))
+          if (GUILayout.Button("[-] ADVANCED CONTROLS", host.GUIResources.GetStyle("header_basic")))
           {
             advancedMode = false;
           }
         }
         else
         {
-          if (GUILayout.Button("[+] ADVANCED", host.GUIResources.GetStyle("header_basic")))
+          if (GUILayout.Button("[+] ADVANCED CONTROLS", host.GUIResources.GetStyle("header_basic")))
           {
             advancedMode = true;
           }
@@ -247,7 +251,7 @@ namespace NearFutureElectrical.UI
       public void Draw()
       {
 
-        GUILayout.BeginHorizontal();
+          GUILayout.BeginHorizontal(host.GUIResources.GetStyle("block_background"));
 
         GUILayout.BeginHorizontal(host.GUIResources.GetStyle("item_box"));
         DrawMainControls();
@@ -262,7 +266,7 @@ namespace NearFutureElectrical.UI
           DrawAdvancedControls();
         }
         GUILayout.EndVertical();
-
+        GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
 
 
