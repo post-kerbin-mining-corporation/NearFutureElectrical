@@ -13,8 +13,15 @@ namespace NearFutureElectrical.UI
     {
         Vessel activeVessel;
         int partCount = 0;
+
+        private List<CapacitorUIEntry> uiCapacitors;
+
+        private List<DischargeCapacitor> capacitorList;
+
+
         private UIResources resources;
         public UIResources GUIResources { get { return resources; } }
+
         public void Start()
         {
             if (ApplicationLauncher.Ready)
@@ -58,6 +65,12 @@ namespace NearFutureElectrical.UI
             //sort
             capacitorList = unsortedCapacitorList.OrderByDescending(x => x.dischargeActual).ToList();
             capacitorList = unsortedCapacitorList;
+
+            uiCapacitors= new List<CapacitorUIEntry>();
+            foreach (DischargeCapacitor capacitor in capacitorList)
+            {
+              uiCapacitors.Add(new CapacitorUIEntry(capacitor, this));
+            }
            // Debug.Log("NFE: Capacitor Manager: Found " + capacitorList.Count() + " capacitors");
         }
 
@@ -72,44 +85,12 @@ namespace NearFutureElectrical.UI
         // Stock toolbar button
         private static ApplicationLauncherButton stockToolbarButton = null;
 
-        // styles
-        GUIStyle progressBarBG;
 
-        GUIStyle gui_bg;
-        GUIStyle gui_text;
-        GUIStyle gui_header;
-        GUIStyle gui_window;
-
-        GUIStyle gui_btn_shutdown;
-        GUIStyle gui_btn_start;
         // Set up the GUI styles
         private void InitStyles()
         {
-            gui_window = new GUIStyle(HighLogic.Skin.window);
-            gui_header = new GUIStyle(HighLogic.Skin.label);
-            gui_header.fontStyle = FontStyle.Bold;
-            gui_header.alignment = TextAnchor.UpperLeft;
-            gui_header.stretchWidth = true;
-
-            gui_text = new GUIStyle(HighLogic.Skin.label);
-            gui_text.fontSize = 11;
-            gui_text.alignment = TextAnchor.MiddleLeft;
-            gui_bg = new GUIStyle(HighLogic.Skin.textArea);
-            gui_bg.active = gui_bg.hover = gui_bg.normal;
-
-            gui_btn_shutdown = new GUIStyle(HighLogic.Skin.button);
-            gui_btn_shutdown.wordWrap = true;
-            gui_btn_shutdown.normal.textColor = XKCDColors.RedOrange;
-            gui_btn_shutdown.alignment = TextAnchor.MiddleCenter;
-
-            gui_btn_start = new GUIStyle(gui_btn_shutdown);
-            gui_btn_start.normal.textColor = XKCDColors.Green;
-
-            progressBarBG = new GUIStyle(HighLogic.Skin.textField);
-            progressBarBG.active = progressBarBG.hover = progressBarBG.normal;
-
+            resources = new UIResources();
             windowPos = new Rect(200f, 200f, 550f, 315f);
-
             initStyles = true;
         }
         public void Awake()
@@ -145,7 +126,7 @@ namespace NearFutureElectrical.UI
                     GUI.skin = HighLogic.Skin;
                     gui_window.padding.top = 5;
 
-                    windowPos = GUI.Window(windowID, windowPos, CapacitorWindow, new GUIContent(), gui_window);
+                    windowPos = GUI.Window(windowID, windowPos, CapacitorWindow, new GUIContent(), resources.GetStyle("window_main"));
                 }
             }
             //Debug.Log("NFE: Stop Capacitor UI Draw");
@@ -157,7 +138,7 @@ namespace NearFutureElectrical.UI
         {
             GUI.skin = HighLogic.Skin;
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Capacitors", gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f), GUILayout.MinWidth(120f));
+            GUILayout.Label("Capacitors", resources.GetStyle("header_basic"), GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f), GUILayout.MinWidth(120f));
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("X", GUILayout.MaxWidth(26f), GUILayout.MinWidth(26f), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f)))
             {
@@ -181,12 +162,12 @@ namespace NearFutureElectrical.UI
                     GUILayout.EndVertical();
                     GUILayout.BeginVertical();
                     GUILayout.Label(String.Format("Current total recharge rate: {0:F2}/s",GetAllChargeRatesCurrent()),
-                        gui_text, GUILayout.MaxWidth(950f), GUILayout.MinWidth(190f));
+                        resources.GetStyle("text_basic"), GUILayout.MaxWidth(950f), GUILayout.MinWidth(190f));
 
 
 
                     GUILayout.Label(String.Format("Current total discharge rate: {0:F2}/s",GetAllDischargeRatesCurrent()),
-                        gui_text, GUILayout.MaxWidth(190f), GUILayout.MinWidth(190f));
+                        resources.GetStyle("text_basic"), GUILayout.MaxWidth(190f), GUILayout.MinWidth(190f));
                     GUILayout.EndVertical();
 
                     GUILayout.FlexibleSpace();
@@ -201,10 +182,11 @@ namespace NearFutureElectrical.UI
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(525f), GUILayout.Height(175f));
                 GUILayout.BeginVertical();
                     //windowPos.height = 175f + 70f;
-                    for(int i = 0; i <capacitorList.Count; i++)
+                    for (int i = 0; i < uiCapacitors.Count; i++)
                     {
-                        DrawCapacitor(capacitorList[i]);
+                      uiCapacitors[i].Draw();
                     }
+
                GUILayout.EndVertical();
                GUILayout.EndScrollView();
 
@@ -216,64 +198,6 @@ namespace NearFutureElectrical.UI
                 GUILayout.Label("No capacitors found!");
             }
             GUI.DragWindow();
-        }
-
-
-        private List<DischargeCapacitor> capacitorList;
-
-
-        private void DrawCapacitor(DischargeCapacitor cap)
-        {
-            GUILayout.BeginHorizontal(gui_bg);
-            // Capacitor Name Field
-            GUILayout.Label(cap.part.partInfo.title, gui_header, GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f));
-            // Properties
-            GUILayout.BeginVertical();
-                GUILayout.Label(String.Format("{0:F0}% Charged", GetChargePercent(cap)), gui_text);
-                GUILayout.Label(String.Format("{0:F0} Sc/s",  GetCurrentRate(cap)), gui_text);
-            GUILayout.EndVertical();
-            // Changeables
-
-            GUILayout.BeginVertical();
-            // Bar
-            GUILayout.BeginHorizontal();
-                GUILayout.Label("Customize Discharge Rate", gui_text, GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f));
-                cap.dischargeActual = GUILayout.HorizontalSlider(cap.dischargeActual, cap.ChargeRate/2f, cap.ChargeRate, GUILayout.MaxWidth(100f), GUILayout.MinWidth(100f));
-                GUILayout.Label(String.Format("Rate: {0:F0} Ec/s", cap.dischargeActual), gui_text);
-            GUILayout.EndHorizontal();
-            // Buttons
-            GUILayout.BeginHorizontal();
-                cap.Enabled = GUILayout.Toggle(cap.Enabled, "Recharge Enabled");
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Discharge ", GUILayout.MaxWidth(150f), GUILayout.MinWidth(150f)))
-                {
-                    cap.Discharge();
-                }
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
-
-            GUILayout.EndHorizontal();
-
-        }
-        // Gets the current charge or discharge rate of a capacitor
-        private float GetCurrentRate(DischargeCapacitor cap)
-        {
-            if (cap.Discharging)
-            {
-                return -cap.DischargeRate;
-            } else if (cap.Enabled && cap.CurrentCharge < cap.MaximumCharge)
-            {
-                return cap.ChargeRate*cap.ChargeRatio;
-            } else
-            {
-                return 0f;
-            }
-        }
-        // Gets a capacitor's percent charge
-        private float GetChargePercent(DischargeCapacitor cap)
-        {
-            return (cap.CurrentCharge / cap.MaximumCharge) *100f;
         }
 
         private float GetAllChargeRatesCurrent()
