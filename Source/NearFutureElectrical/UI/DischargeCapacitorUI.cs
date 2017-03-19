@@ -124,7 +124,7 @@ namespace NearFutureElectrical.UI
                 {
                     // Debug.Log(windowPos.ToString());
                     GUI.skin = HighLogic.Skin;
-                    gui_window.padding.top = 5;
+                    //gui_window.padding.top = 5;
 
                     windowPos = GUI.Window(windowID, windowPos, CapacitorWindow, new GUIContent(), resources.GetStyle("window_main"));
                 }

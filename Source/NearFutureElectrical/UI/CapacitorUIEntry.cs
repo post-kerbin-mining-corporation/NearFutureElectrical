@@ -33,7 +33,7 @@ namespace NearFutureElectrical.UI
 
         GUI.BeginGroup(controlRect);
         // STATIC: Icon
-        GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetCapacitorIcon(0).iconAtlas, host.GUIResources.GetCapacitorIcon(0).iconRect);
+        GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("capacitor_charge").iconAtlas, host.GUIResources.GetIcon("capacitor_charge").iconRect);
         // STATIC: UI Name
         GUI.Label(titleRect, capacitor.part.partInfo.title, host.GUIResources.GetStyle("header_basic"));
         GUI.EndGroup();
@@ -105,6 +105,7 @@ namespace NearFutureElectrical.UI
         GUILayout.BeginHorizontal();
         DrawMainControls();
         DrawBasicControls();
+        DrawReadout();
         GUILayout.EndHorizontal();
       }
 

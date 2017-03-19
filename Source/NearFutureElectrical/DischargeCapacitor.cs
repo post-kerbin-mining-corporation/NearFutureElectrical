@@ -36,6 +36,11 @@ namespace NearFutureElectrical
         // Discharge Rate
         [KSPField(isPersistant = false)]
         public float DischargeRate = 10f;
+
+        // amount of maximumStoredCharge
+        [KSPField(isPersistant = false)]
+        public float DischargeRateMinimumScalar = 0.5f;
+
         // Charge Rate
         [KSPField(isPersistant = false)]
         public float ChargeRate;
@@ -150,11 +155,11 @@ namespace NearFutureElectrical
 
             // Set up the UI slider
             var range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlEditor;
-            range.minValue = DischargeRate/2f;
+            range.minValue = DischargeRate * DischargeRateMinimumScalar;
             range.maxValue = DischargeRate;
 
             range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlFlight;
-            range.minValue = DischargeRate/2f;
+            range.minValue = DischargeRate * DischargeRateMinimumScalar;
             range.maxValue = DischargeRate;
 
             // Set up the discharge rate
@@ -227,6 +232,9 @@ namespace NearFutureElectrical
         }
         public override void OnFixedUpdate()
         {
+
+            dischargeActual = Mathf.Clamp(dischargeActual, DischargeRate * DischargeRateMinimumScalar, DischargeRate);
+
             if (Discharging)
             {
                 for (int i = 0; i < capacityState.Length; i++)
