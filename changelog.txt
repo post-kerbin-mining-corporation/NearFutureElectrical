@@ -3,6 +3,11 @@ v0.8.7
 - New MX-5 'Hermes' nuclear reactor
 - New model for 3.75m FLAT nuclear reactor
 - Radial capacitors are now physicsless
+- Capacitors now have a user-configurable DischargeRateMinimumScalar field that can be used to edit the minimum discharge rate of a capacitor (previously locked at 50%)
+- Reactors now have a new AutoWarpShutdown toggle which allows the user to set a reactor so that it gets shut down at warp factors higher than the specified number
+- Capacitor UI rewrite
+-- Significant visual improvements
+-- Fixed a bug that caused capactior rate setting in the UI to be erronous.
 - Reactor UI rewrite:
 -- Significant visual improvements
 -- Reactors can now be given a persistent custom icon and name
