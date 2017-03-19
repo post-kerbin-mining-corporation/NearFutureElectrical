@@ -7,7 +7,7 @@ v0.8.7
 - Reactors now have a new AutoWarpShutdown toggle which allows the user to set a reactor so that it gets shut down at warp factors higher than the specified number
 - Capacitor UI rewrite
 -- Significant visual improvements
--- Fixed a bug that caused capactior rate setting in the UI to be erronous.
+-- Fixed a bug that caused capacitor rate setting in the UI to be erronous.
 - Reactor UI rewrite:
 -- Significant visual improvements
 -- Reactors can now be given a persistent custom icon and name

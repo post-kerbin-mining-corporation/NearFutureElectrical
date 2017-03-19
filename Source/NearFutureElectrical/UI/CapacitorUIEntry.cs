@@ -42,26 +42,26 @@ namespace NearFutureElectrical.UI
       // DrawControl bit
       private void DrawReadout()
       {
-        Rect controlRect = GUILayoutUtility.GetRect(220f, 32f);
+        Rect controlRect = GUILayoutUtility.GetRect(220f, 40f);
 
-        Rect dischargeButtonRect = new Rect(0f, 0f, 32f, 32f);
+        Rect dischargeButtonRect = new Rect(0f, 0f, 40f, 40f);
 
-        Rect dischargeRateIconRect = new Rect(32f, 0f, 20f, 16f);
-        Rect dischargeRateSliderRect = new Rect(48f, 0f, 100f, 16f);
-        Rect dischargeRateTextRect = new Rect(148f, 0f, 60f, 16f);
+        Rect dischargeRateIconRect = new Rect(32f, 0f, 20f, 20f);
+        Rect dischargeRateSliderRect = new Rect(48f, 5f, 100f, 20f);
+        Rect dischargeRateTextRect = new Rect(148f, 2f, 60f, 20f);
 
-        Rect chargeBarIconRect = new Rect(32f, 16f, 16f, 16f);
-        Rect chargeBarPanelRect = new Rect(48f, 16f, 100f, 16f);
-        Rect chargeBarTextRect = new Rect(148f, 16f, 60f, 16f);
+        Rect chargeBarIconRect = new Rect(32f, 20f, 20f, 20f);
+        Rect chargeBarPanelRect = new Rect(48f, 20f, 100f, 20f);
+        Rect chargeBarTextRect = new Rect(148f, 2f, 100f, 20f);
 
         GUI.BeginGroup(controlRect);
 
         // BUTTON: Discharge button
-        GUI.DrawTextureWithTexCoords(dischargeButtonRect, host.GUIResources.GetIcon("lightning").iconAtlas, host.GUIResources.GetIcon("lightning").iconRect);
         if (GUI.Button(dischargeButtonRect, ""))
         {
           capacitor.Discharge();
         }
+        GUI.DrawTextureWithTexCoords(dischargeButtonRect, host.GUIResources.GetIcon("lightning").iconAtlas, host.GUIResources.GetIcon("lightning").iconRect);
 
         // SLIDER: Discharge rate
         GUI.DrawTextureWithTexCoords(dischargeRateIconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("throttle").iconRect);

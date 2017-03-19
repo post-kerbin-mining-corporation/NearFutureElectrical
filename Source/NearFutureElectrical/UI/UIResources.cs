@@ -13,6 +13,7 @@ namespace NearFutureElectrical.UI
 
     private Dictionary<string, AtlasIcon> iconList;
     private Dictionary<string, GUIStyle> styleList;
+    private Dictionary<string, Color> colorList;
 
     private Texture generalIcons;
     private Texture reactorIcons;
@@ -46,6 +47,7 @@ namespace NearFutureElectrical.UI
     {
       CreateIconList();
       CreateStyleList();
+      CreateColorList();
     }
 
     // Iniitializes the icon database
@@ -170,7 +172,14 @@ namespace NearFutureElectrical.UI
         draftStyle.padding = GetStyle("bar_background").padding;
         styleList.Add("bar_foreground", new GUIStyle(draftStyle));
     }
+    void CreateColorList()
+    {
+      colorList = new Dictionary<string, Color>();
 
+      colorList.Add("cancel_color", new Color(209f / 255f, 250f / 255f, 146f / 255f));
+      colorList.Add("accept_color", new Color(209f / 255f, 250f / 255f, 146f / 255f));
+
+    }
   }
 
   // Represents an atlased icon via a source texture and rectangle

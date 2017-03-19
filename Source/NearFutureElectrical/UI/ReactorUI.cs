@@ -160,7 +160,7 @@ namespace NearFutureElectrical.UI
           Rect windowRect = GUILayoutUtility.GetRect(200f,180f);
 
           Rect iconRect = new Rect(0f, 16f, 64f, 64f);
-          
+
           Rect chooserAreaRect = new Rect(72f, 0f, 90f, 90f);
           Rect textAreaRect = new Rect(0f, 93f, 180f, 30f);
 
@@ -191,7 +191,7 @@ namespace NearFutureElectrical.UI
           GUI.EndGroup();
 
           // Cancel/Accept
-          GUI.color = new Color(169f / 255f, 210f / 255f, 106f / 255f);
+          GUI.color = resources.GetColor("cancel_color");
           if (GUI.Button(acceptButtonRect, "", GUIResources.GetStyle("button_accept")))
           {
             focusedReactor.UIName = textVariable;
@@ -201,7 +201,7 @@ namespace NearFutureElectrical.UI
           GUI.color = Color.white;
           GUI.DrawTextureWithTexCoords(acceptButtonRect, GUIResources.GetIcon("accept").iconAtlas, GUIResources.GetIcon("accept").iconRect);
 
-          GUI.color = new Color(188f / 255f, 111f / 255f, 66f / 255f);
+          GUI.color = resources.GetColor("accept_color");
           if (GUI.Button(cancelButtonRect, "", GUIResources.GetStyle("button_cancel")))
           {
             showFocusedWindow = false;
@@ -215,7 +215,7 @@ namespace NearFutureElectrical.UI
         private void DrawChoiceIcon(int id, Texture texture, int x_id, int y_id)
         {
             Rect iconRect = new Rect(x_id * 30f, y_id * 30f, 28f, 28f);
-          
+
           if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
             iconID = id;
           GUI.DrawTextureWithTexCoords(iconRect, texture, GUIResources.GetReactorIcon(id).iconRect);
@@ -228,7 +228,7 @@ namespace NearFutureElectrical.UI
             GUILayout.Label("Reactor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
                 GUILayout.FlexibleSpace();
                 Rect buttonRect = GUILayoutUtility.GetRect(22f, 22f);
-                GUI.color = new Color(188f / 255f, 111f / 255f, 66f / 255f);
+                GUI.color = resources.GetColor("cancel_color");
                 if (GUI.Button(buttonRect, "", GUIResources.GetStyle("button_cancel")))
                 {
                     ToggleReactorWindow();
@@ -242,9 +242,9 @@ namespace NearFutureElectrical.UI
             {
 
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(700f), GUILayout.MinHeight(251f));
-                GUILayout.Space(3f);    
+                GUILayout.Space(3f);
                 GUILayout.BeginVertical();
-                    
+
                         //windowPos.height = 175f + 70f;
                         for (int i = 0; i < uiReactors.Count; i++)
                         {
