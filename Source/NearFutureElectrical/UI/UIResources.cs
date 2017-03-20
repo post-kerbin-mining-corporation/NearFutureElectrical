@@ -82,7 +82,7 @@ namespace NearFutureElectrical.UI
       iconList.Add("capacitor_rate", new AtlasIcon(generalIcons, 0.75f, 0.25f, 0.25f, 0.25f));
 
       iconList.Add("capacitor_charging", new AtlasIcon(generalIcons, 0.0f, 0.0f, 0.25f, 0.25f));
-      iconList.Add("capcitor_discharge", new AtlasIcon(generalIcons, 0.25f, 0.0f, 0.25f, 0.25f));
+      iconList.Add("capacitor_discharge", new AtlasIcon(generalIcons, 0.25f, 0.0f, 0.25f, 0.25f));
       iconList.Add("accept", new AtlasIcon(generalIcons, 0.50f, 0.0f, 0.25f, 0.25f));
       iconList.Add("cancel", new AtlasIcon(generalIcons, 0.75f, 0.0f, 0.25f, 0.25f));
 
@@ -184,7 +184,8 @@ namespace NearFutureElectrical.UI
 
       colorList.Add("cancel_color", new Color(208f / 255f, 131f / 255f, 86f / 255f));
       colorList.Add("accept_color", new Color(209f / 255f, 250f / 255f, 146f / 255f));
-      colorList.Add("capacitor_blue", new Color( 66/255f, 134/255f, 244/255f))
+      colorList.Add("capacitor_blue", new Color(104f / 255f, 167f / 255f, 209f / 255f));
+      colorList.Add("readout_green", new Color(173f / 255f, 228f / 255f, 85f / 255f));
 
     }
   }

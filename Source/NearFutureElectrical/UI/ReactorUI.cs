@@ -25,7 +25,7 @@ namespace NearFutureElectrical.UI
         // GUI VARS
         private int mainWindowID = new System.Random(3256231).Next();
         private int popupWindowID = new System.Random(3256251).Next();
-        private Rect windowPos = new Rect(200f, 200f, 500f, 200f);
+        private Rect windowPos = new Rect(200f, 200f, 715f, 100f);
         private Rect popupWindowPos = new Rect(200f, 200f, 200f, 180f);
         private Vector2 scrollPosition = Vector2.zero;
 
@@ -90,7 +90,7 @@ namespace NearFutureElectrical.UI
         {
 
             resources = new UIResources();
-            windowPos = new Rect(200f, 200f, 715f, 315f);
+            
 
             initStyles = true;
         }
@@ -148,7 +148,7 @@ namespace NearFutureElectrical.UI
                     {
                     }
 
-                    windowPos = GUILayout.Window(mainWindowID, windowPos, ReactorWindow, new GUIContent(), GUIResources.GetStyle("window_main"), GUILayout.MinHeight(150f), GUILayout.MaxHeight(315f), GUILayout.ExpandHeight());
+                    windowPos = GUILayout.Window(mainWindowID, windowPos, ReactorWindow, new GUIContent(), GUIResources.GetStyle("window_main"), GUILayout.MinHeight(120f), GUILayout.MaxHeight(315f), GUILayout.ExpandHeight(true));
                 }
             }
             //Debug.Log("NFE: Stop Capacitor UI Draw");
@@ -162,7 +162,7 @@ namespace NearFutureElectrical.UI
 
           Rect iconRect = new Rect(0f, 16f, 64f, 64f);
 
-          Rect chooserAreaRect = new Rect(72f, 0f, 90f, 90f);
+          Rect chooserAreaRect = new Rect(72f, 0f, 100f, 100f);
           Rect textAreaRect = new Rect(0f, 93f, 180f, 30f);
 
           Rect acceptButtonRect = new Rect(130f, 125f, 24f, 24f);
@@ -245,7 +245,8 @@ namespace NearFutureElectrical.UI
 
             if (reactorList != null && reactorList.Count > 0)
             {
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(700f), GUILayout.MinHeight(151f));
+                float scrollHeight = Mathf.Min(reactorList.Count * 96f, 96f* 3f);
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(700f), GUILayout.MinHeight(scrollHeight));
                 GUILayout.Space(3f);
                 GUILayout.BeginVertical();
                 //windowPos.height = 175f + 70f;

@@ -184,44 +184,44 @@ namespace NearFutureElectrical.UI
         private void DrawGlobalControls()
         {
           GUILayout.BeginHorizontal();
-          Rect controlRect = GUILayout.GetRect(300f, 50f);
-          Rect dischargeButtonRect = new Rect (0f, 0f, 32f, 32f);
-          Rect chargeAllOnButtonRect = new Rect (40f, 0f, 22f, 22f);
-          Rect chargeAllOffButtonRect = new Rect (40f, 24f, 22f, 22f);
+          Rect controlRect = GUILayoutUtility.GetRect(300f, 50f);
+          Rect dischargeButtonRect = new Rect (0f, 0f, 48f, 48f);
+          Rect chargeAllOnButtonRect = new Rect (52f, 0f, 22f, 22f);
+          Rect chargeAllOffButtonRect = new Rect (52f, 24f, 22f, 22f);
 
-          Rect currentRechargeRateRect = new Rect (68f, 2f, 90f, 20f);
-          Rect currentDischargeRateRect = new Rect (68f, 26f, 90f, 20f);
+          Rect currentRechargeRateRect = new Rect (70f, 2f, 140f, 20f);
+          Rect currentDischargeRateRect = new Rect (70f, 26f, 140f, 20f);
 
 
-          GUILayout.BeginGroup(controlRect);
+          GUI.BeginGroup(controlRect);
           GUI.color = GUIResources.GetColor("capacitor_blue");
           if (GUI.Button(dischargeButtonRect, ""))
           {
             DischargeAll();
           }
-          GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("capacitor_discharge").iconAtlas, GUIResources.GetIcon("capacitor_discharge").iconRect);
+          GUI.DrawTextureWithTexCoords(dischargeButtonRect, GUIResources.GetIcon("capacitor_discharge").iconAtlas, GUIResources.GetIcon("capacitor_discharge").iconRect);
           GUI.color = GUIResources.GetColor("accept_color");
           if (GUI.Button(chargeAllOnButtonRect, ""))
           {
             ChargeAll();
           }
-          GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("capacitor_charging").iconAtlas, GUIResources.GetIcon("capacitor_charging").iconRect);
+          GUI.DrawTextureWithTexCoords(chargeAllOnButtonRect, GUIResources.GetIcon("capacitor_charging").iconAtlas, GUIResources.GetIcon("capacitor_charging").iconRect);
           GUI.color = GUIResources.GetColor("cancel_color");
           if (GUI.Button(chargeAllOffButtonRect, ""))
           {
             StopChargeAll();
           }
-          GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("capacitor_charging").iconAtlas, GUIResources.GetIcon("capacitor_charging").iconRect);
+          GUI.DrawTextureWithTexCoords(chargeAllOffButtonRect, GUIResources.GetIcon("capacitor_charging").iconAtlas, GUIResources.GetIcon("capacitor_charging").iconRect);
 
           GUI.color = Color.white;
 
           GUI.Label(currentRechargeRateRect, String.Format("Recharging using: {0:F2} EC/s",GetAllChargeRatesCurrent()),
-              resources.GetStyle("text_basic"), GUILayout.MaxWidth(950f), GUILayout.MinWidth(190f));
+              resources.GetStyle("text_basic"));
           GUI.Label(currentDischargeRateRect, String.Format("Discharging at {0:F2}/s",GetAllDischargeRatesCurrent()),
-              resources.GetStyle("text_basic"), GUILayout.MaxWidth(190f), GUILayout.MinWidth(190f));
+              resources.GetStyle("text_basic"));
 
 
-          GUILayout.EndGroup();
+          GUI.EndGroup();
           GUILayout.EndHorizontal();
         }
 
