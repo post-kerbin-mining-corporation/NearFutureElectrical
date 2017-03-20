@@ -70,14 +70,14 @@ namespace NearFutureElectrical.UI
       {
         Rect controlRect = GUILayoutUtility.GetRect(270f, 64f);
         Rect heatIconRect = new Rect(0f, 0f, 20f, 20f);
-        Rect heatTextRect = new Rect(20f, 2f, 60f, 20f);
+        Rect heatTextRect = new Rect(20f, 1f, 60f, 20f);
         Rect powerIconRect = new Rect(80f, 0f, 20f, 20f);
-        Rect powerTextRect = new Rect(100f, 2f, 60f, 20f);
+        Rect powerTextRect = new Rect(100f, 1f, 60f, 20f);
         Rect lifetimeIconRect = new Rect(160f, 0f, 20f, 20f);
-        Rect lifetimeTextRect = new Rect(180f, 2f, 110f, 20f);
+        Rect lifetimeTextRect = new Rect(182f, 1f, 110f, 20f);
 
         Rect temperatureIconRect = new Rect(0f, 30f, 20f, 20f);
-        Rect temperaturePanelRect = new Rect(20f, 30f, 200f, 30f);
+        Rect temperaturePanelRect = new Rect(20f, 30f, 210f, 30f);
 
         GUI.BeginGroup(controlRect);
 
@@ -132,7 +132,7 @@ namespace NearFutureElectrical.UI
             GUI.color = barColor;
             GUI.Box(barForeroundRect, "", host.GUIResources.GetStyle("bar_foreground"));
             GUI.color = Color.white;
-            GUI.Label(new Rect(barBackgroundRect.xMax+7f , 1f, 40f, 20f), String.Format("{0:F0} K", coreTemp), host.GUIResources.GetStyle("text_basic"));
+            GUI.Label(new Rect(barBackgroundRect.xMax+7f , 1f, 50f, 20f), String.Format("{0:F0} K", coreTemp), host.GUIResources.GetStyle("text_basic"));
 
             GUI.DrawTextureWithTexCoords(new Rect(nominalXLoc - 7f, 5f, 15f, 20f), host.GUIResources.GetIcon("notch").iconAtlas, host.GUIResources.GetIcon("notch").iconRect);
             GUI.DrawTextureWithTexCoords(new Rect(criticalXLoc - 7f, 5f, 15f, 20f), host.GUIResources.GetIcon("notch").iconAtlas, host.GUIResources.GetIcon("notch").iconRect);
@@ -196,7 +196,7 @@ namespace NearFutureElectrical.UI
       // Draw the advanced control set
       private void DrawAdvancedControls()
       {
-          
+
         Rect controlRect = GUILayoutUtility.GetRect(180f, 64f);
 
         Rect autoTempOffToggleRect = new Rect(30f, 0f, 20f, 20f);

@@ -137,52 +137,12 @@ namespace NearFutureElectrical.UI
         private void CapacitorWindow(int windowId)
         {
             GUI.skin = HighLogic.Skin;
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Capacitor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
-            GUILayout.FlexibleSpace();
-            Rect buttonRect = GUILayoutUtility.GetRect(22f, 22f);
-            GUI.color = resources.GetColor("cancel_color");
-            if (GUI.Button(buttonRect, "", GUIResources.GetStyle("button_cancel")))
-            {
-                ToggleCapWindow();
-            }
-            GUI.color = Color.white;
-            GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("cancel").iconAtlas, GUIResources.GetIcon("cancel").iconRect);
-          
-            GUILayout.EndHorizontal();
+            DrawHeaderArea();
 
             if (capacitorList != null && capacitorList.Count > 0)
             {
 
-                GUILayout.BeginHorizontal();
-                    GUILayout.BeginVertical();
-                        if (GUILayout.Button("Enable all charging"))
-                        {
-                            ChargeAll();
-                        }
-                        if (GUILayout.Button("Disable all charging"))
-                        {
-                            StopChargeAll();
-                        }
-                    GUILayout.EndVertical();
-                    GUILayout.BeginVertical();
-                    GUILayout.Label(String.Format("Current total recharge rate: {0:F2}/s",GetAllChargeRatesCurrent()),
-                        resources.GetStyle("text_basic"), GUILayout.MaxWidth(950f), GUILayout.MinWidth(190f));
-
-
-
-                    GUILayout.Label(String.Format("Current total discharge rate: {0:F2}/s",GetAllDischargeRatesCurrent()),
-                        resources.GetStyle("text_basic"), GUILayout.MaxWidth(190f), GUILayout.MinWidth(190f));
-                    GUILayout.EndVertical();
-
-                    GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Discharge all"))
-                    {
-                        DischargeAll();
-                    }
-
-
-                GUILayout.EndHorizontal();
+                DrawGlobalControls();
 
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(525f), GUILayout.Height(175f));
                 GUILayout.BeginVertical();
@@ -203,6 +163,66 @@ namespace NearFutureElectrical.UI
                 GUILayout.Label("No capacitors found!");
             }
             GUI.DragWindow();
+        }
+
+        private void DrawHeaderArea()
+        {
+          GUILayout.BeginHorizontal();
+          GUILayout.Label("Capacitor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
+          GUILayout.FlexibleSpace();
+          Rect buttonRect = GUILayoutUtility.GetRect(22f, 22f);
+          GUI.color = resources.GetColor("cancel_color");
+          if (GUI.Button(buttonRect, "", GUIResources.GetStyle("button_cancel")))
+          {
+              ToggleCapWindow();
+          }
+          GUI.color = Color.white;
+          GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("cancel").iconAtlas, GUIResources.GetIcon("cancel").iconRect);
+
+          GUILayout.EndHorizontal();
+        }
+        private void DrawGlobalControls()
+        {
+          GUILayout.BeginHorizontal();
+          Rect controlRect = GUILayout.GetRect(300f, 50f);
+          Rect dischargeButtonRect = new Rect (0f, 0f, 32f, 32f);
+          Rect chargeAllOnButtonRect = new Rect (40f, 0f, 22f, 22f);
+          Rect chargeAllOffButtonRect = new Rect (40f, 24f, 22f, 22f);
+
+          Rect currentRechargeRateRect = new Rect (68f, 2f, 90f, 20f);
+          Rect currentDischargeRateRect = new Rect (68f, 26f, 90f, 20f);
+
+
+          GUILayout.BeginGroup(controlRect);
+          GUI.color = GUIResources.GetColor("capacitor_blue");
+          if (GUI.Button(dischargeButtonRect, ""))
+          {
+            DischargeAll();
+          }
+          GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("capacitor_discharge").iconAtlas, GUIResources.GetIcon("capacitor_discharge").iconRect);
+          GUI.color = GUIResources.GetColor("accept_color");
+          if (GUI.Button(chargeAllOnButtonRect, ""))
+          {
+            ChargeAll();
+          }
+          GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("capacitor_charging").iconAtlas, GUIResources.GetIcon("capacitor_charging").iconRect);
+          GUI.color = GUIResources.GetColor("cancel_color");
+          if (GUI.Button(chargeAllOffButtonRect, ""))
+          {
+            StopChargeAll();
+          }
+          GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("capacitor_charging").iconAtlas, GUIResources.GetIcon("capacitor_charging").iconRect);
+
+          GUI.color = Color.white;
+
+          GUI.Label(currentRechargeRateRect, String.Format("Recharging using: {0:F2} EC/s",GetAllChargeRatesCurrent()),
+              resources.GetStyle("text_basic"), GUILayout.MaxWidth(950f), GUILayout.MinWidth(190f));
+          GUI.Label(currentDischargeRateRect, String.Format("Discharging at {0:F2}/s",GetAllDischargeRatesCurrent()),
+              resources.GetStyle("text_basic"), GUILayout.MaxWidth(190f), GUILayout.MinWidth(190f));
+
+
+          GUILayout.EndGroup();
+          GUILayout.EndHorizontal();
         }
 
         private float GetAllChargeRatesCurrent()
@@ -378,7 +398,7 @@ namespace NearFutureElectrical.UI
         {
             if (stockToolbarButton != null)
             {
-                
+
                 ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
                 stockToolbarButton = null;
             }

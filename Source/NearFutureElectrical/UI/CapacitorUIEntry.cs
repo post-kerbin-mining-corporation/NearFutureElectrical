@@ -57,14 +57,16 @@ namespace NearFutureElectrical.UI
         GUI.BeginGroup(controlRect);
 
         // BUTTON: Discharge button
+        GUI.color = host.GUIResources.GetColor("capacitor_blue");
         if (GUI.Button(dischargeButtonRect, ""))
         {
           capacitor.Discharge();
         }
-        GUI.DrawTextureWithTexCoords(dischargeButtonRect, host.GUIResources.GetIcon("lightning").iconAtlas, host.GUIResources.GetIcon("lightning").iconRect);
-
+        GUI.DrawTextureWithTexCoords(dischargeButtonRect, host.GUIResources.GetIcon("capacitor_discharge").iconAtlas, host.GUIResources.GetIcon("capacitor_discharge").iconRect);
+        GUI.color = Color.white;
+        
         // SLIDER: Discharge rate
-        GUI.DrawTextureWithTexCoords(dischargeRateIconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("throttle").iconRect);
+        GUI.DrawTextureWithTexCoords(dischargeRateIconRect, host.GUIResources.GetIcon("capacitor_rate").iconAtlas, host.GUIResources.GetIcon("capacitor_rate").iconRect);
         capacitor.dischargeActual = GUI.HorizontalSlider(dischargeRateSliderRect, capacitor.dischargeActual, capacitor.DischargeRate*capacitor.DischargeRateMinimumScalar, capacitor.DischargeRate);
         GUI.Label(dischargeRateTextRect, String.Format("{0:F0} Ec/s", capacitor.dischargeActual), host.GUIResources.GetStyle("text_basic"));
 
@@ -80,7 +82,7 @@ namespace NearFutureElectrical.UI
         Color barColor = new Color();
             GUI.BeginGroup(chargeBarPanelRect);
             GUI.Box(barBackgroundRect, "", host.GUIResources.GetStyle("bar_background"));
-            GUI.color = Color.green;
+            GUI.color = host.GUIResources.GetColor("capacitor_blue");
             GUI.Box(barForeroundRect, "", host.GUIResources.GetStyle("bar_foreground"));
             GUI.color = Color.white;
          GUI.EndGroup();
@@ -91,10 +93,12 @@ namespace NearFutureElectrical.UI
       // Draw the basic control set
       private void DrawBasicControls()
       {
-        Rect controlRect = GUILayoutUtility.GetRect(5f, 40f);
-
-          GUI.BeginGroup(controlRect);
-
+        Rect controlRect = GUILayoutUtility.GetRect(100f, 40f);
+        Rect toggleRect = new Rect(30f, 0f, 20f, 20f);
+        Rect iconRect = new Rect(0f, 0f, 20f, 20f);
+        GUI.BeginGroup(controlRect);
+        capacitor.Enabled = GUI.Toggle(toggleRect, capacitor.Enabled, "", host.GUIResources.GetStyle("button_toggle"));
+        GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("capacitor_charging").iconAtlas, host.GUIResources.GetIcon("capacitor_charging").iconRect);
         GUI.EndGroup();
       }
 
@@ -102,10 +106,10 @@ namespace NearFutureElectrical.UI
       public void Draw()
       {
 
-        GUILayout.BeginHorizontal();
+        GUILayout.BeginHorizontal(host.GUIResources.GetStyle("block_background"));
         DrawMainControls();
-        DrawBasicControls();
         DrawReadout();
+        DrawBasicControls();
         GUILayout.EndHorizontal();
       }
 

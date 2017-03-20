@@ -51,6 +51,8 @@ namespace NearFutureElectrical.UI
         {
             //Debug.Log("NFT: Toggle Reactor Window");
             showReactorWindow = !showReactorWindow;
+            if (!showReactorWindow)
+              showFocusedWindow = false;
         }
 
         public void FindReactors()
@@ -140,14 +142,13 @@ namespace NearFutureElectrical.UI
 
                     if (showFocusedWindow)
                     {
-                      GUI.Window(popupWindowID, popupWindowPos, ReactorPopup, new GUIContent(), GUIResources.GetStyle("window_main") );
+                      GUILayout.Window(popupWindowID, popupWindowPos, ReactorPopup, new GUIContent(), GUIResources.GetStyle("window_main") );
 
                     } else
                     {
-
                     }
 
-                    windowPos = GUI.Window(mainWindowID, windowPos, ReactorWindow, new GUIContent(), GUIResources.GetStyle("window_main"));
+                    windowPos = GUILayout.Window(mainWindowID, windowPos, ReactorWindow, new GUIContent(), GUIResources.GetStyle("window_main"), GUILayout.MinHeight(150f), GUILayout.MaxHeight(315f));
                 }
             }
             //Debug.Log("NFE: Stop Capacitor UI Draw");
@@ -214,43 +215,46 @@ namespace NearFutureElectrical.UI
 
         private void DrawChoiceIcon(int id, Texture texture, int x_id, int y_id)
         {
-            Rect iconRect = new Rect(x_id * 30f, y_id * 30f, 28f, 28f);
+            Rect iconRect = new Rect(x_id * 34f +2, y_id * 34f +2, 28f, 28f);
+            Rect buttonRect = new Rect(x_id * 34f, y_id * 34f, 32f, 32f);
 
-          if (GUI.Button(iconRect, "", GUIResources.GetStyle("button_overlaid")))
+          if (GUI.Button(buttonRect, "", GUIResources.GetStyle("button_overlaid")))
             iconID = id;
           GUI.DrawTextureWithTexCoords(iconRect, texture, GUIResources.GetReactorIcon(id).iconRect);
+        }
+
+        private void DrawHeaderArea()
+        {
+          GUILayout.BeginHorizontal();
+          GUILayout.Label("Reactor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
+              GUILayout.FlexibleSpace();
+              Rect buttonRect = GUILayoutUtility.GetRect(22f, 22f);
+              GUI.color = resources.GetColor("cancel_color");
+              if (GUI.Button(buttonRect, "", GUIResources.GetStyle("button_cancel")))
+              {
+                  ToggleReactorWindow();
+              }
+              GUI.color = Color.white;
+              GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("cancel").iconAtlas, GUIResources.GetIcon("cancel").iconRect);
+          GUILayout.EndHorizontal();
         }
 
         // Draws the main window
         private void ReactorWindow(int windowId)
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Reactor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
-                GUILayout.FlexibleSpace();
-                Rect buttonRect = GUILayoutUtility.GetRect(22f, 22f);
-                GUI.color = resources.GetColor("cancel_color");
-                if (GUI.Button(buttonRect, "", GUIResources.GetStyle("button_cancel")))
-                {
-                    ToggleReactorWindow();
-                }
-                GUI.color = Color.white;
-                GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("cancel").iconAtlas, GUIResources.GetIcon("cancel").iconRect);
-
-            GUILayout.EndHorizontal();
+            DrawHeaderArea();
 
             if (reactorList != null && reactorList.Count > 0)
             {
-
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(700f), GUILayout.MinHeight(251f));
                 GUILayout.Space(3f);
                 GUILayout.BeginVertical();
-
-                        //windowPos.height = 175f + 70f;
-                        for (int i = 0; i < uiReactors.Count; i++)
-                        {
-                            uiReactors[i].Draw();
-                        }
-                   GUILayout.EndVertical();
+                //windowPos.height = 175f + 70f;
+                for (int i = 0; i < uiReactors.Count; i++)
+                {
+                    uiReactors[i].Draw();
+                }
+                GUILayout.EndVertical();
                GUILayout.EndScrollView();
             }
             else
@@ -286,6 +290,7 @@ namespace NearFutureElectrical.UI
                 }
             }
         }
+
 
         void ResetAppLauncher()
         {
