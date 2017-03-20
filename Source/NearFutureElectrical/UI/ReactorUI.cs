@@ -148,7 +148,7 @@ namespace NearFutureElectrical.UI
                     {
                     }
 
-                    windowPos = GUILayout.Window(mainWindowID, windowPos, ReactorWindow, new GUIContent(), GUIResources.GetStyle("window_main"), GUILayout.MinHeight(150f), GUILayout.MaxHeight(315f));
+                    windowPos = GUILayout.Window(mainWindowID, windowPos, ReactorWindow, new GUIContent(), GUIResources.GetStyle("window_main"), GUILayout.MinHeight(150f), GUILayout.MaxHeight(315f), GUILayout.ExpandHeight());
                 }
             }
             //Debug.Log("NFE: Stop Capacitor UI Draw");
@@ -245,7 +245,7 @@ namespace NearFutureElectrical.UI
 
             if (reactorList != null && reactorList.Count > 0)
             {
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(700f), GUILayout.MinHeight(251f));
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(700f), GUILayout.MinHeight(151f));
                 GUILayout.Space(3f);
                 GUILayout.BeginVertical();
                 //windowPos.height = 175f + 70f;

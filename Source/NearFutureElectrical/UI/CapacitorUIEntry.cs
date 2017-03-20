@@ -82,7 +82,10 @@ namespace NearFutureElectrical.UI
         Color barColor = new Color();
             GUI.BeginGroup(chargeBarPanelRect);
             GUI.Box(barBackgroundRect, "", host.GUIResources.GetStyle("bar_background"));
+
             GUI.color = host.GUIResources.GetColor("capacitor_blue");
+            if (GetChargePercent() <= 0.5f)
+              GUI.Color = Color.red
             GUI.Box(barForeroundRect, "", host.GUIResources.GetStyle("bar_foreground"));
             GUI.color = Color.white;
          GUI.EndGroup();
