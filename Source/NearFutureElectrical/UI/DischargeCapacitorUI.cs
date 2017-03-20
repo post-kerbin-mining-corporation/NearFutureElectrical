@@ -138,12 +138,17 @@ namespace NearFutureElectrical.UI
         {
             GUI.skin = HighLogic.Skin;
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Capacitors", resources.GetStyle("header_basic"), GUILayout.MaxHeight(32f), GUILayout.MinHeight(32f), GUILayout.MinWidth(120f));
+            GUILayout.Label("Capacitor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("X", GUILayout.MaxWidth(26f), GUILayout.MinWidth(26f), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f)))
+            Rect buttonRect = GUILayoutUtility.GetRect(22f, 22f);
+            GUI.color = resources.GetColor("cancel_color");
+            if (GUI.Button(buttonRect, "", GUIResources.GetStyle("button_cancel")))
             {
                 ToggleCapWindow();
             }
+            GUI.color = Color.white;
+            GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("cancel").iconAtlas, GUIResources.GetIcon("cancel").iconRect);
+          
             GUILayout.EndHorizontal();
 
             if (capacitorList != null && capacitorList.Count > 0)
@@ -373,6 +378,7 @@ namespace NearFutureElectrical.UI
         {
             if (stockToolbarButton != null)
             {
+                
                 ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
                 stockToolbarButton = null;
             }

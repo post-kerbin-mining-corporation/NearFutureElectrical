@@ -44,15 +44,15 @@ namespace NearFutureElectrical.UI
       {
         Rect controlRect = GUILayoutUtility.GetRect(220f, 40f);
 
-        Rect dischargeButtonRect = new Rect(0f, 0f, 40f, 40f);
+        Rect dischargeButtonRect = new Rect(0f, 0f, 36f, 36f);
 
-        Rect dischargeRateIconRect = new Rect(32f, 0f, 20f, 20f);
-        Rect dischargeRateSliderRect = new Rect(48f, 5f, 100f, 20f);
-        Rect dischargeRateTextRect = new Rect(148f, 2f, 60f, 20f);
+        Rect dischargeRateIconRect = new Rect(40f, 0f, 20f, 20f);
+        Rect dischargeRateSliderRect = new Rect(62f, 5f, 100f, 20f);
+        Rect dischargeRateTextRect = new Rect(166f, 2f, 100f, 20f);
 
-        Rect chargeBarIconRect = new Rect(32f, 20f, 20f, 20f);
-        Rect chargeBarPanelRect = new Rect(48f, 20f, 100f, 20f);
-        Rect chargeBarTextRect = new Rect(148f, 2f, 100f, 20f);
+        Rect chargeBarIconRect = new Rect(40f, 20f, 20f, 20f);
+        Rect chargeBarPanelRect = new Rect(62f, 20f, 100f, 20f);
+        Rect chargeBarTextRect = new Rect(166f, 22f, 100f, 20f);
 
         GUI.BeginGroup(controlRect);
 
@@ -65,14 +65,14 @@ namespace NearFutureElectrical.UI
 
         // SLIDER: Discharge rate
         GUI.DrawTextureWithTexCoords(dischargeRateIconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("throttle").iconRect);
-        capacitor.dischargeActual = GUI.HorizontalSlider(dischargeRateSliderRect, capacitor.dischargeActual, capacitor.DischargeRate/2f, capacitor.DischargeRate);
+        capacitor.dischargeActual = GUI.HorizontalSlider(dischargeRateSliderRect, capacitor.dischargeActual, capacitor.DischargeRate*capacitor.DischargeRateMinimumScalar, capacitor.DischargeRate);
         GUI.Label(dischargeRateTextRect, String.Format("{0:F0} Ec/s", capacitor.dischargeActual), host.GUIResources.GetStyle("text_basic"));
 
         // PROGRESS BAR: Charge fraction bar
-        GUI.DrawTextureWithTexCoords(dischargeRateIconRect, host.GUIResources.GetIcon("capacitor_charge").iconAtlas, host.GUIResources.GetIcon("capacitor_charge").iconRect);
+        GUI.DrawTextureWithTexCoords(chargeBarIconRect, host.GUIResources.GetIcon("capacitor_charge").iconAtlas, host.GUIResources.GetIcon("capacitor_charge").iconRect);
 
-        Vector2 barBackgroundSize = new Vector2(90f, 10f);
-        Vector2 barForegroundSize = new Vector2(barBackgroundSize.x * (GetChargePercent()/100.0f), 7f);
+        Vector2 barBackgroundSize = new Vector2(100f, 10f);
+        Vector2 barForegroundSize = new Vector2(Mathf.Max(barBackgroundSize.x * (GetChargePercent()/100.0f), 5f), 7f);
 
         Rect barBackgroundRect = new Rect(0f, 5f, barBackgroundSize.x, barBackgroundSize.y);
         Rect barForeroundRect = new Rect(0f, 6f, barForegroundSize.x, barForegroundSize.y);
@@ -84,14 +84,14 @@ namespace NearFutureElectrical.UI
             GUI.Box(barForeroundRect, "", host.GUIResources.GetStyle("bar_foreground"));
             GUI.color = Color.white;
          GUI.EndGroup();
-         GUI.Label(chargeBarTextRect, String.Format("{0}% ({1} Sc/s)", GetChargePercent(), GetCurrentRate()), host.GUIResources.GetStyle("text_basic"));
+         GUI.Label(chargeBarTextRect, String.Format("{0:F0}% ({1:F1} Sc/s)", GetChargePercent(), GetCurrentRate()), host.GUIResources.GetStyle("text_basic"));
          GUI.EndGroup();
       }
 
       // Draw the basic control set
       private void DrawBasicControls()
       {
-        Rect controlRect = GUILayoutUtility.GetRect(130f, 64f);
+        Rect controlRect = GUILayoutUtility.GetRect(5f, 40f);
 
           GUI.BeginGroup(controlRect);
 

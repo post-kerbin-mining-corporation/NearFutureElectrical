@@ -19,6 +19,12 @@ namespace NearFutureElectrical.UI
     private Texture reactorIcons;
     private Texture capacitorIcons;
 
+    // Get any color, given its name
+    public Color GetColor(string name)
+    {
+        return colorList[name];
+    }
+
     // Get any icon, given its name
     public AtlasIcon GetIcon(string name)
     {
@@ -176,7 +182,7 @@ namespace NearFutureElectrical.UI
     {
       colorList = new Dictionary<string, Color>();
 
-      colorList.Add("cancel_color", new Color(209f / 255f, 250f / 255f, 146f / 255f));
+      colorList.Add("cancel_color", new Color(208f / 255f, 131f / 255f, 86f / 255f));
       colorList.Add("accept_color", new Color(209f / 255f, 250f / 255f, 146f / 255f));
 
     }

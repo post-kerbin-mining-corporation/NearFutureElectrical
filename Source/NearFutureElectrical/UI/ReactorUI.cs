@@ -191,7 +191,7 @@ namespace NearFutureElectrical.UI
           GUI.EndGroup();
 
           // Cancel/Accept
-          GUI.color = resources.GetColor("cancel_color");
+          GUI.color = resources.GetColor("accept_color");
           if (GUI.Button(acceptButtonRect, "", GUIResources.GetStyle("button_accept")))
           {
             focusedReactor.UIName = textVariable;
@@ -201,7 +201,7 @@ namespace NearFutureElectrical.UI
           GUI.color = Color.white;
           GUI.DrawTextureWithTexCoords(acceptButtonRect, GUIResources.GetIcon("accept").iconAtlas, GUIResources.GetIcon("accept").iconRect);
 
-          GUI.color = resources.GetColor("accept_color");
+          GUI.color = resources.GetColor("cancel_color");
           if (GUI.Button(cancelButtonRect, "", GUIResources.GetStyle("button_cancel")))
           {
             showFocusedWindow = false;

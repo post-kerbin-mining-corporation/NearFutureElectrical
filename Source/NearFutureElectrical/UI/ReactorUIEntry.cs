@@ -68,13 +68,13 @@ namespace NearFutureElectrical.UI
       // Draw the noninteractable components
       private void DrawReadout()
       {
-        Rect controlRect = GUILayoutUtility.GetRect(220f, 64f);
+        Rect controlRect = GUILayoutUtility.GetRect(270f, 64f);
         Rect heatIconRect = new Rect(0f, 0f, 20f, 20f);
-        Rect heatTextRect = new Rect(20f, 0f, 60f, 20f);
+        Rect heatTextRect = new Rect(20f, 2f, 60f, 20f);
         Rect powerIconRect = new Rect(80f, 0f, 20f, 20f);
-        Rect powerTextRect = new Rect(100f, 0f, 60f, 20f);
+        Rect powerTextRect = new Rect(100f, 2f, 60f, 20f);
         Rect lifetimeIconRect = new Rect(160f, 0f, 20f, 20f);
-        Rect lifetimeTextRect = new Rect(180f, 0f, 90f, 20f);
+        Rect lifetimeTextRect = new Rect(180f, 2f, 110f, 20f);
 
         Rect temperatureIconRect = new Rect(0f, 30f, 20f, 20f);
         Rect temperaturePanelRect = new Rect(20f, 30f, 200f, 30f);
@@ -149,7 +149,7 @@ namespace NearFutureElectrical.UI
         if (reactor.FollowThrottle)
           controlRect = GUILayoutUtility.GetRect(180f, 64f);
         else
-          controlRect = GUILayoutUtility.GetRect(180f, 28f);
+          controlRect = GUILayoutUtility.GetRect(180f, 24f);
         Rect throttleIconRect = new Rect(0f, 0f, 20f, 20f);
         Rect throttleSliderRect = new Rect(28f, 5f, 100f, 20f);
         Rect throttleTextRect = new Rect(135f, 2f, 40f, 20f);
@@ -202,12 +202,12 @@ namespace NearFutureElectrical.UI
         Rect autoTempOffToggleRect = new Rect(30f, 0f, 20f, 20f);
         Rect autoTempOffIconRect = new Rect(0f, 0f, 28f, 28f);
         Rect autoTempOffSliderRect = new Rect(60f, 10f, 70f, 20f);
-        Rect autoTempOffTextRect = new Rect(140f, 8f, 40f, 20f);
+        Rect autoTempOffTextRect = new Rect(140f, 8f, 60f, 20f);
 
         Rect autoWarpOffToggleRect = new Rect(30f, 30f, 20f, 20f);
         Rect autoWarpOffIconRect = new Rect(0f, 30f, 28f, 28f);
         Rect autoWarpOffSliderRect = new Rect(60f, 40f, 70f, 20f);
-        Rect autoWarpOffTextRect = new Rect(140f, 38f, 30f, 20f);
+        Rect autoWarpOffTextRect = new Rect(140f, 38f, 60f, 20f);
 
         GUI.BeginGroup(controlRect);
         // SLIDER: Shutdown Temperature
