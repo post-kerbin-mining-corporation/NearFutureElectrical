@@ -199,16 +199,14 @@ namespace NearFutureElectrical.UI
             focusedReactor.UIIcon = iconID;
             showFocusedWindow = false;
           }
-          GUI.color = Color.white;
           GUI.DrawTextureWithTexCoords(acceptButtonRect, GUIResources.GetIcon("accept").iconAtlas, GUIResources.GetIcon("accept").iconRect);
-
           GUI.color = resources.GetColor("cancel_color");
           if (GUI.Button(cancelButtonRect, "", GUIResources.GetStyle("button_cancel")))
           {
             showFocusedWindow = false;
           }
-          GUI.color = Color.white;
           GUI.DrawTextureWithTexCoords(cancelButtonRect, GUIResources.GetIcon("cancel").iconAtlas, GUIResources.GetIcon("cancel").iconRect);
+          GUI.color = Color.white;
 
           GUI.EndGroup();
         }
@@ -234,8 +232,9 @@ namespace NearFutureElectrical.UI
               {
                   ToggleReactorWindow();
               }
-              GUI.color = Color.white;
+
               GUI.DrawTextureWithTexCoords(buttonRect, GUIResources.GetIcon("cancel").iconAtlas, GUIResources.GetIcon("cancel").iconRect);
+              GUI.color = Color.white;
           GUILayout.EndHorizontal();
         }
 

@@ -33,7 +33,7 @@ namespace NearFutureElectrical.UI
 
         GUI.BeginGroup(controlRect);
         // STATIC: Icon
-        GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetIcon("capacitor_charge").iconAtlas, host.GUIResources.GetIcon("capacitor_charge").iconRect);
+        GUI.DrawTextureWithTexCoords(iconRect, host.GUIResources.GetCapacitorIcon(0).iconAtlas, host.GUIResources.GetCapacitorIcon(0).iconRect);
         // STATIC: UI Name
         GUI.Label(titleRect, capacitor.part.partInfo.title, host.GUIResources.GetStyle("header_basic"));
         GUI.EndGroup();
@@ -64,7 +64,7 @@ namespace NearFutureElectrical.UI
         }
         GUI.DrawTextureWithTexCoords(dischargeButtonRect, host.GUIResources.GetIcon("capacitor_discharge").iconAtlas, host.GUIResources.GetIcon("capacitor_discharge").iconRect);
         GUI.color = Color.white;
-        
+
         // SLIDER: Discharge rate
         GUI.DrawTextureWithTexCoords(dischargeRateIconRect, host.GUIResources.GetIcon("capacitor_rate").iconAtlas, host.GUIResources.GetIcon("capacitor_rate").iconRect);
         capacitor.dischargeActual = GUI.HorizontalSlider(dischargeRateSliderRect, capacitor.dischargeActual, capacitor.DischargeRate*capacitor.DischargeRateMinimumScalar, capacitor.DischargeRate);
