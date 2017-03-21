@@ -246,7 +246,14 @@ namespace NearFutureElectrical.UI
         }
         GUILayout.EndHorizontal();
       }
-
+      public float GetReadoutSize()
+      {
+        if (advancedMode)
+          return 116f;
+        else
+          return 96f
+      }
+      
       // Draw the UI component
       public void Draw()
       {

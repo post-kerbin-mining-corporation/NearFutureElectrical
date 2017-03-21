@@ -76,7 +76,7 @@ namespace NearFutureElectrical.UI
 
         // GUI VARS
         // ----------
-        public Rect windowPos = new Rect(200f, 200f, 500f, 200f);
+        public Rect windowPos = new Rect(200f, 200f, 550f, 100f);
         public Vector2 scrollPosition = Vector2.zero;
         static bool showCapWindow = false;
         int windowID = new System.Random(325671).Next();
@@ -90,7 +90,7 @@ namespace NearFutureElectrical.UI
         private void InitStyles()
         {
             resources = new UIResources();
-            windowPos = new Rect(200f, 200f, 550f, 315f);
+
             initStyles = true;
         }
         public void Awake()
@@ -126,7 +126,7 @@ namespace NearFutureElectrical.UI
                     GUI.skin = HighLogic.Skin;
                     //gui_window.padding.top = 5;
 
-                    windowPos = GUI.Window(windowID, windowPos, CapacitorWindow, new GUIContent(), resources.GetStyle("window_main"));
+                    windowPos = GUILayout.Window(windowID, windowPos, CapacitorWindow, new GUIContent(), resources.GetStyle("window_main"), GUILayout.MinHeight(120f), GUILayout.MaxHeight(315f), GUILayout.ExpandHeight(true));
                 }
             }
             //Debug.Log("NFE: Stop Capacitor UI Draw");
@@ -143,8 +143,8 @@ namespace NearFutureElectrical.UI
             {
 
                 DrawGlobalControls();
-
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(525f), GUILayout.Height(175f));
+                scrollHeight = Mathf.Min(capacitorList.Count * 70f, 6f*70f)
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(525f), GUILayout.Height(scrollHeight));
                 GUILayout.BeginVertical();
                     //windowPos.height = 175f + 70f;
                     for (int i = 0; i < uiCapacitors.Count; i++)
@@ -184,13 +184,13 @@ namespace NearFutureElectrical.UI
         private void DrawGlobalControls()
         {
           GUILayout.BeginHorizontal();
-          Rect controlRect = GUILayoutUtility.GetRect(300f, 50f);
+          Rect controlRect = GUILayoutUtility.GetRect(300f, 60f);
           Rect dischargeButtonRect = new Rect (0f, 0f, 48f, 48f);
           Rect chargeAllOnButtonRect = new Rect (52f, 0f, 22f, 22f);
           Rect chargeAllOffButtonRect = new Rect (52f, 24f, 22f, 22f);
 
-          Rect currentRechargeRateRect = new Rect (70f, 2f, 140f, 20f);
-          Rect currentDischargeRateRect = new Rect (70f, 26f, 140f, 20f);
+          Rect currentRechargeRateRect = new Rect (94f, 2f, 180f, 20f);
+          Rect currentDischargeRateRect = new Rect (94f, 26f, 180f, 20f);
 
 
           GUI.BeginGroup(controlRect);

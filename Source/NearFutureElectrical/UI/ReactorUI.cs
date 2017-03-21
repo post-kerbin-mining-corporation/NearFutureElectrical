@@ -28,6 +28,7 @@ namespace NearFutureElectrical.UI
         private Rect windowPos = new Rect(200f, 200f, 715f, 100f);
         private Rect popupWindowPos = new Rect(200f, 200f, 200f, 180f);
         private Vector2 scrollPosition = Vector2.zero;
+        private float scrollHeight = 0f;
 
         private int iconID;
         private static string textVariable;
@@ -90,7 +91,7 @@ namespace NearFutureElectrical.UI
         {
 
             resources = new UIResources();
-            
+
 
             initStyles = true;
         }
@@ -245,7 +246,7 @@ namespace NearFutureElectrical.UI
 
             if (reactorList != null && reactorList.Count > 0)
             {
-                float scrollHeight = Mathf.Min(reactorList.Count * 96f, 96f* 3f);
+
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(700f), GUILayout.MinHeight(scrollHeight));
                 GUILayout.Space(3f);
                 GUILayout.BeginVertical();
@@ -253,9 +254,11 @@ namespace NearFutureElectrical.UI
                 for (int i = 0; i < uiReactors.Count; i++)
                 {
                     uiReactors[i].Draw();
+                    scrollHeight = Mathf.Min(scrollHeight + uiReactors.GetReadoutSize(),  96f* 3f));
                 }
                 GUILayout.EndVertical();
                GUILayout.EndScrollView();
+               scrollHeight = 0f;
             }
             else
             {
