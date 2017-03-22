@@ -8,11 +8,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using NearFutureElectrical.UI;
 
 namespace NearFutureElectrical
 {
-    class DischargeCapacitor : PartModule
+    public class DischargeCapacitor : PartModule
     {
+        // The trigger group this capacitor belongs to
+        [KSPField(isPersistant = true)]
+        public string CapacitorGroups = "0";
 
         // Is capacitor online
         [KSPField(isPersistant = true)]
@@ -32,6 +36,11 @@ namespace NearFutureElectrical
         // Discharge Rate
         [KSPField(isPersistant = false)]
         public float DischargeRate = 10f;
+
+        // amount of maximumStoredCharge
+        [KSPField(isPersistant = false)]
+        public float DischargeRateMinimumScalar = 0.5f;
+
         // Charge Rate
         [KSPField(isPersistant = false)]
         public float ChargeRate;
@@ -45,11 +54,18 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public string ChargeAnimation;
 
-
         // Capacitor Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Status")]
         public string CapacitorStatus;
 
+        [KSPField(isPersistant = true)]
+        public bool FirstLoad = true;
+
+        [KSPField(isPersistant = true)]
+        public double lastUpdateTime = 0;
+
+        private AnimationState[] capacityState;
+        private List<int> assignedGroups = new List<int>();
 
         // Discharge capacitor
         [KSPEvent(guiActive = true, guiName = "Discharge Capacitor")]
@@ -73,8 +89,6 @@ namespace NearFutureElectrical
             Enabled = false;
         }
 
-        [KSPField(isPersistant = true)]
-        public bool FirstLoad = true;
 
         /// UI ACTIONS
         /// --------------------
@@ -109,10 +123,25 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Discharge Rate"), UI_FloatRange(minValue = 50f, maxValue = 100f , stepIncrement = 0.1f)]
         public float dischargeActual = 100f;
 
-        private AnimationState[] capacityState;
 
-        [KSPField(isPersistant = true)]
-        public double lastUpdateTime = 0;
+
+        public bool GetGroupMembership(int toTest)
+        {
+          if (assignedGroups.Contains(toTest))
+            return true;
+          return false;
+        }
+
+        public void AssignToGroup(int toAssign)
+        {
+          if (!assignedGroups.Contains(toAssign))
+            assignedGroups.Add(toAssign);
+        }
+        public void RemoveFromGroup(int toRemove)
+        {
+          if (assignedGroups.Contains(toRemove))
+            assignedGroups.Remove(toRemove);
+        }
 
         public override string GetInfo()
         {
@@ -124,15 +153,16 @@ namespace NearFutureElectrical
             this.part.force_activate();
             capacityState = Utils.SetUpAnimation(ChargeAnimation, this.part);
 
-
+            // Set up the UI slider
             var range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlEditor;
-            range.minValue = DischargeRate/2f;
+            range.minValue = DischargeRate * DischargeRateMinimumScalar;
             range.maxValue = DischargeRate;
 
             range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlFlight;
-            range.minValue = DischargeRate/2f;
+            range.minValue = DischargeRate * DischargeRateMinimumScalar;
             range.maxValue = DischargeRate;
 
+            // Set up the discharge rate
             if (FirstLoad)
             {
               this.dischargeActual = DischargeRate;
@@ -147,6 +177,12 @@ namespace NearFutureElectrical
             if (HighLogic.LoadedSceneIsFlight)
             {
               DoCatchup();
+
+              assignedGroups = new List<int>();
+              for (int i =0; i< CapacitorGroups.Length ;i++)
+              {
+                assignedGroups.Add((int)CapacitorGroups[i]);
+              }
             }
 
         }
@@ -196,6 +232,9 @@ namespace NearFutureElectrical
         }
         public override void OnFixedUpdate()
         {
+
+            dischargeActual = Mathf.Clamp(dischargeActual, DischargeRate * DischargeRateMinimumScalar, DischargeRate);
+
             if (Discharging)
             {
                 for (int i = 0; i < capacityState.Length; i++)
