@@ -1,11 +1,11 @@
 v0.8.7
 ------
-- New MX-5 'Hermes' nuclear reactor
+- New 3.75m MX-5 'Hermes' nuclear reactor, generates 5000 kW of electricity
 - New model for 3.75m FLAT nuclear reactor
 - Radial capacitors are now physicsless
 - Capacitors now have a user-configurable DischargeRateMinimumScalar field that can be used to edit the minimum discharge rate of a capacitor (previously locked at 50%)
-- Reactors now have a new AutoWarpShutdown toggle which allows the user to set a reactor so that it gets shut down at warp factors higher than the specified number
-- Capacitor UI rewrite
+- Reactors now have a new AutoWarpShutdown toggle which allows the user to set a reactor so that it gets shut down at warp factors greater or equal to the specified number
+- Capacitor UI rewrite:
 -- Significant visual improvements
 -- Fixed a bug that caused capacitor rate setting in the UI to be erronous.
 - Reactor UI rewrite:
@@ -13,7 +13,8 @@ v0.8.7
 -- Reactors can now be given a persistent custom icon and name
 -- Better data display and controls
 -- Advanced control mode allowing the setting of the AutoShutdown temperature and a new AutoShutdown warp factor
-
+- Added more RTGs to DecayingRTGs patch courtesy of OrenWatson
+- Added new USI 1.25m reactor to USI patch, courtesy of Wyzard256
 
 v0.8.6
 ------
