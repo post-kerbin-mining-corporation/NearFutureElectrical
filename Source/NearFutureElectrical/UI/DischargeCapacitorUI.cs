@@ -76,7 +76,7 @@ namespace NearFutureElectrical.UI
 
         // GUI VARS
         // ----------
-        public Rect windowPos = new Rect(200f, 200f, 550f, 100f);
+        public Rect windowPos = new Rect(200f, 200f, 500f, 100f);
         public Vector2 scrollPosition = Vector2.zero;
         static bool showCapWindow = false;
         int windowID = new System.Random(325671).Next();
@@ -143,8 +143,8 @@ namespace NearFutureElectrical.UI
             {
 
                 DrawGlobalControls();
-                scrollHeight = Mathf.Min(capacitorList.Count * 70f, 6f*70f)
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(525f), GUILayout.Height(scrollHeight));
+                float scrollHeight = Mathf.Min(capacitorList.Count * 68f, 6f * 68f);
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(480f), GUILayout.Height(scrollHeight));
                 GUILayout.BeginVertical();
                     //windowPos.height = 175f + 70f;
                     for (int i = 0; i < uiCapacitors.Count; i++)
@@ -186,11 +186,11 @@ namespace NearFutureElectrical.UI
           GUILayout.BeginHorizontal();
           Rect controlRect = GUILayoutUtility.GetRect(300f, 60f);
           Rect dischargeButtonRect = new Rect (0f, 0f, 48f, 48f);
-          Rect chargeAllOnButtonRect = new Rect (52f, 0f, 22f, 22f);
-          Rect chargeAllOffButtonRect = new Rect (52f, 24f, 22f, 22f);
+          Rect chargeAllOnButtonRect = new Rect (56f, 0f, 22f, 22f);
+          Rect chargeAllOffButtonRect = new Rect (56f, 24f, 22f, 22f);
 
-          Rect currentRechargeRateRect = new Rect (94f, 2f, 180f, 20f);
-          Rect currentDischargeRateRect = new Rect (94f, 26f, 180f, 20f);
+          Rect currentRechargeRateRect = new Rect (90f, 2f, 180f, 20f);
+          Rect currentDischargeRateRect = new Rect (90f, 26f, 180f, 20f);
 
 
           GUI.BeginGroup(controlRect);
@@ -216,9 +216,9 @@ namespace NearFutureElectrical.UI
           GUI.color = Color.white;
 
           GUI.Label(currentRechargeRateRect, String.Format("Recharging using: {0:F2} EC/s",GetAllChargeRatesCurrent()),
-              resources.GetStyle("text_basic"));
+              resources.GetStyle("header_basic"));
           GUI.Label(currentDischargeRateRect, String.Format("Discharging at {0:F2}/s",GetAllDischargeRatesCurrent()),
-              resources.GetStyle("text_basic"));
+              resources.GetStyle("header_basic"));
 
 
           GUI.EndGroup();

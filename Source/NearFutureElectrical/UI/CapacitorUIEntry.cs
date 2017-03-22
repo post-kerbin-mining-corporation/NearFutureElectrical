@@ -42,7 +42,7 @@ namespace NearFutureElectrical.UI
       // DrawControl bit
       private void DrawReadout()
       {
-        Rect controlRect = GUILayoutUtility.GetRect(240f, 40f);
+        Rect controlRect = GUILayoutUtility.GetRect(250f, 40f);
 
         Rect dischargeButtonRect = new Rect(0f, 0f, 36f, 36f);
 
@@ -96,8 +96,8 @@ namespace NearFutureElectrical.UI
       // Draw the basic control set
       private void DrawBasicControls()
       {
-        Rect controlRect = GUILayoutUtility.GetRect(100f, 40f);
-        Rect toggleRect = new Rect(30f, 3f, 20f, 20f);
+        Rect controlRect = GUILayoutUtility.GetRect(60f, 40f);
+        Rect toggleRect = new Rect(22f, 3f, 20f, 20f);
         Rect iconRect = new Rect(0f, 8f, 20f, 20f);
         GUI.BeginGroup(controlRect);
         capacitor.Enabled = GUI.Toggle(toggleRect, capacitor.Enabled, "", host.GUIResources.GetStyle("button_toggle"));
@@ -111,7 +111,7 @@ namespace NearFutureElectrical.UI
       public void Draw()
       {
 
-        GUILayout.BeginHorizontal(host.GUIResources.GetStyle("block_background"));
+          GUILayout.BeginHorizontal(host.GUIResources.GetStyle("block_background"), GUILayout.Width(445f));
         GUILayout.BeginHorizontal(host.GUIResources.GetStyle("item_box"));  
         DrawMainControls();
         DrawReadout();

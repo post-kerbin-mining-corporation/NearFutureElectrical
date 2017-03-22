@@ -25,8 +25,8 @@ namespace NearFutureElectrical.UI
         // GUI VARS
         private int mainWindowID = new System.Random(3256231).Next();
         private int popupWindowID = new System.Random(3256251).Next();
-        private Rect windowPos = new Rect(200f, 200f, 715f, 100f);
-        private Rect popupWindowPos = new Rect(200f, 200f, 200f, 180f);
+        private Rect windowPos = new Rect(200f, 200f, 735f, 100f);
+        private Rect popupWindowPos = new Rect(200f, 200f, 190f, 225f);
         private Vector2 scrollPosition = Vector2.zero;
         private float scrollHeight = 0f;
 
@@ -143,13 +143,13 @@ namespace NearFutureElectrical.UI
 
                     if (showFocusedWindow)
                     {
-                      GUILayout.Window(popupWindowID, popupWindowPos, ReactorPopup, new GUIContent(), GUIResources.GetStyle("window_main") );
+                      GUI.Window(popupWindowID, popupWindowPos, ReactorPopup, new GUIContent(), GUIResources.GetStyle("window_main"));
 
                     } else
                     {
                     }
-
-                    windowPos = GUILayout.Window(mainWindowID, windowPos, ReactorWindow, new GUIContent(), GUIResources.GetStyle("window_main"), GUILayout.MinHeight(120f), GUILayout.MaxHeight(315f), GUILayout.ExpandHeight(true));
+                    windowPos.height = Mathf.Min(scrollHeight + 50f, 96f*3f+50f);
+                    windowPos = GUI.Window(mainWindowID, windowPos, ReactorWindow, new GUIContent(), GUIResources.GetStyle("window_main"));
                 }
             }
             //Debug.Log("NFE: Stop Capacitor UI Draw");
@@ -159,15 +159,15 @@ namespace NearFutureElectrical.UI
         private void ReactorPopup(int windowId)
         {
           GUILayout.Label("Customize Reactor", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(21f), GUILayout.MinHeight(21f), GUILayout.MinWidth(150f));
-          Rect windowRect = GUILayoutUtility.GetRect(200f,180f);
+          Rect windowRect = GUILayoutUtility.GetRect(200f,210f);
 
           Rect iconRect = new Rect(0f, 16f, 64f, 64f);
 
           Rect chooserAreaRect = new Rect(72f, 0f, 100f, 100f);
-          Rect textAreaRect = new Rect(0f, 93f, 180f, 30f);
+          Rect textAreaRect = new Rect(0f, 105f, 173f, 60f);
 
-          Rect acceptButtonRect = new Rect(130f, 125f, 24f, 24f);
-          Rect cancelButtonRect = new Rect(160f, 125f, 24f, 24f);
+          Rect acceptButtonRect = new Rect(122f, 168f, 24f, 24f);
+          Rect cancelButtonRect = new Rect(152f, 168f, 24f, 24f);
 
           Texture sharedIcon = GUIResources.GetIcon("reactor_1").iconAtlas;
 
@@ -210,6 +210,7 @@ namespace NearFutureElectrical.UI
           GUI.color = Color.white;
 
           GUI.EndGroup();
+          GUI.DragWindow();
         }
 
         private void DrawChoiceIcon(int id, Texture texture, int x_id, int y_id)
@@ -247,18 +248,19 @@ namespace NearFutureElectrical.UI
             if (reactorList != null && reactorList.Count > 0)
             {
 
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(700f), GUILayout.MinHeight(scrollHeight));
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.MinWidth(720f), GUILayout.MinHeight(Mathf.Min(scrollHeight, 96f* 3f)));
+                scrollHeight = 0f;
                 GUILayout.Space(3f);
                 GUILayout.BeginVertical();
                 //windowPos.height = 175f + 70f;
                 for (int i = 0; i < uiReactors.Count; i++)
                 {
                     uiReactors[i].Draw();
-                    scrollHeight = Mathf.Min(scrollHeight + uiReactors.GetReadoutSize(),  96f* 3f));
+                    scrollHeight = scrollHeight + uiReactors[i].GetReadoutSize();
                 }
                 GUILayout.EndVertical();
                GUILayout.EndScrollView();
-               scrollHeight = 0f;
+               
             }
             else
             {

@@ -34,9 +34,9 @@ namespace NearFutureElectrical.UI
       private void DrawMainControls()
       {
 
-        Rect controlRect = GUILayoutUtility.GetRect(165f, 64f);
+        Rect controlRect = GUILayoutUtility.GetRect(184f, 64f);
         Rect iconRect = new Rect(0f, 0f, 64f, 64f);
-        Rect titleRect = new Rect(64f, 0f, 101f, 32f);
+        Rect titleRect = new Rect(64f, 0f, 116f, 32f);
         Rect toggleRect = new Rect(64f, 32f, 32f, 32f);
         Rect settingsButtonRect = new Rect(133f, 36f, 20f, 20f);
 
@@ -110,7 +110,7 @@ namespace NearFutureElectrical.UI
 
 
         Vector2 barBackgroundSize = new Vector2(165f, 10f);
-        Vector2 barForegroundSize = new Vector2(barBackgroundSize.x * (coreTemp / meltdownTemp), 7f);
+        Vector2 barForegroundSize = new Vector2(Mathf.Max(barBackgroundSize.x * (coreTemp / meltdownTemp),8f), 7f);
 
         Rect barBackgroundRect = new Rect(0f, 5f, barBackgroundSize.x, barBackgroundSize.y);
         Rect barForeroundRect = new Rect(0f, 6f, barForegroundSize.x, barForegroundSize.y);
@@ -155,8 +155,8 @@ namespace NearFutureElectrical.UI
         Rect throttleTextRect = new Rect(135f, 2f, 40f, 20f);
 
         Rect realThrottleIconRect = new Rect(0f, 30f, 20f, 20f);
-        Rect realThrotlePanelRect = new Rect(23f, 30f, 110f, 20f);
-        Rect realThrotleTextRect = new Rect(133f, 30f, 40f, 20f);
+        Rect realThrotlePanelRect = new Rect(28f, 33f, 100f, 20f);
+        Rect realThrotleTextRect = new Rect(135f, 30f, 40f, 20f);
 
         GUI.BeginGroup(controlRect);
 
@@ -168,12 +168,12 @@ namespace NearFutureElectrical.UI
         // PROGRESS BAR: Adjusted Throttle
         if (reactor.FollowThrottle)
         {
-          GUI.DrawTextureWithTexCoords(realThrottleIconRect, host.GUIResources.GetIcon("throttle").iconAtlas, host.GUIResources.GetIcon("throttle").iconRect);
+          GUI.DrawTextureWithTexCoords(realThrottleIconRect, host.GUIResources.GetIcon("throttle_auto").iconAtlas, host.GUIResources.GetIcon("throttle_auto").iconRect);
 
           float powerFraction = reactor.ActualPowerPercent/100f;
 
-          Vector2 barBackgroundSize = new Vector2(80f, 10f);
-          Vector2 barForegroundSize = new Vector2(barBackgroundSize.x * powerFraction, 7f);
+          Vector2 barBackgroundSize = new Vector2(100f, 10f);
+          Vector2 barForegroundSize = new Vector2(Mathf.Max(barBackgroundSize.x * powerFraction, 8f), 7f);
 
           Rect barBackgroundRect = new Rect(0f, 0f, barBackgroundSize.x, barBackgroundSize.y);
           Rect barForeroundRect = new Rect(0f, 0f, barForegroundSize.x, barForegroundSize.y);
@@ -248,17 +248,23 @@ namespace NearFutureElectrical.UI
       }
       public float GetReadoutSize()
       {
-        if (advancedMode)
-          return 116f;
-        else
-          return 96f
+          if (advancedMode)
+              if (reactor.FollowThrottle)
+                  return 198f;
+              else 
+                  return 160f;
+          else
+              if (reactor.FollowThrottle)
+                  return 128f;
+              else
+                  return 96f;
       }
       
       // Draw the UI component
       public void Draw()
       {
 
-          GUILayout.BeginHorizontal(host.GUIResources.GetStyle("block_background"));
+          GUILayout.BeginHorizontal(host.GUIResources.GetStyle("block_background"), GUILayout.Width(670f));
 
         GUILayout.BeginHorizontal(host.GUIResources.GetStyle("item_box"));
         DrawMainControls();

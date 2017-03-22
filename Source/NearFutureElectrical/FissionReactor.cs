@@ -356,8 +356,9 @@ namespace NearFutureElectrical
                 }
                 else {
                     ActualPowerPercent = CurrentPowerPercent;
+                    
                 }
-
+                
                 // Update reactor core integrity readout
                 if (CoreIntegrity > 0)
                     CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
@@ -374,6 +375,9 @@ namespace NearFutureElectrical
                 // =============
                 if (base.ModuleIsActive())
                 {
+                  if (TimewarpShutdown && TimeWarp.fetch.current_rate_index >= TimewarpShutdownFactor)
+                      ToggleResourceConverterAction(new KSPActionParam(0, KSPActionType.Activate));
+                      
                   DoFuelConsumption();
                   DoHeatGeneration();
 
@@ -623,6 +627,8 @@ namespace NearFutureElectrical
 
             TemperatureModifier = new FloatCurve();
             TemperatureModifier.Add(0f, heat + reactorFudgeFactor * 50f);
+
+            core.MaxCoolant = heat + reactorFudgeFactor * 50f;
 
             D_RealHeat = String.Format("{0:F2}",heat/50f + reactorFudgeFactor);
 

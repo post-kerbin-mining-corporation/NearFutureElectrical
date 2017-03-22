@@ -184,9 +184,8 @@ namespace NearFutureElectrical.UI
 
       colorList.Add("cancel_color", new Color(208f / 255f, 131f / 255f, 86f / 255f));
       colorList.Add("accept_color", new Color(209f / 255f, 250f / 255f, 146f / 255f));
-      colorList.Add("capacitor_blue", new Color(104f / 255f, 167f / 255f, 209f / 255f));
-      colorList.Add("readout_green", new Color(173f / 255f, 228f / 255f, 85f / 255f));
-
+      colorList.Add("capacitor_blue", new Color(134f / 255f, 197f / 255f, 239f / 255f));
+      colorList.Add("readout_green", new Color(203f / 255f, 238f / 255f, 115f / 255f));
     }
   }
 
