@@ -1,6 +1,9 @@
 v0.9.0
 ------
 - KSP 1.3
+- Revised costs of batteries to correctly match stock batteries
+- Revised costs of capacitors to be slightly more expensive (~1.5x) than before
+- Batteries and capacitor mass values are now 100% consistent
 - Changed CLS patch to behave better when CLS is not around
 
 v0.8.7
