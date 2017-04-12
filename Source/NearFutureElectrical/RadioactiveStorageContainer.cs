@@ -1,6 +1,6 @@
 ﻿/// RadioactiveStorageContainer.cs
 /// ---------------------------
-/// A container of fission fuel 
+/// A container of fission fuel
 
 using System;
 using System.Collections.Generic;
@@ -112,9 +112,9 @@ namespace NearFutureElectrical
 
         public bool PartCanTransferResource(string nm)
         {
-            
+
             // Some modules need to be off.
-            ModuleResourceConverter converter = GetComponent<ModuleResourceConverter>(); 
+            ModuleResourceConverter converter = GetComponent<ModuleResourceConverter>();
             FissionReactor reactor = GetComponent<FissionReactor>();
             if (converter != null && converter.ModuleIsActive())
             {
@@ -152,12 +152,19 @@ namespace NearFutureElectrical
         // Helpbers for getting a resource amount
         public double GetResourceAmount(string nm)
         {
+          if (this.part.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
             return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).amount;
+          else
+            return 0.0;
         }
         public double GetResourceAmount(string nm,bool max)
         {
             if (max)
-                return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).maxAmount;
+                if (this.part.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
+                  return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).maxAmount;
+                else
+                  return 0.0;
+
             else
                 return GetResourceAmount(nm);
         }
@@ -174,7 +181,7 @@ namespace NearFutureElectrical
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
-              
+
             }
 
         }
@@ -183,7 +190,7 @@ namespace NearFutureElectrical
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
-                
+
                 // Generate heat
                 if (TimeWarp.CurrentRate <= 100f)
                 {
@@ -192,7 +199,7 @@ namespace NearFutureElectrical
                     part.AddThermalFlux(HeatFluxPerWasteUnit * (float)wasteAmount);
                 }
             }
-            
+
         }
 
         private void Update()
@@ -206,7 +213,7 @@ namespace NearFutureElectrical
                 }
             }
         }
-       
+
         private bool VesselConnected(Part targetPart)
         {
             if (this.part.vessel.id == targetPart.vessel.id)
@@ -230,14 +237,14 @@ namespace NearFutureElectrical
                     ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer to an unconnected vessel, exiting transfer mode...", 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     EndTransfer();
                     return;
-                } 
+                }
 
                 RadioactiveStorageContainer container = targetPart.GetComponent<RadioactiveStorageContainer>();
                 if (container == null)
                 {
                     ScreenMessages.PostScreenMessage(new ScreenMessage("Selected part can't handle radioactive storage, exiting transfer mode...", 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     EndTransfer();
-                    
+
                 }
                 else
                 {
@@ -249,16 +256,16 @@ namespace NearFutureElectrical
                     {
                         ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Selected part must be below {0:F0} K to transfer!",container.MaxTempForTransfer), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     }
-                    
+
                     else if (converter != null && converter.ModuleIsActive())
                     {
                         ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer into a running converter!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
-                        
+
                     }
                     else if (reactor!= null && reactor.ModuleIsActive())
                     {
                         ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer into a running reactor! Seriously a bad idea!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
-                        
+
                     }
                     else
                     {
@@ -275,14 +282,14 @@ namespace NearFutureElectrical
                     }
                 }
             }
-            
+
         }
 
         private Part GetPartClicked()
         {
             Camera flightCam = Camera.main;
             Ray clickRay = flightCam.ScreenPointToRay(Input.mousePosition);
-            
+
             LayerMask mask;
             LayerMask maskA = 1 << LayerMask.NameToLayer("Default");
             LayerMask maskB = 1 << LayerMask.NameToLayer("TerrainColliders");
@@ -293,9 +300,9 @@ namespace NearFutureElectrical
             RaycastHit hitInfo;
             if (Physics.Raycast(clickRay, out hitInfo, 2500f, mask ))
             {
-                
+
                 Part hitPart = hitInfo.rigidbody.gameObject.GetComponent<Part>();
-                
+
                 //ScreenMessages.PostScreenMessage(new ScreenMessage("Hit! hit was " + hitInfo.rigidbody.gameObject.name, 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 if (hitPart != null)
                 {
@@ -305,8 +312,8 @@ namespace NearFutureElectrical
                 {
                     return null;
                 }
-            } 
+            }
             return null;
         }
-    }    
+    }
 }

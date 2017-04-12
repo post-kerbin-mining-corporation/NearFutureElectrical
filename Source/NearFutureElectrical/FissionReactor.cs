@@ -264,62 +264,6 @@ namespace NearFutureElectrical
 
         public override void OnStart(PartModule.StartState state)
         {
-            var range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlEditor;
-            range.minValue = 0f;
-            range.maxValue = MaximumTemperature;
-
-            range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlFlight;
-            range.minValue = 0f;
-            range.maxValue = MaximumTemperature;
-
-            throttleCurve = new FloatCurve();
-            throttleCurve.Add(0, 0, 0, 0);
-            throttleCurve.Add(50, 20, 0, 0);
-            throttleCurve.Add(100, 100, 0, 0);
-
-            if (UseStagingIcon)
-            {
-                //this.part.stackIcon.CreateIcon();
-                //this.part.stackIcon.SetIcon(DefaultIcons.FUEL_TANK);
-            }
-            else
-                Utils.LogWarn("Fission Reactor: Staging Icon Disabled!");
-
-            if (FirstLoad)
-            {
-              this.CurrentSafetyOverride = this.CriticalTemperature;
-              FirstLoad = false;
-            }
-
-            if (state != StartState.Editor)
-            {
-                core = this.GetComponent<ModuleCoreHeat>();
-                if (core == null)
-                    Utils.LogError("Fission Reactor: Could not find core heat module!");
-
-                SetupResourceRatios();
-                // Set up staging icon heat bar
-
-                if (UseStagingIcon)
-                {
-                    infoBox = this.part.stackIcon.DisplayInfo();
-                }
-
-                if (OverheatAnimation != "")
-                    overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
-
-                if (FollowThrottle)
-                    reactorEngine = this.GetComponent<FissionEngine>();
-
-                if (UseForcedActivation)
-                    this.part.force_activate();
-
-            } else
-            {
-                //this.CurrentSafetyOverride = this.NominalTemperature;
-            }
-
-
             base.OnStart(state);
         }
 
@@ -327,82 +271,149 @@ namespace NearFutureElectrical
         public override void OnUpdate()
         {
             base.OnUpdate();
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
-            {
-                foreach (BaseField fld in base.Fields)
-                {
-                    if (fld.name == "status")
-                        fld.guiActive = false;
 
-                }
-                if (core != null)
-                {
-                    core.CoreShutdownTemp = (double)CurrentSafetyOverride+10d;
-
-                }
-            }
         }
         public override void OnFixedUpdate()
         {
             base.OnFixedUpdate();
-            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
-            {
-                if (UIName == "")
-                  UIName = part.partInfo.title;
-                if (FollowThrottle)
-                {
-                    if (reactorEngine != null)
-                      ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle * reactorEngine.GetThrustLimiterFraction()), CurrentPowerPercent);
-                }
-                else {
-                    ActualPowerPercent = CurrentPowerPercent;
-                    
-                }
-                
-                // Update reactor core integrity readout
-                if (CoreIntegrity > 0)
-                    CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
-                else
-                    CoreStatus = "Complete Meltdown";
 
-
-                // Handle core damage tracking and effects
-                HandleCoreDamage();
-                // Heat consumption occurs if reactor is on or off
-                DoHeatConsumption();
-
-                // IF REACTOR ON
-                // =============
-                if (base.ModuleIsActive())
-                {
-                  if (TimewarpShutdown && TimeWarp.fetch.current_rate_index >= TimewarpShutdownFactor)
-                      ToggleResourceConverterAction(new KSPActionParam(0, KSPActionType.Activate));
-                      
-                  DoFuelConsumption();
-                  DoHeatGeneration();
-
-                }
-                // IF REACTOR OFF
-                // =============
-                else
-                {
-                    // Update UI
-                    if (CoreIntegrity <= 0f)
-                    {
-                        FuelStatus = "Core Destroyed";
-                        ReactorOutput = "Core Destroyed";
-                    }
-                    else
-                    {
-                        FuelStatus = "Reactor Offline";
-                        ReactorOutput = "Reactor Offline";
-
-                    }
-                }
-                lastTimeWarpMult = TimeWarp.CurrentRate;
-
-            }
         }
+
+        public void OverriddenStart()
+        {
+          var range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlEditor;
+          range.minValue = 0f;
+          range.maxValue = MaximumTemperature;
+
+          range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlFlight;
+          range.minValue = 0f;
+          range.maxValue = MaximumTemperature;
+
+          throttleCurve = new FloatCurve();
+          throttleCurve.Add(0, 0, 0, 0);
+          throttleCurve.Add(50, 20, 0, 0);
+          throttleCurve.Add(100, 100, 0, 0);
+
+          if (UseStagingIcon)
+          {
+              //this.part.stackIcon.CreateIcon();
+              //this.part.stackIcon.SetIcon(DefaultIcons.FUEL_TANK);
+          }
+          else
+              Utils.LogWarn("Fission Reactor: Staging Icon Disabled!");
+
+          if (FirstLoad)
+          {
+            this.CurrentSafetyOverride = this.CriticalTemperature;
+            FirstLoad = false;
+          }
+
+          if (HighLogic.LoadedScene != StartState.Editor)
+          {
+              core = this.GetComponent<ModuleCoreHeat>();
+              if (core == null)
+                  Utils.LogError("Fission Reactor: Could not find core heat module!");
+
+              SetupResourceRatios();
+              // Set up staging icon heat bar
+
+              if (UseStagingIcon)
+              {
+                  infoBox = this.part.stackIcon.DisplayInfo();
+              }
+
+              if (OverheatAnimation != "")
+                  overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
+
+              if (FollowThrottle)
+                  reactorEngine = this.GetComponent<FissionEngine>();
+
+              if (UseForcedActivation)
+                  this.part.force_activate();
+
+          } else
+          {
+              //this.CurrentSafetyOverride = this.NominalTemperature;
+          }
+        }
+        public void OverridenUpdate()
+        {
+          if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+          {
+              foreach (BaseField fld in base.Fields)
+              {
+                  if (fld.name == "status")
+                      fld.guiActive = false;
+
+              }
+              if (core != null)
+              {
+                  core.CoreShutdownTemp = (double)CurrentSafetyOverride+10d;
+
+              }
+          }
+        }
+        public void OverridddenFixedUpdate()
+        {
+          if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+          {
+              if (UIName == "")
+                UIName = part.partInfo.title;
+              if (FollowThrottle)
+              {
+                  if (reactorEngine != null)
+                    ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle * reactorEngine.GetThrustLimiterFraction()), CurrentPowerPercent);
+              }
+              else {
+                  ActualPowerPercent = CurrentPowerPercent;
+
+              }
+
+              // Update reactor core integrity readout
+              if (CoreIntegrity > 0)
+                  CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
+              else
+                  CoreStatus = "Complete Meltdown";
+
+
+              // Handle core damage tracking and effects
+              HandleCoreDamage();
+              // Heat consumption occurs if reactor is on or off
+              DoHeatConsumption();
+
+              // IF REACTOR ON
+              // =============
+              if (base.ModuleIsActive())
+              {
+                if (TimewarpShutdown && TimeWarp.fetch.current_rate_index >= TimewarpShutdownFactor)
+                    ToggleResourceConverterAction(new KSPActionParam(0, KSPActionType.Activate));
+
+                DoFuelConsumption();
+                DoHeatGeneration();
+
+              }
+              // IF REACTOR OFF
+              // =============
+              else
+              {
+                  // Update UI
+                  if (CoreIntegrity <= 0f)
+                  {
+                      FuelStatus = "Core Destroyed";
+                      ReactorOutput = "Core Destroyed";
+                  }
+                  else
+                  {
+                      FuelStatus = "Reactor Offline";
+                      ReactorOutput = "Reactor Offline";
+
+                  }
+              }
+              lastTimeWarpMult = TimeWarp.CurrentRate;
+          }
+        }
+
+
 
         private void DoFuelConsumption()
         {

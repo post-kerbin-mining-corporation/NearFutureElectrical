@@ -32,6 +32,11 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public FloatCurve TempIspScale = new FloatCurve();
 
+        // Engine to work with
+        [KSPField(isPersistant = false)]
+        public string EngineID = "";
+
+
         private List <EngineBaseData> engineData = new List<EngineBaseData>();
 
         private FissionFlowRadiator flowRadiator;
@@ -53,7 +58,7 @@ namespace NearFutureElectrical
           return 1.0f;
         }
 
-        public override void OnStart(PartModule.StartState state)
+        public void Start()
         {
             SetupEngines();
             SetupReactor();
@@ -66,7 +71,8 @@ namespace NearFutureElectrical
           List<ModuleEnginesFX> engines = this.GetComponents<ModuleEnginesFX>().ToList();
           // Get their Isps
           for (int i = 0;i <engines.Count; i ++) {
-              engineData.Add(new EngineBaseData(engines[i],engines[i].atmosphereCurve,engines[i].maxThrust));
+              if (EngineID == "" || engines[i].engineID == EngineID)
+                engineData.Add(new EngineBaseData(engines[i],engines[i].atmosphereCurve,engines[i].maxThrust));
           }
 
         }
