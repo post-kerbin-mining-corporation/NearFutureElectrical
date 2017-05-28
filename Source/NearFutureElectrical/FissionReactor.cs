@@ -246,6 +246,14 @@ namespace NearFutureElectrical
                 FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount, baseRate)) 
                 + base.GetInfo();
         }
+        public string GetModuleTitle()
+        {
+            return "FissionReactor";
+        }
+        public override string GetModuleDisplayName()
+        {
+            return Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_ModuleName");
+        }
 
         private void SetupResourceRatios()
         {

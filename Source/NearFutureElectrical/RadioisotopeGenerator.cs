@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP;
+using KSP.Localization;
 
 namespace NearFutureElectrical
 {
@@ -53,7 +54,15 @@ namespace NearFutureElectrical
                 String.Format("Power Generated: {0:F2} Ec/s",BasePower) + "\n" +
                 String.Format("Half-Life: {0:F0} y", HalfLife);
         }
-        
+        public string GetModuleTitle()
+        {
+            return "RTG";
+        }
+        public override string GetModuleDisplayName()
+        {
+            return Localizer.Format("#LOC_NFElectrical_ModuleRadioisotopeGenerator_ModuleName");
+        }
+
         // Computes the amount remaining
         private float AmountRemaining()
         {

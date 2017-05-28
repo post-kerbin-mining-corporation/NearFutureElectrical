@@ -148,6 +148,14 @@ namespace NearFutureElectrical
         {
             return Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_PartInfo", DischargeRate.ToString("F2"), ChargeRate.ToString("F2"), (ChargeRatio * 100f).ToString("F2"));
         }
+        public string GetModuleTitle()
+        {
+            return "Capacitor";
+        }
+        public override string GetModuleDisplayName()
+        {
+            return Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_ModuleName");
+        }
 
         public override void OnStart(PartModule.StartState state)
         {

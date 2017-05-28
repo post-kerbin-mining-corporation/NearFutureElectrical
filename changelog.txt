@@ -1,6 +1,9 @@
 v0.9.0
 ------
 - KSP 1.3
+- Updated bundled MM to 2.8.0
+- Updated bundled B9PartSwitch to 1.8.0
+- Updated bundled CRP to ....
 - Revised many part descriptions, tags and names
 - Revised costs of batteries to correctly match stock batteries
 - Revised costs of capacitors to be slightly more expensive (~1.5x) than before

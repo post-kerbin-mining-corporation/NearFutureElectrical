@@ -48,6 +48,14 @@ namespace NearFutureElectrical
         {
             return String.Format("\n\n Allows the storage and transfer of radioactive fuel and waste.");
         }
+        public string GetModuleTitle()
+        {
+            return "Nuclear Fuel Storage";
+        }
+        public override string GetModuleDisplayName()
+        {
+            return Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_ModuleName");
+        }
 
         // Transfer the dangerous fuel
         [KSPEvent(guiActive = true, guiActiveEditor = false, guiName = "Transfer Waste")]

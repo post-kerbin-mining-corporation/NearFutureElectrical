@@ -23,7 +23,14 @@ namespace NearFutureElectrical
         {
             return Localizer.Format("#LOC_NFElectrical_ModuleFissionFlowRadiator_PartInfo", exhaustCooling.ToString("F0"), passiveCooling.ToString("F0"));
         }
-
+        public string GetModuleTitle()
+        {
+            return "FissionRadiator";
+        }
+        public override string GetModuleDisplayName()
+        {
+            return Localizer.Format("#LOC_NFElectrical_ModuleFissionFlowRadiator_ModuleName");
+        }
         int ticker = 0;
 
         public override void OnStart(PartModule.StartState state)

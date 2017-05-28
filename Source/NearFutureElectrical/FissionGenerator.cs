@@ -31,7 +31,14 @@ namespace NearFutureElectrical
         {
             return Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_PartInfo", PowerGeneration.ToString("F0"));
         }
-
+        public string GetModuleTitle()
+        {
+            return "FissionGenerator";
+        }
+        public override string GetModuleDisplayName()
+        {
+            return Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_ModuleName");
+        }
         public override void OnStart(PartModule.StartState state)
         {
             base.OnStart(state);
