@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using NearFutureElectrical.UI;
+using KSP.Localization;
 
 namespace NearFutureElectrical
 {
@@ -145,7 +146,7 @@ namespace NearFutureElectrical
 
         public override string GetInfo()
         {
-            return String.Format("Maximum Discharge Rate: {0:F2}/s", DischargeRate) + "\n" + String.Format("Charge Rate: {0:F2}/s", ChargeRate) + "\n" + String.Format("Efficiency: {0:F2}%", ChargeRatio*100f);
+            return Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_PartInfo", DischargeRate.ToString("F2"), ChargeRate.ToString("F2"), (ChargeRatio * 100f).ToString("F2"));
         }
 
         public override void OnStart(PartModule.StartState state)
@@ -174,6 +175,21 @@ namespace NearFutureElectrical
                 capacityState[i].normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
             }
 
+            // Prepare the localization
+            Events["ShowCapacitorControl"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Action_ToggleUI"));
+            Events["Discharge"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Event_Discharge"));
+            Events["Enable"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Event_EnableCharge"));
+            Events["Disable"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Event_DisableCharge"));
+
+            Actions["DischargeAction"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Action_Discharge"));
+            Actions["EnableAction"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Action_EnableCharge"));
+            Actions["DisableAction"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Action_DisableCharge"));
+            Actions["ToggleAction"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Action_ToggleCharge"));
+            Actions["TogglePanelAction"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Action_ToggleUI"));
+
+            Fields["dischargeActual"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_DischargeRate"));
+            Fields["CapacitorStatus"].guiName = string.Format("{0}", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status"));
+
             if (HighLogic.LoadedSceneIsFlight)
             {
               DoCatchup();
@@ -201,7 +217,7 @@ namespace NearFutureElectrical
                 {
                   float amtScaled = Mathf.Clamp((float)( Planetarium.fetch.time -lastUpdateTime) * ChargeRate, 0f, MaximumCharge);
 
-                  Utils.Log(String.Format("Recharged: {0}", -amtScaled * ChargeRatio));
+                  //Utils.Log(String.Format("Recharged: {0}", -amtScaled * ChargeRatio));
                   this.part.RequestResource("StoredCharge", -amtScaled * ChargeRatio, ResourceFlowMode.NO_FLOW);
 
                 }
@@ -254,7 +270,7 @@ namespace NearFutureElectrical
                 this.part.RequestResource("StoredCharge", amt);
                 this.part.RequestResource("ElectricCharge", -amt);
 
-                CapacitorStatus = String.Format("Discharging: {0:F2}/s", dischargeActual);
+                CapacitorStatus = String.Format("{0}: {1:F2}/s", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_Discharging"), dischargeActual);
 
                 // if the amount returned is zero, disable discharging
                 if (CurrentCharge <= 0f)
@@ -274,20 +290,20 @@ namespace NearFutureElectrical
                 if (amt > 0d)
                 {
                     this.part.RequestResource("StoredCharge", -amt * ChargeRatio);
-                    CapacitorStatus = String.Format("Recharging: {0:F2}/s", ChargeRate);
+                    CapacitorStatus = String.Format("{0}: {1:F2}/s", Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_Charging"), ChargeRate);
                 }
                 else
                 {
-                    CapacitorStatus = String.Format("Not enough ElectricCharge!");
+                    CapacitorStatus = Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_NoPower");
                 }
                 lastUpdateTime = Planetarium.fetch.time;
             }
             else if (CurrentCharge == 0f)
             {
-                CapacitorStatus = "Discharged!";
+                CapacitorStatus = Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_Empty");
             } else
             {
-                CapacitorStatus = String.Format("Ready");
+                CapacitorStatus = Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_Ready");
             }
 
 

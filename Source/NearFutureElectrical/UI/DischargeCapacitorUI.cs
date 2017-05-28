@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using KSP.UI.Screens;
 using NearFutureElectrical;
+using KSP.Localization;
 
 namespace NearFutureElectrical.UI
 {
@@ -160,7 +161,7 @@ namespace NearFutureElectrical.UI
             }
             else
             {
-                GUILayout.Label("No capacitors found!");
+                GUILayout.Label(Localizer.Format("#LOC_NFElectrical_CapacitorUI_NotInstalled"));
             }
             GUI.DragWindow();
         }
@@ -168,7 +169,9 @@ namespace NearFutureElectrical.UI
         private void DrawHeaderArea()
         {
           GUILayout.BeginHorizontal();
-          GUILayout.Label("Capacitor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
+          GUILayout.Label(String.Format("{0} ({1})", 
+              Localizer.Format("#LOC_NFElectrical_CapacitorUI_Title"),
+              Localizer.Format("#LOC_NFElectrical_Version")), GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
           GUILayout.FlexibleSpace();
           Rect buttonRect = GUILayoutUtility.GetRect(22f, 22f);
           GUI.color = resources.GetColor("cancel_color");
@@ -215,9 +218,9 @@ namespace NearFutureElectrical.UI
 
           GUI.color = Color.white;
 
-          GUI.Label(currentRechargeRateRect, String.Format("Recharging using: {0:F2} EC/s",GetAllChargeRatesCurrent()),
+          GUI.Label(currentRechargeRateRect, String.Format("{0} {1:F2} EC/s", Localizer.Format("#LOC_NFElectrical_CapacitorUI_SummaryRecharge"), GetAllChargeRatesCurrent()),
               resources.GetStyle("header_basic"));
-          GUI.Label(currentDischargeRateRect, String.Format("Discharging at {0:F2}/s",GetAllDischargeRatesCurrent()),
+          GUI.Label(currentDischargeRateRect, String.Format("{0} {1:F2}/s", Localizer.Format("#LOC_NFElectrical_CapacitorUI_SummaryDischarge"), GetAllDischargeRatesCurrent()),
               resources.GetStyle("header_basic"));
 
 

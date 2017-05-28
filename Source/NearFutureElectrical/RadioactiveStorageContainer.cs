@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using KSP.Localization;
 
 namespace NearFutureElectrical
 {
@@ -152,7 +153,7 @@ namespace NearFutureElectrical
         // Helpbers for getting a resource amount
         public double GetResourceAmount(string nm)
         {
-          if (this.part.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
+          if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
             return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).amount;
           else
             return 0.0;
@@ -160,7 +161,7 @@ namespace NearFutureElectrical
         public double GetResourceAmount(string nm,bool max)
         {
             if (max)
-                if (this.part.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
+                if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
                   return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).maxAmount;
                 else
                   return 0.0;

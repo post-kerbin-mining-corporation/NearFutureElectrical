@@ -14,12 +14,12 @@ namespace NearFutureElectrical
     public class ModuleUpdateOverride: PartModule
     {
 
-        private List<FissionReactor> reactors;
+        private FissionReactor[] reactors;
 
         void Start()
         {
           reactors = this.GetComponents<FissionReactor>();
-          for (int i = 0; i< reactors.Count; i++)
+          for (int i = 0; i< reactors.Length; i++)
           {
               reactors[i].OverriddenStart();
           }
@@ -28,7 +28,7 @@ namespace NearFutureElectrical
          {
            if (HighLogic.LoadedSceneIsFlight)
            {
-            for (int i = 0; i< reactors.Count; i++)
+            for (int i = 0; i< reactors.Length; i++)
             {
               reactors[i].OverriddenFixedUpdate();
             }
@@ -39,7 +39,7 @@ namespace NearFutureElectrical
          {
            if (HighLogic.LoadedSceneIsFlight)
            {
-             for (int i = 0; i< reactors.Count; i++)
+             for (int i = 0; i< reactors.Length; i++)
              {
                reactors[i].OverriddenUpdate();
              }

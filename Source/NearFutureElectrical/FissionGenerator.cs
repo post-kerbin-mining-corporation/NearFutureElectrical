@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace NearFutureElectrical
 {
@@ -28,7 +29,14 @@ namespace NearFutureElectrical
 
         public override string GetInfo()
         {
-            return String.Format("Power Generated: {0:F0} Ec/s", PowerGeneration);
+            return Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_PartInfo", PowerGeneration.ToString("F0"));
+        }
+
+        public override void OnStart(PartModule.StartState state)
+        {
+            base.OnStart(state);
+
+            Fields["GeneratorStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_Field_GeneratorStatus");
         }
 
         public void FixedUpdate()
@@ -61,7 +69,7 @@ namespace NearFutureElectrical
                   GeneratorStatus = String.Format("{0:F1} Ec/s", generated);
               }
               else
-                  GeneratorStatus = "Offline";
+                  GeneratorStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_Field_GeneratorStatus_Offline");
           }
 
         }

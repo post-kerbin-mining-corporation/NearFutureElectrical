@@ -11,6 +11,7 @@ using System.Text;
 using UnityEngine;
 using KSP.UI;
 using NearFutureElectrical.UI;
+using KSP.Localization;
 
 namespace NearFutureElectrical
 {
@@ -237,13 +238,13 @@ namespace NearFutureElectrical
                     baseRate = inputList[i].Ratio;
             }
             return
-                String.Format("Required Cooling: {0:F0} kW", HeatGeneration/50f) + "\n"
-                + String.Format("\n<color=#99ff00>Temperature Parameters:</color>\n")
-                + String.Format("- Optimal: {0:F0} K", NominalTemperature) + "\n"
-                + String.Format("- Core Damage: > {0:F0} K", CriticalTemperature) + "\n"
-                + String.Format("- Core Meltdown: {0:F0} K", MaximumTemperature) + "\n\n"
-                + "Estimated Core Life: " +
-                FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount, baseRate) + base.GetInfo();
+                Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_PartInfo", 
+                (HeatGeneration / 50f).ToString("F0"), 
+                NominalTemperature.ToString("F0"), 
+                CriticalTemperature.ToString("F0"),
+                MaximumTemperature.ToString("F0"), 
+                FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount, baseRate)) 
+                + base.GetInfo();
         }
 
         private void SetupResourceRatios()
@@ -294,6 +295,20 @@ namespace NearFutureElectrical
           throttleCurve.Add(50, 20, 0, 0);
           throttleCurve.Add(100, 100, 0, 0);
 
+          Actions["TogglePanelAction"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Action_TogglePanelAction");
+
+          Events["ShowReactorControl"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Event_ShowReactorControl");
+          Events["RepairReactor"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Event_RepairReactor");
+
+          Fields["CurrentSafetyOverride"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CurrentSafetyOverride");
+          Fields["CurrentPowerPercent"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CurrentPowerPercent");
+          Fields["ReactorOutput"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput");
+          Fields["ThermalTransfer"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ThermalTransfer");
+          Fields["CoreTemp"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreTemp");
+          Fields["CoreStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreStatus");
+          Fields["FuelStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus");
+          
+
           if (UseStagingIcon)
           {
               //this.part.stackIcon.CreateIcon();
@@ -308,7 +323,7 @@ namespace NearFutureElectrical
             FirstLoad = false;
           }
 
-          if (HighLogic.LoadedScene != StartState.Editor)
+          if (HighLogic.LoadedScene != GameScenes.EDITOR)
           {
               core = this.GetComponent<ModuleCoreHeat>();
               if (core == null)
@@ -336,7 +351,7 @@ namespace NearFutureElectrical
               //this.CurrentSafetyOverride = this.NominalTemperature;
           }
         }
-        public void OverridenUpdate()
+        public void OverriddenUpdate()
         {
           if (HighLogic.LoadedScene == GameScenes.FLIGHT)
           {
@@ -353,7 +368,7 @@ namespace NearFutureElectrical
               }
           }
         }
-        public void OverridddenFixedUpdate()
+        public void OverriddenFixedUpdate()
         {
           if (HighLogic.LoadedScene == GameScenes.FLIGHT)
           {
@@ -373,7 +388,7 @@ namespace NearFutureElectrical
               if (CoreIntegrity > 0)
                   CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
               else
-                  CoreStatus = "Complete Meltdown";
+                  CoreStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreStatus_Meltdown");
 
 
               // Handle core damage tracking and effects
@@ -399,13 +414,13 @@ namespace NearFutureElectrical
                   // Update UI
                   if (CoreIntegrity <= 0f)
                   {
-                      FuelStatus = "Core Destroyed";
-                      ReactorOutput = "Core Destroyed";
+                      FuelStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Meltdown");
+                      ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput_Meltdown");
                   }
                   else
                   {
-                      FuelStatus = "Reactor Offline";
-                      ReactorOutput = "Reactor Offline";
+                      FuelStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Offline");
+                      ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput_Offline");
 
                   }
               }
@@ -446,8 +461,8 @@ namespace NearFutureElectrical
 
             if (CoreIntegrity <= 0f)
             {
-                FuelStatus = "Core Destroyed";
-                ReactorOutput = "Core Destroyed";
+                FuelStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Meltdown");
+                ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutpur_Meltdown");
             }
             else
             {
@@ -719,28 +734,28 @@ namespace NearFutureElectrical
         {
           if (CoreIntegrity <= MinRepairPercent)
           {
-              ScreenMessages.PostScreenMessage(new ScreenMessage("Reactor core is too damaged to repair.", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreTooDamaged"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
               return false;
           }
           if (!CheckEVAEngineerLevel(EngineerLevelForRepair))
           {
-              ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core repair requires a Level {0:F0} Engineer.",EngineerLevelForRepair), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreTooDamaged",EngineerLevelForRepair.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
               return false;
           }
           if (base.ModuleIsActive())
           {
-              ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot repair reactor core while running! Seriously!",
+              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_NotWhileRunning"),
                   5.0f, ScreenMessageStyle.UPPER_CENTER));
               return false;
           }
           if (core.CoreTemperature > MaxTempForRepair)
           {
-              ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("The reactor must be below {0:F0} K to initiate repair!", MaxTempForRepair), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreTooHot", MaxTempForRepair.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
               return false;
           }
           if (CoreIntegrity >= MaxRepairPercent)
           {
-              ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor core is already at maximum field repairable integrity ({0:F0})", MaxRepairPercent),
+              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreAlreadyRepaired", MaxRepairPercent.ToString("F0")),
                   5.0f, ScreenMessageStyle.UPPER_CENTER));
               return false;
           }
@@ -751,7 +766,7 @@ namespace NearFutureElectrical
         public void DoReactorRepair()
         {
             this.CoreIntegrity = MaxRepairPercent;
-            ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Reactor repaired to {0:F0}%!", MaxRepairPercent), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+            ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_RepairSuccess", MaxRepairPercent.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
         }
 
         // Check the current EVA engineer's level
@@ -782,7 +797,7 @@ namespace NearFutureElectrical
         {
             if (rate < 0.0000001)
             {
-                return "A long time!";
+                return Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_VeryLong");
             }
             double remaining = amount / rate;
             //TimeSpan t = TimeSpan.FromSeconds(remaining);
@@ -792,7 +807,7 @@ namespace NearFutureElectrical
                 return Utils.FormatTimeString(remaining);
             }
             {
-                return "No fuel remaining";
+                return Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Exhausted");
             }
         }
     }
