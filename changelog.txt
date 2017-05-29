@@ -4,6 +4,7 @@ v0.9.0
 - Updated bundled MM to 2.8.0
 - Updated bundled B9PartSwitch to 1.8.0
 - Updated bundled CRP to ....
+- Full localization support for parts and plugins
 - Revised many part descriptions, tags and names
 - Revised costs of batteries to correctly match stock batteries
 - Revised costs of capacitors to be slightly more expensive (~1.5x) than before
@@ -18,6 +19,7 @@ v0.9.0
 - Adjusted recipes for Whirlijig reprocessing/extraction to be less weird
 - DecayingRTGs patch now cuts price of affected RTGs by 50%
 - Changed CLS patch to behave better when CLS is not around
+- Cleaned up FissionReactor config blocks for clarity
 
 v0.8.7
 ------

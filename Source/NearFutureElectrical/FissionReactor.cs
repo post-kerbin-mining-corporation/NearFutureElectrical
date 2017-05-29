@@ -43,14 +43,6 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public bool FollowThrottle = false;
 
-        // Whether to use a staging icon or not
-        [KSPField(isPersistant = false)]
-        public bool UseStagingIcon = true;
-
-        // Force activate on load or not
-        [KSPField(isPersistant = false)]
-        public bool UseForcedActivation = true;
-
         // Engage safety override
         [KSPField(isPersistant = true, guiActive = true, guiName = "Auto-Shutdown Temp"), UI_FloatRange(minValue = 700f, maxValue = 6000f, stepIncrement = 100f)]
         public float CurrentSafetyOverride = 1000f;
@@ -181,9 +173,6 @@ namespace NearFutureElectrical
 
         /// PRIVATE VARIABLES
         /// ----------------------
-        // the info staging box
-        private KSP.UI.Screens.ProtoStageIconInfo infoBox;
-
         private ModuleCoreHeat core;
 
         private AnimationState[] overheatStates;
@@ -238,12 +227,12 @@ namespace NearFutureElectrical
                     baseRate = inputList[i].Ratio;
             }
             return
-                Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_PartInfo", 
-                (HeatGeneration / 50f).ToString("F0"), 
-                NominalTemperature.ToString("F0"), 
+                Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_PartInfo",
+                (HeatGeneration / 50f).ToString("F0"),
+                NominalTemperature.ToString("F0"),
                 CriticalTemperature.ToString("F0"),
-                MaximumTemperature.ToString("F0"), 
-                FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount, baseRate)) 
+                MaximumTemperature.ToString("F0"),
+                FindTimeRemaining(this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(FuelName).id).amount, baseRate))
                 + base.GetInfo();
         }
         public string GetModuleTitle()
@@ -315,15 +304,7 @@ namespace NearFutureElectrical
           Fields["CoreTemp"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreTemp");
           Fields["CoreStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreStatus");
           Fields["FuelStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus");
-          
 
-          if (UseStagingIcon)
-          {
-              //this.part.stackIcon.CreateIcon();
-              //this.part.stackIcon.SetIcon(DefaultIcons.FUEL_TANK);
-          }
-          else
-              Utils.LogWarn("Fission Reactor: Staging Icon Disabled!");
 
           if (FirstLoad)
           {
@@ -338,21 +319,12 @@ namespace NearFutureElectrical
                   Utils.LogError("Fission Reactor: Could not find core heat module!");
 
               SetupResourceRatios();
-              // Set up staging icon heat bar
-
-              if (UseStagingIcon)
-              {
-                  infoBox = this.part.stackIcon.DisplayInfo();
-              }
 
               if (OverheatAnimation != "")
                   overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
 
               if (FollowThrottle)
                   reactorEngine = this.GetComponent<FissionEngine>();
-
-              if (UseForcedActivation)
-                  this.part.force_activate();
 
           } else
           {
@@ -684,11 +656,6 @@ namespace NearFutureElectrical
           // Calculate percent exceedance of nominal temp
           float tempNetScale = 1f - Mathf.Clamp01((float)((core.CoreTemperature - NominalTemperature) / (MaximumTemperature - NominalTemperature)));
 
-          // update staging bar if in use
-          if (UseStagingIcon)
-          {
-              //infoBox.SetValue(1f - tempNetScale);
-          }
 
           if (OverheatAnimation != "")
           {
