@@ -186,7 +186,7 @@ namespace NearFutureElectrical
         private string curTransferType = "";
         private ScreenMessage transferMessage;
 
-        public override void Start(PartModule.StartState state)
+        public override void OnStart(PartModule.StartState state)
         {
             Events["TransferFuel"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Event_TransferFuel");
             Events["TransferWaste"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Event_TransferWaste");
