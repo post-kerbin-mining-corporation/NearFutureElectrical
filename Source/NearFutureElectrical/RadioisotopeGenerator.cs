@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP;
+using KSP.Localization;
 
 namespace NearFutureElectrical
 {
@@ -15,11 +16,11 @@ namespace NearFutureElectrical
         // Power generated at max
         [KSPField(isPersistant = false)]
         public float BasePower = 1f;
-        
+
         // GUI elements
         [KSPField(guiName = "Half Life", isPersistant = false, guiActiveEditor = true, guiActive = true, guiUnits = " y")]
         public float HalfLife = 16f;
-        
+
         [KSPField(guiName = "Power Output", isPersistant = false, guiActiveEditor = true, guiActive = true, guiUnits = " Ec/s")]
         private float ActualPower = 0;
 
@@ -29,7 +30,7 @@ namespace NearFutureElectrical
         // Easy mode never lets power drop below a certain %
         [KSPField(isPersistant = true)]
         public bool EasyMode = true;
-        
+
         // Percent for cutoff
         [KSPField(isPersistant = false)]
         public float EasyModeCutoff = 0.05f;
@@ -49,11 +50,24 @@ namespace NearFutureElectrical
 
         public override string GetInfo()
         {
-            return "Generates power constantly, but decays over time \n\n" +
-                String.Format("Power Generated: {0:F2} Ec/s",BasePower) + "\n" +
-                String.Format("Half-Life: {0:F0} y", HalfLife);
+            return Localizer.Format("#LOC_NFElectrical_ModuleRadioisotopeGenerator_PartInfo",
+              BasePower.ToString("F2"),
+              HalfLife.ToString("F0"));
         }
-        
+        public string GetModuleTitle()
+        {
+            return "RTG";
+        }
+        public override string GetModuleDisplayName()
+        {
+            return Localizer.Format("#LOC_NFElectrical_ModuleRadioisotopeGenerator_ModuleName");
+        }
+        public override void OnStart(PartModule.StartState state)
+        {
+            Fields["HalfLife"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleRadioisotopeGenerator_Field_HalfLife");
+            Fields["PercentPower"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleRadioisotopeGenerator_Field_PercentPower");
+            Fields["ActualPower"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleRadioisotopeGenerator_Field_ActualPower");
+        }
         // Computes the amount remaining
         private float AmountRemaining()
         {
@@ -74,4 +88,3 @@ namespace NearFutureElectrical
     }
 
 }
-

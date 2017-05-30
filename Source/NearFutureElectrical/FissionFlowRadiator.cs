@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using KSP.Localization;
 
 namespace NearFutureElectrical
 {
@@ -20,11 +21,24 @@ namespace NearFutureElectrical
 
         public override string GetInfo()
         {
-            return String.Format("Exhaust Cooling: {0:F0} kW", exhaustCooling) + "\n" +
-                String.Format("Passive Cooling: {0:F0} kW", passiveCooling);
+            return Localizer.Format("#LOC_NFElectrical_ModuleFissionFlowRadiator_PartInfo", exhaustCooling.ToString("F0"), passiveCooling.ToString("F0"));
+        }
+        public string GetModuleTitle()
+        {
+            return "FissionRadiator";
+        }
+        public override string GetModuleDisplayName()
+        {
+            return Localizer.Format("#LOC_NFElectrical_ModuleFissionFlowRadiator_ModuleName");
+        }
+        int ticker = 0;
+
+        public override void OnStart(PartModule.StartState state)
+        {
+            base.OnStart(state);
+            Fields["RadiatorStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionFlowRadiator_Field_RadiatorStatus");
         }
 
-        int ticker = 0;
         void Update()
         {
             // oh god.

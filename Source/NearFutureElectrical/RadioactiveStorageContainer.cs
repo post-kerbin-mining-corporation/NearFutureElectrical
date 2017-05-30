@@ -1,6 +1,6 @@
 ﻿/// RadioactiveStorageContainer.cs
 /// ---------------------------
-/// A container of fission fuel 
+/// A container of fission fuel
 
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using KSP.Localization;
 
 namespace NearFutureElectrical
 {
@@ -45,7 +46,15 @@ namespace NearFutureElectrical
 
         public override string GetInfo()
         {
-            return String.Format("\n\n Allows the storage and transfer of radioactive fuel and waste.");
+            return Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_PartInfo");
+        }
+        public string GetModuleTitle()
+        {
+            return "Nuclear Fuel Storage";
+        }
+        public override string GetModuleDisplayName()
+        {
+            return Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_ModuleName");
         }
 
         // Transfer the dangerous fuel
@@ -81,7 +90,7 @@ namespace NearFutureElectrical
         private void StartTransfer()
         {
             transferring = true;
-            transferMessage = new ScreenMessage("Left click a part to transfer nuclear fuel", 999f, ScreenMessageStyle.UPPER_CENTER);
+            transferMessage = new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_StartTransfer"), 999f, ScreenMessageStyle.UPPER_CENTER);
             ScreenMessages.PostScreenMessage(transferMessage);
         }
         private void EndTransfer()
@@ -106,43 +115,43 @@ namespace NearFutureElectrical
                 }
             }
             Utils.Log("No Engineer with level " + lvl.ToString() + " or higher found on board!");
-            ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("This transfer requires a Level {0:F0} Engineer on board!", lvl), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+            ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortEngineerLevel", lvl.ToString()), 5.0f, ScreenMessageStyle.UPPER_CENTER));
             return false;
         }
 
         public bool PartCanTransferResource(string nm)
         {
-            
+
             // Some modules need to be off.
-            ModuleResourceConverter converter = GetComponent<ModuleResourceConverter>(); 
+            ModuleResourceConverter converter = GetComponent<ModuleResourceConverter>();
             FissionReactor reactor = GetComponent<FissionReactor>();
             if (converter != null && converter.ModuleIsActive())
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer from a running converter!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortFromRunningConverter"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return false;
             }
             if (reactor !=null && reactor.ModuleIsActive())
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer from a running reactor! Seriously a bad idea!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortFromRunningReactor"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return false;
             }
 
             // Fail if the part is too hot
             if (part.temperature > MaxTempForTransfer)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("This part must be below {0:F0} K to transfer!",MaxTempForTransfer), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortTooHot", MaxTempForTransfer.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return false;
             }
             // Fail if that part can't contain this resource
             if ((GetResourceAmount(nm, true) <= 0d))
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("This part has no " + nm + " to transfer!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortNoResource", nm), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return false;
             }
             // Fail if this part has no resource
             if (GetResourceAmount(nm) <= 0d)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("This part has no " +nm + " to transfer!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortNoResource", nm), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return false;
             }
 
@@ -152,12 +161,19 @@ namespace NearFutureElectrical
         // Helpbers for getting a resource amount
         public double GetResourceAmount(string nm)
         {
+          if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
             return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).amount;
+          else
+            return 0.0;
         }
         public double GetResourceAmount(string nm,bool max)
         {
             if (max)
-                return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).maxAmount;
+                if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
+                  return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).maxAmount;
+                else
+                  return 0.0;
+
             else
                 return GetResourceAmount(nm);
         }
@@ -170,20 +186,30 @@ namespace NearFutureElectrical
         private string curTransferType = "";
         private ScreenMessage transferMessage;
 
-        private void Start()
+        public override void OnStart(PartModule.StartState state)
         {
-            if (HighLogic.LoadedSceneIsFlight)
-            {
-              
-            }
-
+            Events["TransferFuel"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Event_TransferFuel");
+            Events["TransferWaste"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Event_TransferWaste");
         }
 
         private void FixedUpdate()
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
-                
+                if (GetResourceAmount(DangerousFuel) <= 0d)
+                {
+                  Events["TransferWaste"].guiActive = false;
+                } else
+                {
+                  Events["TransferWaste"].guiActive = true;
+                }
+                if (GetResourceAmount(SafeFuel) <= 0d)
+                {
+                  Events["TransferFuel"].guiActive = false;
+                } else
+                {
+                  Events["TransferFuel"].guiActive = true;
+                }
                 // Generate heat
                 if (TimeWarp.CurrentRate <= 100f)
                 {
@@ -192,7 +218,7 @@ namespace NearFutureElectrical
                     part.AddThermalFlux(HeatFluxPerWasteUnit * (float)wasteAmount);
                 }
             }
-            
+
         }
 
         private void Update()
@@ -206,7 +232,7 @@ namespace NearFutureElectrical
                 }
             }
         }
-       
+
         private bool VesselConnected(Part targetPart)
         {
             if (this.part.vessel.id == targetPart.vessel.id)
@@ -219,7 +245,7 @@ namespace NearFutureElectrical
             // No part was clicked
             if (targetPart == null)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("No part selected, exiting transfer mode...", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortNoPartSelected"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 EndTransfer();
             }
             else
@@ -227,17 +253,17 @@ namespace NearFutureElectrical
                 // part cannot be on another vessel
                 if (!VesselConnected(targetPart))
                 {
-                    ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer to an unconnected vessel, exiting transfer mode...", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                    ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortUnconnected"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     EndTransfer();
                     return;
-                } 
+                }
 
                 RadioactiveStorageContainer container = targetPart.GetComponent<RadioactiveStorageContainer>();
                 if (container == null)
                 {
-                    ScreenMessages.PostScreenMessage(new ScreenMessage("Selected part can't handle radioactive storage, exiting transfer mode...", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                    ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortNoRadStorage"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     EndTransfer();
-                    
+
                 }
                 else
                 {
@@ -247,18 +273,18 @@ namespace NearFutureElectrical
                     Debug.Log("B");
                     if (part.temperature > container.MaxTempForTransfer)
                     {
-                        ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Selected part must be below {0:F0} K to transfer!",container.MaxTempForTransfer), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortTooHot",container.MaxTempForTransfer.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     }
-                    
+
                     else if (converter != null && converter.ModuleIsActive())
                     {
-                        ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer into a running converter!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
-                        
+                        ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortToRunningConverter"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+
                     }
                     else if (reactor!= null && reactor.ModuleIsActive())
                     {
-                        ScreenMessages.PostScreenMessage(new ScreenMessage("Cannot transfer into a running reactor! Seriously a bad idea!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
-                        
+                        ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortToRunningReactor"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+
                     }
                     else
                     {
@@ -271,18 +297,18 @@ namespace NearFutureElectrical
                         double amount = this.part.RequestResource(curTransferType, availableSpace);
                         container.part.RequestResource(curTransferType, -amount);
                         Debug.Log("2");
-                        ScreenMessages.PostScreenMessage(new ScreenMessage(String.Format("Transferred {0:F0} ",amount ) + curTransferType + " to container!", 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_Success", amount.ToString("F1"), curTransferType.ToString()), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     }
                 }
             }
-            
+
         }
 
         private Part GetPartClicked()
         {
             Camera flightCam = Camera.main;
             Ray clickRay = flightCam.ScreenPointToRay(Input.mousePosition);
-            
+
             LayerMask mask;
             LayerMask maskA = 1 << LayerMask.NameToLayer("Default");
             LayerMask maskB = 1 << LayerMask.NameToLayer("TerrainColliders");
@@ -293,9 +319,9 @@ namespace NearFutureElectrical
             RaycastHit hitInfo;
             if (Physics.Raycast(clickRay, out hitInfo, 2500f, mask ))
             {
-                
+
                 Part hitPart = hitInfo.rigidbody.gameObject.GetComponent<Part>();
-                
+
                 //ScreenMessages.PostScreenMessage(new ScreenMessage("Hit! hit was " + hitInfo.rigidbody.gameObject.name, 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 if (hitPart != null)
                 {
@@ -305,8 +331,8 @@ namespace NearFutureElectrical
                 {
                     return null;
                 }
-            } 
+            }
             return null;
         }
-    }    
+    }
 }
