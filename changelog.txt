@@ -5,6 +5,9 @@ v0.9.0
 - Updated bundled B9PartSwitch to 1.8.0
 - Updated bundled CRP to ....
 - Full localization support for parts and plugins
+- New sub-plugin: DynamicBatteryStorage
+-- Dynamically adjusts EC storage to combat KSP crap resource mechanics at high timewarp
+-- Should dramatically reduce instances of EC loss at high timewarp
 - Revised many part descriptions, tags and names
 - Revised costs of batteries to correctly match stock batteries
 - Revised costs of capacitors to be slightly more expensive (~1.5x) than before
@@ -20,6 +23,8 @@ v0.9.0
 - DecayingRTGs patch now cuts price of affected RTGs by 50%
 - Changed CLS patch to behave better when CLS is not around
 - Cleaned up FissionReactor config blocks for clarity
+- Fixed NRE in some USI compatbility situations
+- Significant improvements to KA integration code
 
 v0.8.7
 ------
