@@ -298,6 +298,8 @@ namespace NearFutureElectrical
                         container.part.RequestResource(curTransferType, -amount);
                         Debug.Log("2");
                         ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_Success", amount.ToString("F1"), curTransferType.ToString()), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        transferring = false;
+                        curTransferType = "";
                     }
                 }
             }
