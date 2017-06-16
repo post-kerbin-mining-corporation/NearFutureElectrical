@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP.UI.Screens;
+using KSP.Localization;
 
 namespace NearFutureElectrical.UI
 {
@@ -158,7 +159,8 @@ namespace NearFutureElectrical.UI
         // Draws the popup windows
         private void ReactorPopup(int windowId)
         {
-          GUILayout.Label("Customize Reactor", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(21f), GUILayout.MinHeight(21f), GUILayout.MinWidth(150f));
+          GUILayout.Label(Localizer.Format("#LOC_NFElectrical_ReactorUI_Customize_Title"), 
+              GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(21f), GUILayout.MinHeight(21f), GUILayout.MinWidth(150f));
           Rect windowRect = GUILayoutUtility.GetRect(200f,210f);
 
           Rect iconRect = new Rect(0f, 16f, 64f, 64f);
@@ -226,7 +228,9 @@ namespace NearFutureElectrical.UI
         private void DrawHeaderArea()
         {
           GUILayout.BeginHorizontal();
-          GUILayout.Label("Reactor Control Panel (Near Future Electrical v0.8.7)", GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
+          GUILayout.Label(String.Format("{0} ({1})", 
+              Localizer.Format("#LOC_NFElectrical_ReactorUI_Title"),
+              Localizer.Format("#LOC_NFElectrical_Version")), GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
               GUILayout.FlexibleSpace();
               Rect buttonRect = GUILayoutUtility.GetRect(22f, 22f);
               GUI.color = resources.GetColor("cancel_color");
@@ -264,7 +268,7 @@ namespace NearFutureElectrical.UI
             }
             else
             {
-                GUILayout.Label("No nuclear reactors found");
+                GUILayout.Label(Localizer.Format("#LOC_NFElectrical_ReactorUI_NotInstalled"));
             }
             GUI.DragWindow();
         }

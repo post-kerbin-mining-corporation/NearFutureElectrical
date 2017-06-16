@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using KSP.UI.Screens;
 using NearFutureElectrical;
+using KSP.Localization;
 
 namespace NearFutureElectrical.UI
 {
@@ -232,14 +233,14 @@ namespace NearFutureElectrical.UI
         GUILayout.BeginHorizontal();
         if (maximized)
         {
-          if (GUILayout.Button("[-] ADVANCED CONTROLS", host.GUIResources.GetStyle("header_basic")))
+            if (GUILayout.Button("[-] " + Localizer.Format("#LOC_NFElectrical_ReactorUI_AdvancedControls"), host.GUIResources.GetStyle("header_basic")))
           {
             advancedMode = false;
           }
         }
         else
         {
-          if (GUILayout.Button("[+] ADVANCED CONTROLS", host.GUIResources.GetStyle("header_basic")))
+            if (GUILayout.Button("[+] " + Localizer.Format("#LOC_NFElectrical_ReactorUI_AdvancedControls"), host.GUIResources.GetStyle("header_basic")))
           {
             advancedMode = true;
           }

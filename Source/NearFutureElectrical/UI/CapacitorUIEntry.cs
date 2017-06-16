@@ -126,7 +126,7 @@ namespace NearFutureElectrical.UI
       {
           if (capacitor.Discharging)
           {
-              return -capacitor.DischargeRate;
+              return -capacitor.dischargeActual;
           } else if (capacitor.Enabled && capacitor.CurrentCharge < capacitor.MaximumCharge)
           {
               return capacitor.ChargeRate*capacitor.ChargeRatio;
