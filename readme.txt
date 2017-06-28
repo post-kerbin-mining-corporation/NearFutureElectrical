@@ -35,6 +35,13 @@ Some extra patches are bundled that you can use to tweak your installation. To i
 DecayingRTGs: Causes RTGs to lose power generation abilities over time (a few years)
 
 ============
+LOCALIZATION
+============
+
+This mod includes localization support, and includes translations for
+- Spanish (KSP forum user fitiales)
+
+============
 KSP-MINI-AVC
 ============
 
