@@ -1,5 +1,5 @@
 ==================================
-NEAR FUTURE ELECTRICAL PACK v0.9.1
+NEAR FUTURE ELECTRICAL PACK v0.9.4
 ==================================
 
 This pack contains advanced electrical parts - capacitors, nuclear reactors and new battery packs.
@@ -9,9 +9,9 @@ DEPENDENCIES
 ============
 
 Required:
-- B9PartSwitch (1.8.1)
+- B9PartSwitch (1.9.0)
 - Community Resource Pack (0.7.1)
-- ModuleManager (2.8.0)
+- ModuleManager (2.8.1)
 
 Optional
 - Community Tech Tree (v2.2+)
@@ -33,6 +33,13 @@ INSTALLATION OF EXTRAS
 Some extra patches are bundled that you can use to tweak your installation. To install them, drop the correct folder from the Extras folder in this archive into your KSP GameData Folder
 
 DecayingRTGs: Causes RTGs to lose power generation abilities over time (a few years)
+
+============
+LOCALIZATION
+============
+
+This mod includes localization support, and includes translations for
+- Spanish (KSP forum user fitiales)
 
 ============
 KSP-MINI-AVC

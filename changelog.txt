@@ -1,3 +1,21 @@
+v0.9.4
+------
+- Updated B9PartSwitch to 1.9.0
+- Updated ModuleManager to 2.8.1
+- Fixed low cost of B-800 radial battery pack
+- Improvements to NFE/KA integration
+- Tweak a few localization fields
+
+v0.9.3
+------
+- Fix DBS issue
+
+v0.9.2
+------
+- Updated DynamicBatteryStorage to 1.0.1
+-- Reduced logging
+-- Fixed an issue with generator parsing on ModuleResourceConverters
+
 v0.9.1
 ------
 - Updated B9PartSwitch to 1.8.1
