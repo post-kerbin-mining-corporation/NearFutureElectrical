@@ -3,7 +3,7 @@ v0.9.4
 - Updated B9PartSwitch to 1.9.0
 - Updated ModuleManager to 2.8.1
 - Fixed low cost of B-800 radial battery pack
-- Reworked FissionFlowRadiator to not be dependent on ModuleActiveRadiator
+- Improvements to NFE/KA integration
 
 v0.9.3
 ------

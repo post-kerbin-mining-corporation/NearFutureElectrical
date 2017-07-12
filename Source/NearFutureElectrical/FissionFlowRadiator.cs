@@ -15,6 +15,12 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float passiveCooling = 0f;
 
+        [KSPField(isPersistant = false)]
+        public float CoolingDecayRate = 1000f;
+
+        [KSPField(isPersistant = false)]
+        public float CoolingScalingZero = 500f;
+
         // Radiator Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Heat Rejected")]
         public string RadiatorStatus;
@@ -55,15 +61,32 @@ namespace NearFutureElectrical
 
         public void ChangeRadiatorTransfer(float scale)
         {
-            currentCooling = (scale*exhaustCooling + passiveCooling);
-            RadiatorStatus = String.Format("{0:F0} kW", scale * exhaustCooling + passiveCooling);
+            float targetCooling = Mathf.Clamp(scale*exhaustCooling + passiveCooling, 0.0f, exhaustCooling);
+            if (targetCooling > currentCooling)
+                currentCooling = targetCooling;
+            else
+                currentCooling = Mathf.MoveTowards(currentCooling, targetCooling, TimeWarp.fixedDeltaTime*CoolingDecayRate);
+            
+            RadiatorStatus = String.Format("{0:F0} kW", currentCooling);
         }
 
         private void ConsumeEnergy()
         {
             if (core != null)
             {
-              core.AddEnergyToCore(currentCooling*TimeWarp.fixedDeltaTime);
+
+                float maxTemp = (float)core.CoreTempGoal;
+                float coreTemp =(float)core.CoreTemperature;
+
+                if (coreTemp > maxTemp)
+                {
+                    float scale = Mathf.Clamp01(CoolingScalingZero * (coreTemp / maxTemp - 1f));
+                    core.AddEnergyToCore(-currentCooling *50f*TimeWarp.fixedDeltaTime* scale);
+                }
+                
+
+                
+                
             }
         }
     }
