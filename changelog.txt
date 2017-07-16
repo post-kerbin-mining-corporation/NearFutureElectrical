@@ -1,3 +1,8 @@
+v0.9.5
+------
+- Fixed normal map channels
+- Fixed a localization error on fuel transfer messages
+
 v0.9.4
 ------
 - Updated B9PartSwitch to 1.9.0
