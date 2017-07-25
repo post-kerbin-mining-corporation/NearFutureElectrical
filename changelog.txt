@@ -2,6 +2,9 @@ v0.9.5
 ------
 - Fixed normal map channels
 - Fixed a localization error on fuel transfer messages
+- Updated DynamicBatteryStorage to 1.1.0
+-- Refactored plugin for many improvements
+-- Proper support for RealBattery
 
 v0.9.4
 ------
