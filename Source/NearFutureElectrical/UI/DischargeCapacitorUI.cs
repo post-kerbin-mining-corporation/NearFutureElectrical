@@ -169,7 +169,7 @@ namespace NearFutureElectrical.UI
         private void DrawHeaderArea()
         {
           GUILayout.BeginHorizontal();
-          GUILayout.Label(String.Format("{0} ({1})", 
+          GUILayout.Label(String.Format("{0} ({1})",
               Localizer.Format("#LOC_NFElectrical_CapacitorUI_Title"),
               Localizer.Format("#LOC_NFElectrical_Version")), GUIResources.GetStyle("header_basic"), GUILayout.MaxHeight(26f), GUILayout.MinHeight(26f), GUILayout.MinWidth(350f));
           GUILayout.FlexibleSpace();
@@ -218,9 +218,9 @@ namespace NearFutureElectrical.UI
 
           GUI.color = Color.white;
 
-          GUI.Label(currentRechargeRateRect, String.Format("{0} {1:F2} EC/s", Localizer.Format("#LOC_NFElectrical_CapacitorUI_SummaryRecharge"), GetAllChargeRatesCurrent()),
+          GUI.Label(currentRechargeRateRect, String.Format("{0} {1:F2} {2}", Localizer.Format("#LOC_NFElectrical_CapacitorUI_SummaryRecharge"), GetAllChargeRatesCurrent(), Localizer.Format("#LOC_NFElectrical_Units_EcS")),
               resources.GetStyle("header_basic"));
-          GUI.Label(currentDischargeRateRect, String.Format("{0} {1:F2}/s", Localizer.Format("#LOC_NFElectrical_CapacitorUI_SummaryDischarge"), GetAllDischargeRatesCurrent()),
+          GUI.Label(currentDischargeRateRect, String.Format("{0} {1:F2} {2}", Localizer.Format("#LOC_NFElectrical_CapacitorUI_SummaryDischarge"), GetAllDischargeRatesCurrent(), Localizer.Format("#LOC_NFElectrical_Units_EcS")),
               resources.GetStyle("header_basic"));
 
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using KSP.UI.Screens;
+using KSP.Localization;
 using NearFutureElectrical;
 
 namespace NearFutureElectrical.UI
@@ -68,7 +69,7 @@ namespace NearFutureElectrical.UI
         // SLIDER: Discharge rate
         GUI.DrawTextureWithTexCoords(dischargeRateIconRect, host.GUIResources.GetIcon("capacitor_rate").iconAtlas, host.GUIResources.GetIcon("capacitor_rate").iconRect);
         capacitor.dischargeActual = GUI.HorizontalSlider(dischargeRateSliderRect, capacitor.dischargeActual, capacitor.DischargeRate*capacitor.DischargeRateMinimumScalar, capacitor.DischargeRate);
-        GUI.Label(dischargeRateTextRect, String.Format("{0:F0} Ec/s", capacitor.dischargeActual), host.GUIResources.GetStyle("text_basic"));
+        GUI.Label(dischargeRateTextRect, String.Format("{0:F0} {1}", capacitor.dischargeActual,Localizer.Format("#LOC_NFElectrical_Units_EcS")), host.GUIResources.GetStyle("text_basic"));
 
         // PROGRESS BAR: Charge fraction bar
         GUI.DrawTextureWithTexCoords(chargeBarIconRect, host.GUIResources.GetIcon("capacitor_charge").iconAtlas, host.GUIResources.GetIcon("capacitor_charge").iconRect);
@@ -89,7 +90,7 @@ namespace NearFutureElectrical.UI
             GUI.Box(barForeroundRect, "", host.GUIResources.GetStyle("bar_foreground"));
             GUI.color = Color.white;
          GUI.EndGroup();
-         GUI.Label(chargeBarTextRect, String.Format("{0:F0}% ({1:F1} Sc/s)", GetChargePercent(), GetCurrentRate()), host.GUIResources.GetStyle("text_basic"));
+         GUI.Label(chargeBarTextRect, String.Format("{0:F0}% ({1:F1} {2})", GetChargePercent(), GetCurrentRate(), Localizer.Format("#LOC_NFElectrical_Units_ScS")), host.GUIResources.GetStyle("text_basic"));
          GUI.EndGroup();
       }
 
@@ -112,7 +113,7 @@ namespace NearFutureElectrical.UI
       {
 
           GUILayout.BeginHorizontal(host.GUIResources.GetStyle("block_background"), GUILayout.Width(445f));
-        GUILayout.BeginHorizontal(host.GUIResources.GetStyle("item_box"));  
+        GUILayout.BeginHorizontal(host.GUIResources.GetStyle("item_box"));
         DrawMainControls();
         DrawReadout();
         DrawBasicControls();

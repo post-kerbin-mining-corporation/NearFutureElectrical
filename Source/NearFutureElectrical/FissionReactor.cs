@@ -446,7 +446,7 @@ namespace NearFutureElectrical
             }
             else
             {
-                ReactorOutput = String.Format("{0:F1} kW", ActualPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f);
+                ReactorOutput = String.Format("{0:F1} {1}}", ActualPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f, Localizer.Format("#LOC_NFElectrical_Units_kW"));
             }
         }
 
@@ -488,8 +488,8 @@ namespace NearFutureElectrical
             AllocateThermalPower();
 
             // GUI
-            ThermalTransfer = String.Format("{0:F1} kW", AvailablePower);
-            CoreTemp = String.Format("{0:F1}/{1:F1} K", (float)core.CoreTemperature, NominalTemperature);
+            ThermalTransfer = String.Format("{0:F1} {1}", AvailablePower, Localizer.Format("#LOC_NFElectrical_Units_kW"));
+            CoreTemp = String.Format("{0:F1}/{1:F1} {2}", (float)core.CoreTemperature, NominalTemperature, Localizer.Format("#LOC_NFElectrical_Units_K"));
 
             D_TempScale = String.Format("{0:F4}", curTempScale);
             D_PowerScale = String.Format("{0:F4}", powerScale);
@@ -572,8 +572,8 @@ namespace NearFutureElectrical
             D_FudgeCap = String.Format("{0:F4}", maxFudge);
             //D_MaxCooling = String.Format("{0:F4}", maxRadiatorCooling);
             D_IsHeating = GeneratesHeat.ToString();
-            ThermalTransfer = String.Format("{0:F2} kW", AvailablePower);
-            CoreTemp = String.Format("{0:F1}/{1:F1} K", (float)core.CoreTemperature, NominalTemperature);
+            ThermalTransfer = String.Format("{0:F2} {1}", AvailablePower, Localizer.Format("#LOC_NFElectrical_Units_kW"));
+            CoreTemp = String.Format("{0:F1}/{1:F1} {2}", (float)core.CoreTemperature, NominalTemperature, Localizer.Format("#LOC_NFElectrical_Units_K"));
 
             // Core temperature goal is always artificially lower
             core.CoreTempGoalAdjustment = -core.CoreTempGoal;

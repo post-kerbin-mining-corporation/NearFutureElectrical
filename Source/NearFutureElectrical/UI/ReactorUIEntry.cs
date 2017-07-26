@@ -84,13 +84,13 @@ namespace NearFutureElectrical.UI
 
         // READOUT: Heat production
         GUI.DrawTextureWithTexCoords(heatIconRect, host.GUIResources.GetIcon("fire").iconAtlas, host.GUIResources.GetIcon("fire").iconRect);
-        GUI.Label(heatTextRect, String.Format("{0:F1} kW", reactor.AvailablePower), host.GUIResources.GetStyle("text_basic"));
+        GUI.Label(heatTextRect, String.Format("{0:F1} {1}", reactor.AvailablePower, Localizer.Format("#LOC_NFElectrical_Units_kW")), host.GUIResources.GetStyle("text_basic"));
 
         // READOUT: Energy production
         GUI.DrawTextureWithTexCoords(powerIconRect, host.GUIResources.GetIcon("lightning").iconAtlas, host.GUIResources.GetIcon("lightning").iconRect);
         if (generator != null)
         {
-            GUI.Label(powerTextRect, String.Format("{0:F1} Ec/s", generator.CurrentGeneration), host.GUIResources.GetStyle("text_basic"));
+            GUI.Label(powerTextRect, String.Format("{0:F1} {1}", generator.CurrentGeneration, Localizer.Format("#LOC_NFElectrical_Units_EcS")), host.GUIResources.GetStyle("text_basic"));
         }
         else
         {
@@ -252,7 +252,7 @@ namespace NearFutureElectrical.UI
           if (advancedMode)
               if (reactor.FollowThrottle)
                   return 198f;
-              else 
+              else
                   return 160f;
           else
               if (reactor.FollowThrottle)
@@ -260,7 +260,7 @@ namespace NearFutureElectrical.UI
               else
                   return 96f;
       }
-      
+
       // Draw the UI component
       public void Draw()
       {
