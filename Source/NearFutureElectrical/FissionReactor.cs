@@ -437,12 +437,12 @@ namespace NearFutureElectrical
         private void DoHeatGeneration()
         {
             // Generate heat from the reaction and apply it
-            SetHeatGeneration((ActualPowerPercent / 100f * HeatGeneration)* CoreIntegrity/100f);
+            SetHeatGeneration((ActualPowerPercent / 100f * HeatGeneration) * CoreIntegrity/100f);
 
             if (CoreIntegrity <= 0f)
             {
                 FuelStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Meltdown");
-                ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutpur_Meltdown");
+                ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput_Meltdown");
             }
             else
             {
