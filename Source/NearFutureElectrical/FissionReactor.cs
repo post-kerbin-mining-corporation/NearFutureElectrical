@@ -71,13 +71,6 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float ActualPowerPercent = 100f;
 
-        // Curve relating available power to temperature. Generally should be of the form
-        // AmbientTemp  0
-        // NominalTemp RatedReactorOutput
-        // MaxTemp BonusReactorOutput
-        [KSPField(isPersistant = false)]
-        public FloatCurve PowerCurve = new FloatCurve();
-
         // amount of heating power available from reactor currently
         [KSPField(isPersistant = true)]
         public float AvailablePower = 0f;
@@ -243,7 +236,19 @@ namespace NearFutureElectrical
         {
             return Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_ModuleName");
         }
+        private void SetupCore()
+        {
+          if (core == null)
+          {
+              Utils.LogError("Fission Reactor: Could not find core heat module!");
+            }
+            else
+            {
 
+            }
+
+
+        }
         private void SetupResourceRatios()
         {
 
@@ -276,7 +281,9 @@ namespace NearFutureElectrical
             base.OnFixedUpdate();
 
         }
-
+        public void OverriddenAwake()
+        {
+        }
         public void OverriddenStart()
         {
           var range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlEditor;
@@ -315,9 +322,10 @@ namespace NearFutureElectrical
           if (HighLogic.LoadedScene != GameScenes.EDITOR)
           {
               core = this.GetComponent<ModuleCoreHeat>();
-              if (core == null)
-                  Utils.LogError("Fission Reactor: Could not find core heat module!");
 
+
+
+              SetupCore();
               SetupResourceRatios();
 
               if (OverheatAnimation != "")
@@ -514,103 +522,6 @@ namespace NearFutureElectrical
                 }
             }
         }
-
-        private void DoHeatConsumption_V1()
-        {
-            // determine the maximum radiator cooling
-            // At ambient temperature part temperature, no cooling is possible
-            // at nominal temperature, full cooling is possible
-
-            // The core temperature where no cooling is possible
-            float zeroPoint = (float)part.temperature;
-
-            // The core temperature where maximum cooling is possible (above here allow more cooling if needed)
-            float maxPoint = NominalTemperature;
-
-            float temperatureDiff = Mathf.Clamp((float)core.CoreTemperature - zeroPoint, 0f, NominalTemperature);
-
-            // The ratio (0 to 1+) of radiator capacity to use at the moment.
-            float curTempScale = Mathf.Clamp(temperatureDiff / (maxPoint - zeroPoint),0f,1f);
-
-            // The allowed maximum radiator cooling. Should not exceed the heat generation
-            float coolingCap = HeatGeneration / 50f;
-
-            float maxRadiatorCooling = Mathf.Clamp(curTempScale * (HeatGeneration / 50f) * (CoreIntegrity/100f) *(ActualPowerPercent/100f),
-                0f,
-                coolingCap);
-
-
-            // Determine power available to transfer to components
-            // This can be unstable so smooth it.
-            float frameAvailablePower = 0f;
-            if (Single.TryParse(core.D_CoolAmt, out frameAvailablePower))
-            {
-                framePowerList.Add(frameAvailablePower / Mathf.Clamp(TimeWarp.CurrentRate, 0f, (float)core.MaxCalculationWarp));
-                if (framePowerList.Count > smoothingInterval)
-                {
-                    framePowerList.RemoveAt(0);
-                }
-            }
-
-            float smoothedPower = ListMean(framePowerList);
-
-            float maxFudge = (float)core.MaxCoolant;
-
-            // The reactor fudge factor is a number by which we increase the reactor power to pretend radiators are
-            // transferring less at low temperatures
-            reactorFudgeFactor =  Mathf.Clamp(smoothedPower - maxRadiatorCooling,0f,maxFudge);
-
-            // The available power is never more than the max radiator cooling
-            AvailablePower = Mathf.Clamp(smoothedPower,0f, maxRadiatorCooling);
-
-            if (float.IsNaN(AvailablePower))
-                AvailablePower = 0f;
-
-            D_RealConsumption = String.Format("{0:F4}", frameAvailablePower);
-            D_TempScale = String.Format("{0:F4}", curTempScale);
-            D_FudgeFactor = String.Format("{0:F4}", reactorFudgeFactor);
-            D_FudgeCap = String.Format("{0:F4}", maxFudge);
-            //D_MaxCooling = String.Format("{0:F4}", maxRadiatorCooling);
-            D_IsHeating = GeneratesHeat.ToString();
-            ThermalTransfer = String.Format("{0:F2} {1}", AvailablePower, Localizer.Format("#LOC_NFElectrical_Units_kW"));
-            CoreTemp = String.Format("{0:F1}/{1:F1} {2}", (float)core.CoreTemperature, NominalTemperature, Localizer.Format("#LOC_NFElectrical_Units_K"));
-
-            // Core temperature goal is always artificially lower
-            core.CoreTempGoalAdjustment = -core.CoreTempGoal;
-
-            List<FissionConsumer> consumers = GetOrderedConsumers();
-
-            //Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
-            float remainingPower = AvailablePower;
-            // Iterate through all consumers and allocate available thermal power
-            for (int i= 0; i < consumers.Count; i++)
-            {
-                if (consumers[i].Status)
-                {
-                    remainingPower = consumers[i].ConsumeHeat(remainingPower);
-                    //totalWaste = totalWaste + consumer.GetWaste();
-
-                    if (remainingPower <= 0f)
-                        remainingPower = 0f;
-                    //Utils.Log ("FissionReactor: Consumer left "+ remainingPower.ToString()+ " kW");
-                }
-            }
-
-            //Utils.Log ("FissionReactor: END CYCLE with "+totalWaste.ToString() + " waste, and " + AvailablePower.ToString() +" spare");
-        }
-
-        // Get the mean of a list
-        private float ListMean(List<float> theList)
-        {
-            float sum = 0f;
-            for (int i = 0; i < theList.Count;i++)
-            {
-                sum += theList[i];
-            }
-            return sum / (float)theList.Count;
-        }
-
-
 
         private List<FissionConsumer> GetOrderedConsumers()
         {

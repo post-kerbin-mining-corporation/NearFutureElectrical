@@ -16,6 +16,15 @@ namespace NearFutureElectrical
 
         private FissionReactor[] reactors;
 
+        void Awake()
+        {
+          reactors = this.GetComponents<FissionReactor>();
+          for (int i = 0; i< reactors.Length; i++)
+          {
+              reactors[i].OverriddenAwake();
+          }
+        }
+
         void Start()
         {
           reactors = this.GetComponents<FissionReactor>();
