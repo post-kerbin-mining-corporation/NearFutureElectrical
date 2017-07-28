@@ -5,6 +5,7 @@ v0.9.5
 - Fixed a localization error on destroyed reactor cores
 - Fixed a few missing units in UI fields
 - Modified units in UI fields and panels to be localized
+- Fixed an issue where reactors would overheat after restart after timewarp
 - Fixed FissionEngine not caring about core damage
 - Updated DynamicBatteryStorage to 1.1.0
 -- Refactored plugin for many improvements

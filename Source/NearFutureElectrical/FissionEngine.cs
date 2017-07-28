@@ -121,6 +121,7 @@ namespace NearFutureElectrical
                 }
                 float heat = reactor.ActualPowerPercent / 100f * reactor.HeatGeneration / 50f * reactor.CoreIntegrity / 100f;
                 //flowRadiator.ChangeRadiatorTransfer(Mathf.Max(base.CurrentHeatUsed, heat) * maxFlowScalar);
+                
                 flowRadiator.ChangeRadiatorTransfer(maxFlowScalar);
             }
 

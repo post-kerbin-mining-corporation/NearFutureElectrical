@@ -40,7 +40,6 @@ namespace NearFutureElectrical
         {
             return Localizer.Format("#LOC_NFElectrical_ModuleFissionFlowRadiator_ModuleName");
         }
-        int ticker = 0;
 
         public void Start()
         {

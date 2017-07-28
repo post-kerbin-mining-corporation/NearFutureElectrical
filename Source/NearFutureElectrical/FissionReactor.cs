@@ -155,9 +155,6 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false, guiActive = false, guiName = "D_TempScale")]
         public string D_TempScale;
 
-        [KSPField(isPersistant = false, guiActive = false, guiName = "D_FudgeFactor")]
-        public string D_FudgeFactor;
-
         [KSPField(isPersistant = false, guiActive = false, guiName = "D_FudgeCap")]
         public string D_FudgeCap;
 
@@ -166,7 +163,7 @@ namespace NearFutureElectrical
 
         /// PRIVATE VARIABLES
         /// ----------------------
-        private ModuleCoreHeat core;
+        private ModuleCoreHeatNoCatchup core;
 
         private AnimationState[] overheatStates;
 
@@ -203,7 +200,7 @@ namespace NearFutureElectrical
         public string FuelStatus;
 
         // Sets whether auto-shutdown is possible
-        public ModuleCoreHeat Core{ get {return core;}}
+        public ModuleCoreHeatNoCatchup Core { get { return core; } }
 
         // Sets whether time wwarp shutdown is enabled
         public void SetTimewarpShutdownStatus(bool status)
@@ -244,7 +241,7 @@ namespace NearFutureElectrical
             }
             else
             {
-
+              
             }
 
 
@@ -312,6 +309,10 @@ namespace NearFutureElectrical
           Fields["CoreStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreStatus");
           Fields["FuelStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus");
 
+          if (base.ModuleIsActive())
+              activeFlag = true;
+          else
+              activeFlag = false;
 
           if (FirstLoad)
           {
@@ -321,7 +322,7 @@ namespace NearFutureElectrical
 
           if (HighLogic.LoadedScene != GameScenes.EDITOR)
           {
-              core = this.GetComponent<ModuleCoreHeat>();
+              core = this.GetComponent<ModuleCoreHeatNoCatchup>();
 
 
 
@@ -356,6 +357,9 @@ namespace NearFutureElectrical
               }
           }
         }
+
+        bool activeFlag = false;
+        int heatTicker = 0;
         public void OverriddenFixedUpdate()
         {
           if (HighLogic.LoadedScene == GameScenes.FLIGHT)
@@ -387,18 +391,32 @@ namespace NearFutureElectrical
               // IF REACTOR ON
               // =============
               if (base.ModuleIsActive())
-              {
+              { 
                 if (TimewarpShutdown && TimeWarp.fetch.current_rate_index >= TimewarpShutdownFactor)
                     ToggleResourceConverterAction(new KSPActionParam(0, KSPActionType.Activate));
+                if (base.ModuleIsActive() != activeFlag)
+                {
+                    base.lastUpdateTime = Planetarium.GetUniversalTime();
+                    heatTicker = 60;
+                    activeFlag = true;
+                   // Debug.Log("Turned On");
+                }
 
                 DoFuelConsumption();
                 DoHeatGeneration();
 
-              }
+              } 
               // IF REACTOR OFF
               // =============
               else
               {
+                  if (base.ModuleIsActive() != activeFlag)
+                  {
+                      activeFlag = false;
+                      ZeroThermal();
+                      //Debug.Log("Turned Off");
+                  }
+                  
                   // Update UI
                   if (CoreIntegrity <= 0f)
                   {
@@ -412,7 +430,8 @@ namespace NearFutureElectrical
 
                   }
               }
-              lastTimeWarpMult = TimeWarp.CurrentRate;
+          
+    
           }
         }
 
@@ -454,16 +473,10 @@ namespace NearFutureElectrical
             }
             else
             {
-                ReactorOutput = String.Format("{0:F1} {1}}", ActualPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f, Localizer.Format("#LOC_NFElectrical_Units_kW"));
+                ReactorOutput = String.Format("{0:F1} {1}", ActualPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f, Localizer.Format("#LOC_NFElectrical_Units_kW"));
             }
         }
-
-        List<float> availablePowerList = new List<float>();
-        float reactorFudgeFactor = 0f;
-
-        List<float> framePowerList = new List<float>();
-        float lastTimeWarpMult = 1f;
-
+    
         private void DoHeatConsumption()
         {
             // save some divisions later
@@ -531,24 +544,31 @@ namespace NearFutureElectrical
 
         private void SetHeatGeneration(float heat)
         {
-            if (Time.timeSinceLevelLoad > 5f)
+            if (Time.timeSinceLevelLoad > 1f)
                 GeneratesHeat = true;
             else
                 GeneratesHeat = false;
 
-            //Utils.Log("Fudge Factor currently " + reactorFudgeFactor.ToString());
-            if (float.IsNaN(reactorFudgeFactor))
+            if (heatTicker <= 0)
             {
-                reactorFudgeFactor = 0f;
+                TemperatureModifier = new FloatCurve();
+                TemperatureModifier.Add(0f, heat );
             }
+            else
+            {
+                ZeroThermal();
+                heatTicker = heatTicker - 1;
+            }
+            core.MaxCoolant = heat;
+        }
 
+        private void ZeroThermal()
+        {
+            base.lastHeatFlux = 0d;
+            core.ZeroThermal();
+            base.GeneratesHeat = false;
             TemperatureModifier = new FloatCurve();
-            TemperatureModifier.Add(0f, heat + reactorFudgeFactor * 50f);
-
-            core.MaxCoolant = heat + reactorFudgeFactor * 50f;
-
-            D_RealHeat = String.Format("{0:F2}",heat/50f + reactorFudgeFactor);
-
+            TemperatureModifier.Add(0f, 0f);
         }
 
         // track and set core damage

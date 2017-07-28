@@ -278,7 +278,7 @@ namespace NearFutureElectrical
                 this.part.RequestResource("StoredCharge", amt);
                 this.part.RequestResource("ElectricCharge", -amt);
 
-                CapacitorStatus = Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_Discharging", dischargeActual.ToString("F2");
+                CapacitorStatus = Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_Discharging", dischargeActual.ToString("F2"));
 
                 // if the amount returned is zero, disable discharging
                 if (CurrentCharge <= 0f)
