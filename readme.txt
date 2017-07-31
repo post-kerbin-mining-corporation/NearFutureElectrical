@@ -40,6 +40,8 @@ LOCALIZATION
 
 This mod includes localization support, and includes translations for
 - Spanish (KSP forum user fitiales)
+- Chinese (KSP forum user DYZBX from the Black Domain Studio(BDS))
+- Russian (KSP forum user Dr. Jet)
 
 ============
 KSP-MINI-AVC

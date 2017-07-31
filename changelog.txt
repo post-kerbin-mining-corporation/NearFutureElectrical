@@ -1,5 +1,7 @@
 v0.9.5
 ------
+- Added Chinese translation courtesy of DYZBX from the Black Domain Studio(BDS)
+- Added Russian translation courtesy of Dr. Jet
 - Fixed normal map channels
 - Fixed a localization error on fuel transfer messages
 - Fixed a localization error on destroyed reactor cores
