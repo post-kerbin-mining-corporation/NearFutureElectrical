@@ -40,7 +40,6 @@ namespace NearFutureElectrical
         {
             return Localizer.Format("#LOC_NFElectrical_ModuleFissionFlowRadiator_ModuleName");
         }
-        int ticker = 0;
 
         public void Start()
         {
@@ -66,8 +65,8 @@ namespace NearFutureElectrical
                 currentCooling = targetCooling;
             else
                 currentCooling = Mathf.MoveTowards(currentCooling, targetCooling, TimeWarp.fixedDeltaTime*CoolingDecayRate);
-            
-            RadiatorStatus = String.Format("{0:F0} kW", currentCooling);
+
+            RadiatorStatus = String.Format("{0:F0} {1}", currentCooling, Localizer.Format("#LOC_NFElectrical_Units_kW"));
         }
 
         private void ConsumeEnergy()
@@ -83,10 +82,10 @@ namespace NearFutureElectrical
                     float scale = Mathf.Clamp01(CoolingScalingZero * (coreTemp / maxTemp - 1f));
                     core.AddEnergyToCore(-currentCooling *50f*TimeWarp.fixedDeltaTime* scale);
                 }
-                
 
-                
-                
+
+
+
             }
         }
     }
