@@ -1,3 +1,7 @@
+v0.9.6
+------
+- Fixed localization breaking nuclear fuel transfer
+
 v0.9.5
 ------
 - Added Chinese translation courtesy of DYZBX from the Black Domain Studio(BDS)
