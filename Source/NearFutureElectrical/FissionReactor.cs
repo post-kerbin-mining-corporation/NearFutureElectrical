@@ -71,13 +71,6 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float ActualPowerPercent = 100f;
 
-        // Curve relating available power to temperature. Generally should be of the form
-        // AmbientTemp  0
-        // NominalTemp RatedReactorOutput
-        // MaxTemp BonusReactorOutput
-        [KSPField(isPersistant = false)]
-        public FloatCurve PowerCurve = new FloatCurve();
-
         // amount of heating power available from reactor currently
         [KSPField(isPersistant = true)]
         public float AvailablePower = 0f;
@@ -162,9 +155,6 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false, guiActive = false, guiName = "D_TempScale")]
         public string D_TempScale;
 
-        [KSPField(isPersistant = false, guiActive = false, guiName = "D_FudgeFactor")]
-        public string D_FudgeFactor;
-
         [KSPField(isPersistant = false, guiActive = false, guiName = "D_FudgeCap")]
         public string D_FudgeCap;
 
@@ -173,7 +163,7 @@ namespace NearFutureElectrical
 
         /// PRIVATE VARIABLES
         /// ----------------------
-        private ModuleCoreHeat core;
+        private ModuleCoreHeatNoCatchup core;
 
         private AnimationState[] overheatStates;
 
@@ -210,7 +200,7 @@ namespace NearFutureElectrical
         public string FuelStatus;
 
         // Sets whether auto-shutdown is possible
-        public ModuleCoreHeat Core{ get {return core;}}
+        public ModuleCoreHeatNoCatchup Core { get { return core; } }
 
         // Sets whether time wwarp shutdown is enabled
         public void SetTimewarpShutdownStatus(bool status)
@@ -243,7 +233,19 @@ namespace NearFutureElectrical
         {
             return Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_ModuleName");
         }
+        private void SetupCore()
+        {
+          if (core == null)
+          {
+              Utils.LogError("Fission Reactor: Could not find core heat module!");
+            }
+            else
+            {
+              
+            }
 
+
+        }
         private void SetupResourceRatios()
         {
 
@@ -276,7 +278,9 @@ namespace NearFutureElectrical
             base.OnFixedUpdate();
 
         }
-
+        public void OverriddenAwake()
+        {
+        }
         public void OverriddenStart()
         {
           var range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlEditor;
@@ -305,6 +309,10 @@ namespace NearFutureElectrical
           Fields["CoreStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreStatus");
           Fields["FuelStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus");
 
+          if (base.ModuleIsActive())
+              activeFlag = true;
+          else
+              activeFlag = false;
 
           if (FirstLoad)
           {
@@ -314,10 +322,11 @@ namespace NearFutureElectrical
 
           if (HighLogic.LoadedScene != GameScenes.EDITOR)
           {
-              core = this.GetComponent<ModuleCoreHeat>();
-              if (core == null)
-                  Utils.LogError("Fission Reactor: Could not find core heat module!");
+              core = this.GetComponent<ModuleCoreHeatNoCatchup>();
 
+
+
+              SetupCore();
               SetupResourceRatios();
 
               if (OverheatAnimation != "")
@@ -348,6 +357,9 @@ namespace NearFutureElectrical
               }
           }
         }
+
+        bool activeFlag = false;
+        int heatTicker = 0;
         public void OverriddenFixedUpdate()
         {
           if (HighLogic.LoadedScene == GameScenes.FLIGHT)
@@ -379,18 +391,32 @@ namespace NearFutureElectrical
               // IF REACTOR ON
               // =============
               if (base.ModuleIsActive())
-              {
+              { 
                 if (TimewarpShutdown && TimeWarp.fetch.current_rate_index >= TimewarpShutdownFactor)
                     ToggleResourceConverterAction(new KSPActionParam(0, KSPActionType.Activate));
+                if (base.ModuleIsActive() != activeFlag)
+                {
+                    base.lastUpdateTime = Planetarium.GetUniversalTime();
+                    heatTicker = 60;
+                    activeFlag = true;
+                   // Debug.Log("Turned On");
+                }
 
                 DoFuelConsumption();
                 DoHeatGeneration();
 
-              }
+              } 
               // IF REACTOR OFF
               // =============
               else
               {
+                  if (base.ModuleIsActive() != activeFlag)
+                  {
+                      activeFlag = false;
+                      ZeroThermal();
+                      //Debug.Log("Turned Off");
+                  }
+                  
                   // Update UI
                   if (CoreIntegrity <= 0f)
                   {
@@ -404,7 +430,8 @@ namespace NearFutureElectrical
 
                   }
               }
-              lastTimeWarpMult = TimeWarp.CurrentRate;
+          
+    
           }
         }
 
@@ -437,25 +464,19 @@ namespace NearFutureElectrical
         private void DoHeatGeneration()
         {
             // Generate heat from the reaction and apply it
-            SetHeatGeneration((ActualPowerPercent / 100f * HeatGeneration)* CoreIntegrity/100f);
+            SetHeatGeneration((ActualPowerPercent / 100f * HeatGeneration) * CoreIntegrity/100f);
 
             if (CoreIntegrity <= 0f)
             {
                 FuelStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Meltdown");
-                ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutpur_Meltdown");
+                ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput_Meltdown");
             }
             else
             {
-                ReactorOutput = String.Format("{0:F1} kW", ActualPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f);
+                ReactorOutput = String.Format("{0:F1} {1}", ActualPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f, Localizer.Format("#LOC_NFElectrical_Units_kW"));
             }
         }
-
-        List<float> availablePowerList = new List<float>();
-        float reactorFudgeFactor = 0f;
-
-        List<float> framePowerList = new List<float>();
-        float lastTimeWarpMult = 1f;
-
+    
         private void DoHeatConsumption()
         {
             // save some divisions later
@@ -488,8 +509,8 @@ namespace NearFutureElectrical
             AllocateThermalPower();
 
             // GUI
-            ThermalTransfer = String.Format("{0:F1} kW", AvailablePower);
-            CoreTemp = String.Format("{0:F1}/{1:F1} K", (float)core.CoreTemperature, NominalTemperature);
+            ThermalTransfer = String.Format("{0:F1} {1}", AvailablePower, Localizer.Format("#LOC_NFElectrical_Units_kW"));
+            CoreTemp = String.Format("{0:F1}/{1:F1} {2}", (float)core.CoreTemperature, NominalTemperature, Localizer.Format("#LOC_NFElectrical_Units_K"));
 
             D_TempScale = String.Format("{0:F4}", curTempScale);
             D_PowerScale = String.Format("{0:F4}", powerScale);
@@ -515,103 +536,6 @@ namespace NearFutureElectrical
             }
         }
 
-        private void DoHeatConsumption_V1()
-        {
-            // determine the maximum radiator cooling
-            // At ambient temperature part temperature, no cooling is possible
-            // at nominal temperature, full cooling is possible
-
-            // The core temperature where no cooling is possible
-            float zeroPoint = (float)part.temperature;
-
-            // The core temperature where maximum cooling is possible (above here allow more cooling if needed)
-            float maxPoint = NominalTemperature;
-
-            float temperatureDiff = Mathf.Clamp((float)core.CoreTemperature - zeroPoint, 0f, NominalTemperature);
-
-            // The ratio (0 to 1+) of radiator capacity to use at the moment.
-            float curTempScale = Mathf.Clamp(temperatureDiff / (maxPoint - zeroPoint),0f,1f);
-
-            // The allowed maximum radiator cooling. Should not exceed the heat generation
-            float coolingCap = HeatGeneration / 50f;
-
-            float maxRadiatorCooling = Mathf.Clamp(curTempScale * (HeatGeneration / 50f) * (CoreIntegrity/100f) *(ActualPowerPercent/100f),
-                0f,
-                coolingCap);
-
-
-            // Determine power available to transfer to components
-            // This can be unstable so smooth it.
-            float frameAvailablePower = 0f;
-            if (Single.TryParse(core.D_CoolAmt, out frameAvailablePower))
-            {
-                framePowerList.Add(frameAvailablePower / Mathf.Clamp(TimeWarp.CurrentRate, 0f, (float)core.MaxCalculationWarp));
-                if (framePowerList.Count > smoothingInterval)
-                {
-                    framePowerList.RemoveAt(0);
-                }
-            }
-
-            float smoothedPower = ListMean(framePowerList);
-
-            float maxFudge = (float)core.MaxCoolant;
-
-            // The reactor fudge factor is a number by which we increase the reactor power to pretend radiators are
-            // transferring less at low temperatures
-            reactorFudgeFactor =  Mathf.Clamp(smoothedPower - maxRadiatorCooling,0f,maxFudge);
-
-            // The available power is never more than the max radiator cooling
-            AvailablePower = Mathf.Clamp(smoothedPower,0f, maxRadiatorCooling);
-
-            if (float.IsNaN(AvailablePower))
-                AvailablePower = 0f;
-
-            D_RealConsumption = String.Format("{0:F4}", frameAvailablePower);
-            D_TempScale = String.Format("{0:F4}", curTempScale);
-            D_FudgeFactor = String.Format("{0:F4}", reactorFudgeFactor);
-            D_FudgeCap = String.Format("{0:F4}", maxFudge);
-            //D_MaxCooling = String.Format("{0:F4}", maxRadiatorCooling);
-            D_IsHeating = GeneratesHeat.ToString();
-            ThermalTransfer = String.Format("{0:F2} kW", AvailablePower);
-            CoreTemp = String.Format("{0:F1}/{1:F1} K", (float)core.CoreTemperature, NominalTemperature);
-
-            // Core temperature goal is always artificially lower
-            core.CoreTempGoalAdjustment = -core.CoreTempGoal;
-
-            List<FissionConsumer> consumers = GetOrderedConsumers();
-
-            //Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
-            float remainingPower = AvailablePower;
-            // Iterate through all consumers and allocate available thermal power
-            for (int i= 0; i < consumers.Count; i++)
-            {
-                if (consumers[i].Status)
-                {
-                    remainingPower = consumers[i].ConsumeHeat(remainingPower);
-                    //totalWaste = totalWaste + consumer.GetWaste();
-
-                    if (remainingPower <= 0f)
-                        remainingPower = 0f;
-                    //Utils.Log ("FissionReactor: Consumer left "+ remainingPower.ToString()+ " kW");
-                }
-            }
-
-            //Utils.Log ("FissionReactor: END CYCLE with "+totalWaste.ToString() + " waste, and " + AvailablePower.ToString() +" spare");
-        }
-
-        // Get the mean of a list
-        private float ListMean(List<float> theList)
-        {
-            float sum = 0f;
-            for (int i = 0; i < theList.Count;i++)
-            {
-                sum += theList[i];
-            }
-            return sum / (float)theList.Count;
-        }
-
-
-
         private List<FissionConsumer> GetOrderedConsumers()
         {
           List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>().ToList();
@@ -620,24 +544,31 @@ namespace NearFutureElectrical
 
         private void SetHeatGeneration(float heat)
         {
-            if (Time.timeSinceLevelLoad > 5f)
+            if (Time.timeSinceLevelLoad > 1f)
                 GeneratesHeat = true;
             else
                 GeneratesHeat = false;
 
-            //Utils.Log("Fudge Factor currently " + reactorFudgeFactor.ToString());
-            if (float.IsNaN(reactorFudgeFactor))
+            if (heatTicker <= 0)
             {
-                reactorFudgeFactor = 0f;
+                TemperatureModifier = new FloatCurve();
+                TemperatureModifier.Add(0f, heat );
             }
+            else
+            {
+                ZeroThermal();
+                heatTicker = heatTicker - 1;
+            }
+            core.MaxCoolant = heat;
+        }
 
+        private void ZeroThermal()
+        {
+            base.lastHeatFlux = 0d;
+            core.ZeroThermal();
+            base.GeneratesHeat = false;
             TemperatureModifier = new FloatCurve();
-            TemperatureModifier.Add(0f, heat + reactorFudgeFactor * 50f);
-
-            core.MaxCoolant = heat + reactorFudgeFactor * 50f;
-
-            D_RealHeat = String.Format("{0:F2}",heat/50f + reactorFudgeFactor);
-
+            TemperatureModifier.Add(0f, 0f);
         }
 
         // track and set core damage

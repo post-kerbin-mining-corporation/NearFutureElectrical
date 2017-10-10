@@ -101,7 +101,7 @@ namespace NearFutureElectrical
                     else
                     {
                         float CoreTemperatureRatio = TempIspScale.Evaluate((float)core.CoreTemperature);
-                        float reactorRatio = reactor.ActualPowerPercent / 100f;
+                        float reactorRatio = reactor.ActualPowerPercent / 100f * reactor.CoreIntegrity/100f;
                         if (!reactor.ModuleIsActive())
                             reactorRatio = 0f;
 
@@ -121,6 +121,7 @@ namespace NearFutureElectrical
                 }
                 float heat = reactor.ActualPowerPercent / 100f * reactor.HeatGeneration / 50f * reactor.CoreIntegrity / 100f;
                 //flowRadiator.ChangeRadiatorTransfer(Mathf.Max(base.CurrentHeatUsed, heat) * maxFlowScalar);
+                
                 flowRadiator.ChangeRadiatorTransfer(maxFlowScalar);
             }
 

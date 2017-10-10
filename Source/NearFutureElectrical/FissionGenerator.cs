@@ -73,7 +73,7 @@ namespace NearFutureElectrical
                       generated = 0.0;
 
                   CurrentGeneration = (float)generated;
-                  GeneratorStatus = String.Format("{0:F1} Ec/s", generated);
+                  GeneratorStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_Field_GeneratorStatus_Normal", generated.ToString("F1"));
               }
               else
                   GeneratorStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_Field_GeneratorStatus_Offline");
