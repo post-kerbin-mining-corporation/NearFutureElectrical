@@ -241,7 +241,7 @@ namespace NearFutureElectrical
             }
             else
             {
-              
+
             }
 
 
@@ -368,7 +368,7 @@ namespace NearFutureElectrical
                 UIName = part.partInfo.title;
               if (FollowThrottle)
               {
-                  if (reactorEngine != null)
+                  if (reactorEngine != null && reactorEngine.EngineActive())
                     ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle * reactorEngine.GetThrustLimiterFraction()), CurrentPowerPercent);
               }
               else {
@@ -391,7 +391,7 @@ namespace NearFutureElectrical
               // IF REACTOR ON
               // =============
               if (base.ModuleIsActive())
-              { 
+              {
                 if (TimewarpShutdown && TimeWarp.fetch.current_rate_index >= TimewarpShutdownFactor)
                     ToggleResourceConverterAction(new KSPActionParam(0, KSPActionType.Activate));
                 if (base.ModuleIsActive() != activeFlag)
@@ -405,7 +405,7 @@ namespace NearFutureElectrical
                 DoFuelConsumption();
                 DoHeatGeneration();
 
-              } 
+              }
               // IF REACTOR OFF
               // =============
               else
@@ -416,7 +416,7 @@ namespace NearFutureElectrical
                       ZeroThermal();
                       //Debug.Log("Turned Off");
                   }
-                  
+
                   // Update UI
                   if (CoreIntegrity <= 0f)
                   {
@@ -430,8 +430,8 @@ namespace NearFutureElectrical
 
                   }
               }
-          
-    
+
+
           }
         }
 
@@ -476,7 +476,7 @@ namespace NearFutureElectrical
                 ReactorOutput = String.Format("{0:F1} {1}", ActualPowerPercent / 100f * HeatGeneration / 50f * CoreIntegrity / 100f, Localizer.Format("#LOC_NFElectrical_Units_kW"));
             }
         }
-    
+
         private void DoHeatConsumption()
         {
             // save some divisions later
@@ -679,7 +679,7 @@ namespace NearFutureElectrical
         private bool CheckEVAEngineerLevel(int level)
         {
             ProtoCrewMember kerbal = FlightGlobals.ActiveVessel.GetVesselCrew()[0];
-            if (kerbal.experienceTrait.Title == "Engineer" && kerbal.experienceLevel >= level)
+            if (kerbal.experienceTrait.TypeName == "Engineer" && kerbal.experienceLevel >= level)
             {
                 return true;
             }
