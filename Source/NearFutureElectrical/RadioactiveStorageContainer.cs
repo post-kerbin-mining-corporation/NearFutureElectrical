@@ -106,7 +106,7 @@ namespace NearFutureElectrical
             List<ProtoCrewMember> crew = part.vessel.GetVesselCrew();
             foreach (ProtoCrewMember crewman in crew)
             {
-                if (crewman.experienceTrait.Title == "Engineer")
+                if (crewman.experienceTrait.TypeName == "Engineer")
                 {
                     if (crewman.experienceLevel >= lvl)
                     {
