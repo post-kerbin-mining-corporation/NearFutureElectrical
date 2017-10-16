@@ -370,6 +370,8 @@ namespace NearFutureElectrical
               {
                   if (reactorEngine != null && reactorEngine.EngineActive())
                     ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle * reactorEngine.GetThrustLimiterFraction()), CurrentPowerPercent);
+                  else
+                      ActualPowerPercent = CurrentPowerPercent;
               }
               else {
                   ActualPowerPercent = CurrentPowerPercent;
