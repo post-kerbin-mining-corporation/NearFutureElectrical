@@ -1,3 +1,11 @@
+v0.9.8
+------
+- Updated B9PartSwitch to 2.0.0
+- Fixed an possible issue with reactor radiator consumption
+- Updated DynamicBatteryStorage to 1.2.0
+-- Fixed a bug that caused the buffer to be destroyed every second time it was created
+-- Fixed solar panel handling when Kopernicus is installed
+
 v0.9.7
 ------
 - Fixed a bundling issue, actually resolving with NFE patch, if integrated engine is inactive, disable auto-adjustment of reactor throttle
