@@ -51,7 +51,7 @@ namespace NearFutureElectrical
         {
           for (int i = 0; i < engineData.Count; i++)
           {
-            if (engineData[i].engineFX.isActiveAndEnabled)
+            if (engineData[i].engineFX.EngineIgnited)
             {
               return true;
             }
