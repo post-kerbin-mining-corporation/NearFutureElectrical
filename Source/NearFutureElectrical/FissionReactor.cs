@@ -561,7 +561,7 @@ namespace NearFutureElectrical
                 ZeroThermal();
                 heatTicker = heatTicker - 1;
             }
-            core.MaxCoolant = heat/50f;
+            core.MaxCoolant = heat/5f;
         }
 
         private void ZeroThermal()
