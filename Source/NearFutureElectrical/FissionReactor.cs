@@ -370,6 +370,8 @@ namespace NearFutureElectrical
               {
                   if (reactorEngine != null && reactorEngine.EngineActive())
                     ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle * reactorEngine.GetThrustLimiterFraction()), CurrentPowerPercent);
+                  else
+                      ActualPowerPercent = CurrentPowerPercent;
               }
               else {
                   ActualPowerPercent = CurrentPowerPercent;
@@ -559,7 +561,7 @@ namespace NearFutureElectrical
                 ZeroThermal();
                 heatTicker = heatTicker - 1;
             }
-            core.MaxCoolant = heat;
+            core.MaxCoolant = heat/50f;
         }
 
         private void ZeroThermal()
