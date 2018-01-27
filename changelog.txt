@@ -1,3 +1,7 @@
+v0.9.9
+------
+- Tweak/revert reactor fix to hide stock bug
+
 v0.9.8
 ------
 - Updated B9PartSwitch to 2.0.0
