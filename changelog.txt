@@ -1,6 +1,11 @@
 v0.9.9
 ------
-- Tweak/revert reactor fix to hide stock bug
+- Updated B9PartSwitch to 2.1.1
+- Updated ModuleManager to 3.0.4
+- Added Portugese localization (GabrielGABFonesca)
+- Fixes to Russian localization
+- Add reactor nicknames to part search tags (kerbas_ad_astra)
+- Tweak/revert reactor fix to hide stock bug better?
 
 v0.9.8
 ------
