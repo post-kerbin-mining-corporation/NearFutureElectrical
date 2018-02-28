@@ -1,6 +1,10 @@
 v0.9.9
 ------
-- Tweak/revert reactor fix to hide stock bug
+- Updated B9PartSwitch to 2.1.1
+- Updated MM to 3.0.4
+- Changed fuel transfer behaviour to ignore the temperature requirement unless the part has a Core
+- Fixed transfer under other localizations again, maybe
+- Tweak/revert reactor fix to hide stock bug better
 
 v0.9.8
 ------

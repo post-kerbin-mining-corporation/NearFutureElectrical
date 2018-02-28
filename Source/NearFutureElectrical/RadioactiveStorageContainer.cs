@@ -106,7 +106,7 @@ namespace NearFutureElectrical
             List<ProtoCrewMember> crew = part.vessel.GetVesselCrew();
             foreach (ProtoCrewMember crewman in crew)
             {
-                if (crewman.experienceTrait.TypeName == "Engineer")
+                if (crewman.experienceTrait.TypeName == Localizer.Format("#autoLOC_500103"))
                 {
                     if (crewman.experienceLevel >= lvl)
                     {
@@ -179,13 +179,17 @@ namespace NearFutureElectrical
         }
 
         // Privacy
+        private ModuleCoreHeat core;
         private bool crewWasteFlag = false;
         private bool crewFuelFlag = false;
 
         private bool transferring = false;
         private string curTransferType = "";
         private ScreenMessage transferMessage;
-
+        private Start()
+        {
+          core = this.GetComponent<ModuleCoreHeat>();
+        }
         public override void OnStart(PartModule.StartState state)
         {
             Events["TransferFuel"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Event_TransferFuel");
@@ -271,7 +275,7 @@ namespace NearFutureElectrical
                     ModuleResourceConverter converter = container.GetComponent<ModuleResourceConverter>();
                     FissionReactor reactor = container.GetComponent<FissionReactor>();
                     Debug.Log("B");
-                    if (part.temperature > container.MaxTempForTransfer)
+                    if (core != null && core.CoreTemperature > container.MaxTempForTransfer)
                     {
                         ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortTooHot",container.MaxTempForTransfer.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     }
