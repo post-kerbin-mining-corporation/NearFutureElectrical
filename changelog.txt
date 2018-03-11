@@ -2,6 +2,7 @@ v0.10.1
 ------
 - Updated B9PartSwitch to 2.1.1
 - Updated MM to 3.0.4
+- Capacitors can be manually discharged on EVA
 - Changed fuel transfer behaviour to ignore the temperature requirement unless the part has a Core
 - Fixed transfer under other localizations again, maybe
 - Fixes to thermal behaviour of reactors
