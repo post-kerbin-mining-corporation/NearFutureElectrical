@@ -7,12 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
+
 using KSP.Localization;
 
 namespace NearFutureElectrical
 {
-    public class RadioactiveStorageContainer: PartModule
+    public class RadioactiveStorageContainer : PartModule
     {
         // Fuel that is dangerous to transfer
         [KSPField(isPersistant = false)]
@@ -130,7 +130,7 @@ namespace NearFutureElectrical
                 ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortFromRunningConverter"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return false;
             }
-            if (reactor !=null && reactor.ModuleIsActive())
+            if (reactor != null && reactor.ModuleIsActive())
             {
                 ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortFromRunningReactor"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                 return false;
@@ -161,18 +161,18 @@ namespace NearFutureElectrical
         // Helpbers for getting a resource amount
         public double GetResourceAmount(string nm)
         {
-          if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
-            return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).amount;
-          else
-            return 0.0;
+            if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
+                return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).amount;
+            else
+                return 0.0;
         }
-        public double GetResourceAmount(string nm,bool max)
+        public double GetResourceAmount(string nm, bool max)
         {
             if (max)
                 if (this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id) != null)
-                  return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).maxAmount;
+                    return this.part.Resources.Get(PartResourceLibrary.Instance.GetDefinition(nm).id).maxAmount;
                 else
-                  return 0.0;
+                    return 0.0;
 
             else
                 return GetResourceAmount(nm);
@@ -186,9 +186,9 @@ namespace NearFutureElectrical
         private bool transferring = false;
         private string curTransferType = "";
         private ScreenMessage transferMessage;
-        private Start()
+        private void Start()
         {
-          core = this.GetComponent<ModuleCoreHeat>();
+            core = this.GetComponent<ModuleCoreHeat>();
         }
         public override void OnStart(PartModule.StartState state)
         {
@@ -202,17 +202,19 @@ namespace NearFutureElectrical
             {
                 if (GetResourceAmount(DangerousFuel) <= 0d)
                 {
-                  Events["TransferWaste"].guiActive = false;
-                } else
+                    Events["TransferWaste"].guiActive = false;
+                }
+                else
                 {
-                  Events["TransferWaste"].guiActive = true;
+                    Events["TransferWaste"].guiActive = true;
                 }
                 if (GetResourceAmount(SafeFuel) <= 0d)
                 {
-                  Events["TransferFuel"].guiActive = false;
-                } else
+                    Events["TransferFuel"].guiActive = false;
+                }
+                else
                 {
-                  Events["TransferFuel"].guiActive = true;
+                    Events["TransferFuel"].guiActive = true;
                 }
                 // Generate heat
                 if (TimeWarp.CurrentRate <= 100f)
@@ -277,7 +279,7 @@ namespace NearFutureElectrical
                     Debug.Log("B");
                     if (core != null && core.CoreTemperature > container.MaxTempForTransfer)
                     {
-                        ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortTooHot",container.MaxTempForTransfer.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortTooHot", container.MaxTempForTransfer.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
                     }
 
                     else if (converter != null && converter.ModuleIsActive())
@@ -285,7 +287,7 @@ namespace NearFutureElectrical
                         ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortToRunningConverter"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
 
                     }
-                    else if (reactor!= null && reactor.ModuleIsActive())
+                    else if (reactor != null && reactor.ModuleIsActive())
                     {
                         ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortToRunningReactor"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
 
@@ -323,7 +325,7 @@ namespace NearFutureElectrical
             mask = maskA | maskB | maskC;
 
             RaycastHit hitInfo;
-            if (Physics.Raycast(clickRay, out hitInfo, 2500f, mask ))
+            if (Physics.Raycast(clickRay, out hitInfo, 2500f, mask))
             {
 
                 Part hitPart = hitInfo.rigidbody.gameObject.GetComponent<Part>();

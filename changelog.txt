@@ -1,10 +1,12 @@
-v0.9.9
+v0.10.1
 ------
 - Updated B9PartSwitch to 2.1.1
 - Updated MM to 3.0.4
 - Changed fuel transfer behaviour to ignore the temperature requirement unless the part has a Core
 - Fixed transfer under other localizations again, maybe
-- Tweak/revert reactor fix to hide stock bug better
+- Fixes to thermal behaviour of reactors
+- Improvements to KA/NFE patch
+-- Engine reactors don't suck up radiator power
 
 v0.9.8
 ------

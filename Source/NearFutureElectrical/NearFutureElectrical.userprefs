@@ -1,0 +1,16 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="RadioactiveStorageContainer.cs">
+    <Files>
+      <File FileName="ModuleCoreHeatNoCatchup.cs" Line="25" Column="13" />
+      <File FileName="FissionFlowRadiator.cs" Line="77" Column="17" />
+      <File FileName="FissionEngine.cs" Line="137" Column="61" />
+      <File FileName="RadioactiveStorageContainer.cs" Line="189" Column="22" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>

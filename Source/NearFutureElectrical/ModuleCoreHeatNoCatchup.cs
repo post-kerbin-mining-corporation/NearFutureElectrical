@@ -15,30 +15,32 @@ using KSP.Localization;
 
 namespace NearFutureElectrical
 {
-    public class ModuleCoreHeatNoCatchup: ModuleCoreHeat
+    public class ModuleCoreHeatNoCatchup : ModuleCoreHeat
     {
 
-    public void ZeroThermal()
-    {
-        base.lastFlux = 0d;
-        base.lastUpdateTime = Planetarium.GetUniversalTime();
-    }
-      public override void OnSave(ConfigNode node)
-      {
-          lastFlux = 0d;
-           base.OnSave(node);
-      }
-      void Update()
-      {
-          //base.lastUpdateTime = Planetarium.GetUniversalTime() - 0.5d;
-          //Debug.Log(String.Format("lastflux: {0}, {1} thermalE {2}", lastFlux, lastUpdateTime, base.CoreThermalEnergy));
-      }
-      public override void OnFixedUpdate()
-      {
-          base.OnFixedUpdate();
-          //Debug.Log(String.Format("lastflux: {0}, {1} thermalE {2}", lastFlux, GetLastFlux(), base.CoreThermalEnergy));
-      }
+        public void ZeroThermal()
+        {
+            base.lastFlux = 0d;
+            base.lastUpdateTime = Planetarium.GetUniversalTime();
+
+        }
+        public override void OnSave(ConfigNode node)
+        {
+            lastFlux = 0d;
+            base.OnSave(node);
+
+        }
+        void Update()
+        {
+            //base.lastUpdateTime = Planetarium.GetUniversalTime() - 0.5d;
+            //Debug.Log(String.Format("lastflux: {0}, {1} thermalE {2}", lastFlux, lastUpdateTime, base.CoreThermalEnergy));
+        }
+        public override void OnFixedUpdate()
+        {
+            base.OnFixedUpdate();
+            //Debug.Log(String.Format("lastflux: {0}, {1} thermalE {2}", lastFlux, GetLastFlux(), base.CoreThermalEnergy));
+        }
     }
 
-    
+
 }
