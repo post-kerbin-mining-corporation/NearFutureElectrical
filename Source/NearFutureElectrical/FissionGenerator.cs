@@ -19,6 +19,10 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float PowerGeneration = 100f;
 
+        // Added EC to tanks
+        [KSPField(isPersistant = false)]
+        public float AddedToFuelTanks = 0f;
+
         // Current power generation
         [KSPField(isPersistant = true)]
         public float CurrentGeneration = 0f;
@@ -48,39 +52,28 @@ namespace NearFutureElectrical
 
         public void FixedUpdate()
         {
-          if (HighLogic.LoadedScene == GameScenes.FLIGHT)
-          {
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            {
+                if (Status)
+                {
+                    double generated = (double)(Mathf.Clamp01(CurrentHeatUsed / HeatUsed) * PowerGeneration);
 
-              if (Status)
-              {
+                    if (double.IsNaN(generated))
+                        generated = 0.0;
 
-                  double generated = (double)(Mathf.Clamp01(CurrentHeatUsed / HeatUsed) * PowerGeneration);
+                    double generatedDeltaTime = TimeWarp.fixedDeltaTime * generated;
+                    AddedToFuelTanks = (float)-this.part.RequestResource("ElectricCharge", -generatedDeltaTime);
+                    CurrentGeneration = (float)generated;
 
-                  double delta = 0d;
-                  for (int i = 0; i < this.vessel.parts.Count; i++)
-
-                  {
-                      if (this.vessel.parts[i].Resources.Get(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id) != null)
-                           delta += this.vessel.parts[i].Resources.Get(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id).maxAmount -
-                                this.vessel.parts[i].Resources.Get(PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id).amount;
-                  }
-
-                  double generatedActual = Math.Min(delta, TimeWarp.fixedDeltaTime * generated);
-
-                  double amt = this.part.RequestResource("ElectricCharge",  -generatedActual);
-
-                  if (double.IsNaN(generated))
-                      generated = 0.0;
-
-                  CurrentGeneration = (float)generated;
-                  GeneratorStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_Field_GeneratorStatus_Normal", generated.ToString("F1"));
-              }
-              else
-                  GeneratorStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_Field_GeneratorStatus_Offline");
-          }
-
+                    GeneratorStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_Field_GeneratorStatus_Normal", generated.ToString("F1"));
+                }
+                else
+                {
+                    CurrentGeneration = 0f;
+                    AddedToFuelTanks = 0f;
+                    GeneratorStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionGenerator_Field_GeneratorStatus_Offline");
+                }
+            }
         }
-
-
     }
 }
