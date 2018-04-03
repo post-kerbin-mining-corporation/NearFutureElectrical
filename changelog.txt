@@ -1,5 +1,5 @@
-v0.10.1
-------
+v0.10.0
+-------
 - Updated B9PartSwitch to 2.1.1
 - Updated ModuleManager to 3.0.4
 - Added Portugese localization (GabrielGABFonesca)
@@ -8,7 +8,7 @@ v0.10.1
 - Capacitors can be manually discharged on EVA
 - Changed fuel transfer behaviour to ignore the temperature requirement unless the part has a Core
 - Fixed fuel transfer under other localizations again, maybe
-- Fixes to thermal behaviour of reactors
+- Misc fixes to thermal behaviour of reactors
 - Improvements to KA/NFE patch
 -- Engine reactors don't suck up radiator power
 

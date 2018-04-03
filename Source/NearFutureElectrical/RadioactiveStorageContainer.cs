@@ -137,10 +137,13 @@ namespace NearFutureElectrical
             }
 
             // Fail if the part is too hot
-            if (part.temperature > MaxTempForTransfer)
+            if (core != null)
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortTooHot", MaxTempForTransfer.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
-                return false;
+                if (core.CoreTemperature > MaxTempForTransfer)
+                {
+                    ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortTooHot", MaxTempForTransfer.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                    return false;
+                }
             }
             // Fail if that part can't contain this resource
             if ((GetResourceAmount(nm, true) <= 0d))
@@ -185,6 +188,12 @@ namespace NearFutureElectrical
         private bool transferring = false;
         private string curTransferType = "";
         private ScreenMessage transferMessage;
+        private ModuleCoreHeat core;
+
+        public void Start()
+        {
+            core = GetComponent<ModuleCoreHeat>();
+        }
 
         public override void OnStart(PartModule.StartState state)
         {
@@ -269,15 +278,17 @@ namespace NearFutureElectrical
                 }
                 else
                 {
-                    Debug.Log("A");
+                    
                     ModuleResourceConverter converter = container.GetComponent<ModuleResourceConverter>();
                     FissionReactor reactor = container.GetComponent<FissionReactor>();
-                    Debug.Log("B");
-                    if (part.temperature > container.MaxTempForTransfer)
+                    
+                    if (core != null)
                     {
-                        ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortTooHot", container.MaxTempForTransfer.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        if (core.CoreTemperature > container.MaxTempForTransfer)
+                        {
+                            ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortTooHot", container.MaxTempForTransfer.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                        }
                     }
-
                     else if (converter != null && converter.ModuleIsActive())
                     {
                         ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_AbortToRunningConverter"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
