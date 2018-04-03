@@ -1,11 +1,16 @@
-v0.9.9
+v0.10.1
 ------
 - Updated B9PartSwitch to 2.1.1
 - Updated ModuleManager to 3.0.4
 - Added Portugese localization (GabrielGABFonesca)
 - Fixes to Russian localization
 - Add reactor nicknames to part search tags (kerbas_ad_astra)
-- Tweak/revert reactor fix to hide stock bug better?
+- Capacitors can be manually discharged on EVA
+- Changed fuel transfer behaviour to ignore the temperature requirement unless the part has a Core
+- Fixed fuel transfer under other localizations again, maybe
+- Fixes to thermal behaviour of reactors
+- Improvements to KA/NFE patch
+-- Engine reactors don't suck up radiator power
 
 v0.9.8
 ------

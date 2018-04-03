@@ -7,7 +7,7 @@ using KSP.Localization;
 
 namespace NearFutureElectrical
 {
-    class FissionFlowRadiator: PartModule
+    class FissionFlowRadiator : PartModule
     {
         [KSPField(isPersistant = false)]
         public float exhaustCooling = 0f;
@@ -43,30 +43,31 @@ namespace NearFutureElectrical
 
         public void Start()
         {
-          if (HighLogic.LoadedSceneIsFlight)
-          {
-            core = this.GetComponent<ModuleCoreHeat>();
-          }
-          Fields["RadiatorStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionFlowRadiator_Field_RadiatorStatus");
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                core = this.GetComponent<ModuleCoreHeat>();
+            }
+            Fields["RadiatorStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionFlowRadiator_Field_RadiatorStatus");
         }
 
         void FixedUpdate()
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
-              ConsumeEnergy();
+                ConsumeEnergy();
             }
         }
 
-        public void ChangeRadiatorTransfer(float scale)
+        public float ChangeRadiatorTransfer(float scale)
         {
-            float targetCooling = Mathf.Clamp(scale*exhaustCooling + passiveCooling, 0.0f, exhaustCooling);
+            float targetCooling = Mathf.Clamp(scale * exhaustCooling + passiveCooling, 0.0f, exhaustCooling);
             if (targetCooling > currentCooling)
                 currentCooling = targetCooling;
             else
-                currentCooling = Mathf.MoveTowards(currentCooling, targetCooling, TimeWarp.fixedDeltaTime*CoolingDecayRate);
+                currentCooling = Mathf.MoveTowards(currentCooling, targetCooling, TimeWarp.fixedDeltaTime * CoolingDecayRate);
 
             RadiatorStatus = String.Format("{0:F0} {1}", currentCooling, Localizer.Format("#LOC_NFElectrical_Units_kW"));
+            return currentCooling;
         }
 
         private void ConsumeEnergy()
@@ -75,12 +76,12 @@ namespace NearFutureElectrical
             {
 
                 float maxTemp = (float)core.CoreTempGoal;
-                float coreTemp =(float)core.CoreTemperature;
+                float coreTemp = (float)core.CoreTemperature;
 
                 if (coreTemp > maxTemp)
                 {
                     float scale = Mathf.Clamp01(CoolingScalingZero * (coreTemp / maxTemp - 1f));
-                    core.AddEnergyToCore(-currentCooling *50f*TimeWarp.fixedDeltaTime* scale);
+                    core.AddEnergyToCore(-currentCooling * 50f * TimeWarp.fixedDeltaTime * scale);
                 }
 
 
