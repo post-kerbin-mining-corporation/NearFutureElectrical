@@ -3,6 +3,7 @@ v0.10.0
 - Updated B9PartSwitch to 2.1.1
 - Updated ModuleManager to 3.0.6
 - Updated MiniAVC to 1.2.0.1
+- Updated CRP to 0.10.0
 - Added Portugese localization (GabrielGABFonesca)
 - Fixes to Russian localization
 - Add reactor nicknames to part search tags (kerbas_ad_astra)
