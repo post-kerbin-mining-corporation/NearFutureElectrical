@@ -11,7 +11,7 @@ DEPENDENCIES
 Required:
 - B9PartSwitch (2.1.1)
 - Community Resource Pack (0.8.0)
-- ModuleManager (3.0.4)
+- ModuleManager (3.0.6)
 
 Optional
 - Community Tech Tree (v2.2+)
@@ -42,7 +42,7 @@ This mod includes localization support, and includes translations for
 - Spanish (KSP forum user fitiales)
 - Chinese (KSP forum user DYZBX from the Black Domain Studio(BDS))
 - Russian (KSP forum user Dr. Jet)
-- Portugese (KSP forum user GabrielGABFonesca) 
+- Portugese (KSP forum user GabrielGABFonesca)
 
 ============
 KSP-MINI-AVC
