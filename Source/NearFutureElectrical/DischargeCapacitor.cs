@@ -69,7 +69,7 @@ namespace NearFutureElectrical
         private List<int> assignedGroups = new List<int>();
 
         // Discharge capacitor
-        [KSPEvent(guiActive = true, guiName = "Discharge Capacitor")]
+        [KSPEvent(guiActive = true, guiActiveUnfocused = true, unfocusedRange = 3.5f, guiName = "Discharge Capacitor")]
         public void Discharge()
         {
             if (CurrentCharge > 0f)
@@ -121,27 +121,27 @@ namespace NearFutureElectrical
             ShowCapacitorControl();
         }
 
-        [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Discharge Rate"), UI_FloatRange(minValue = 50f, maxValue = 100f , stepIncrement = 0.1f)]
+        [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Discharge Rate"), UI_FloatRange(minValue = 50f, maxValue = 100f, stepIncrement = 0.1f)]
         public float dischargeActual = 100f;
 
 
 
         public bool GetGroupMembership(int toTest)
         {
-          if (assignedGroups.Contains(toTest))
-            return true;
-          return false;
+            if (assignedGroups.Contains(toTest))
+                return true;
+            return false;
         }
 
         public void AssignToGroup(int toAssign)
         {
-          if (!assignedGroups.Contains(toAssign))
-            assignedGroups.Add(toAssign);
+            if (!assignedGroups.Contains(toAssign))
+                assignedGroups.Add(toAssign);
         }
         public void RemoveFromGroup(int toRemove)
         {
-          if (assignedGroups.Contains(toRemove))
-            assignedGroups.Remove(toRemove);
+            if (assignedGroups.Contains(toRemove))
+                assignedGroups.Remove(toRemove);
         }
 
         public override string GetInfo()
@@ -174,8 +174,8 @@ namespace NearFutureElectrical
             // Set up the discharge rate
             if (FirstLoad)
             {
-              this.dischargeActual = DischargeRate;
-              FirstLoad = false;
+                this.dischargeActual = DischargeRate;
+                FirstLoad = false;
             }
 
             for (int i = 0; i < capacityState.Length; i++)
@@ -200,37 +200,37 @@ namespace NearFutureElectrical
 
             if (HighLogic.LoadedSceneIsFlight)
             {
-              DoCatchup();
+                DoCatchup();
 
-              assignedGroups = new List<int>();
-              for (int i =0; i< CapacitorGroups.Length ;i++)
-              {
-                assignedGroups.Add((int)CapacitorGroups[i]);
-              }
+                assignedGroups = new List<int>();
+                for (int i = 0; i < CapacitorGroups.Length; i++)
+                {
+                    assignedGroups.Add((int)CapacitorGroups[i]);
+                }
             }
 
         }
         private void DoCatchup()
         {
-          if (lastUpdateTime < Planetarium.fetch.time)
-          {
-            if (Enabled && !Discharging)
+            if (lastUpdateTime < Planetarium.fetch.time)
             {
-                Utils.Log(String.Format("Recharged capacitor in background: {0}", Planetarium.fetch.time -lastUpdateTime));
-              int ECID = PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id;
-              double ec = 0d;
-              double outEc = 0d;
-              part.GetConnectedResourceTotals(ECID, out ec, out outEc, true);
-              if (ec / outEc >= 0.25d)
+                if (Enabled && !Discharging)
                 {
-                  float amtScaled = Mathf.Clamp((float)( Planetarium.fetch.time -lastUpdateTime) * ChargeRate, 0f, MaximumCharge);
+                    Utils.Log(String.Format("Recharged capacitor in background: {0}", Planetarium.fetch.time - lastUpdateTime));
+                    int ECID = PartResourceLibrary.Instance.GetDefinition("ElectricCharge").id;
+                    double ec = 0d;
+                    double outEc = 0d;
+                    part.GetConnectedResourceTotals(ECID, out ec, out outEc, true);
+                    if (ec / outEc >= 0.25d)
+                    {
+                        float amtScaled = Mathf.Clamp((float)(Planetarium.fetch.time - lastUpdateTime) * ChargeRate, 0f, MaximumCharge);
 
-                  //Utils.Log(String.Format("Recharged: {0}", -amtScaled * ChargeRatio));
-                  this.part.RequestResource("StoredCharge", -amtScaled * ChargeRatio, ResourceFlowMode.NO_FLOW);
+                        //Utils.Log(String.Format("Recharged: {0}", -amtScaled * ChargeRatio));
+                        this.part.RequestResource("StoredCharge", -amtScaled * ChargeRatio, ResourceFlowMode.NO_FLOW);
 
+                    }
                 }
             }
-          }
         }
 
 
@@ -242,7 +242,7 @@ namespace NearFutureElectrical
                 Events["Disable"].active = Enabled;
                 Events["Enable"].active = !Enabled;
 
-           }
+            }
 
         }
 
@@ -309,7 +309,8 @@ namespace NearFutureElectrical
             else if (CurrentCharge == 0f)
             {
                 CapacitorStatus = Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_Empty");
-            } else
+            }
+            else
             {
                 CapacitorStatus = Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_Ready");
             }
