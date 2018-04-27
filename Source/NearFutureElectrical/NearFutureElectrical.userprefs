@@ -8,7 +8,7 @@
       <File FileName="NearFutureElectrical.cs" Line="1" Column="1" />
       <File FileName="FissionReactor.cs" Line="135" Column="95" />
       <File FileName="DischargeCapacitor.cs" Line="72" Column="87" />
-      <File FileName="RadioactiveHandling.cs" Line="7" Column="1" />
+      <File FileName="RadioactiveHandling.cs" Line="30" Column="57" />
       <File FileName="FissionGenerator.cs" Line="6" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
