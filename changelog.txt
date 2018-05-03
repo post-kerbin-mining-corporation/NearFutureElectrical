@@ -1,3 +1,10 @@
+v0.10.1
+-------
+- KSP 1.4.3
+- Updated B9PartSwitch to 2.3.0
+- Switched versioning to mix/max specification
+- Fixed a bug with fuel transfer that caused it to basically never work
+
 v0.10.0
 -------
 - Updated B9PartSwitch to 2.1.1
