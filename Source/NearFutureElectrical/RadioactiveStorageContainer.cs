@@ -106,7 +106,7 @@ namespace NearFutureElectrical
             List<ProtoCrewMember> crew = part.vessel.GetVesselCrew();
             foreach (ProtoCrewMember crewman in crew)
             {
-                if (crewman.experienceTrait.TypeName == "Engineer")
+                if (crewman.experienceTrait.TypeName == Localizer.Format("#autoLOC_500103"))
                 {
                     if (crewman.experienceLevel >= lvl)
                     {

@@ -1,3 +1,9 @@
+v0.10.2
+-------
+- KSP 1.4.5
+- Updated B9PartSwitch to 2.3.3
+- Updated ModuleManager to 3.0.7
+
 v0.10.1
 -------
 - KSP 1.4.3
