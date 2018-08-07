@@ -15,7 +15,7 @@ using KSP.Localization;
 
 namespace NearFutureElectrical
 {
-    public class FissionReactor: ModuleResourceConverter
+    public class FissionReactor : ModuleResourceConverter
     {
         public struct ResourceBaseRatio
         {
@@ -27,7 +27,7 @@ namespace NearFutureElectrical
                 ResourceName = name;
                 ResourceRatio = ratio;
             }
-         }
+        }
 
         /// CONFIGURABLE FIELDS
         // ----------------------
@@ -90,7 +90,7 @@ namespace NearFutureElectrical
         public bool TimewarpShutdown = false;
 
         [KSPField(isPersistant = true)]
-        public int TimewarpShutdownFactor  = 5;
+        public int TimewarpShutdownFactor = 5;
 
         // REPAIR VARIABLES
         // integrity of the core
@@ -137,7 +137,7 @@ namespace NearFutureElectrical
         {
             if (TryRepairReactor())
             {
-              DoReactorRepair();
+                DoReactorRepair();
             }
         }
         /// DEBUG
@@ -211,7 +211,7 @@ namespace NearFutureElectrical
         public override string GetInfo()
         {
             double baseRate = 0d;
-            for (int i = 0 ;i < inputList.Count;i++)
+            for (int i = 0; i < inputList.Count; i++)
             {
                 if (inputList[i].ResourceName == FuelName)
                     baseRate = inputList[i].Ratio;
@@ -235,9 +235,9 @@ namespace NearFutureElectrical
         }
         private void SetupCore()
         {
-          if (core == null)
-          {
-              Utils.LogError("Fission Reactor: Could not find core heat module!");
+            if (core == null)
+            {
+                Utils.LogError("Fission Reactor: Could not find core heat module!");
             }
             else
             {
@@ -252,11 +252,11 @@ namespace NearFutureElectrical
             inputs = new List<ResourceBaseRatio>();
             outputs = new List<ResourceBaseRatio>();
 
-            for (int i = 0 ;i < inputList.Count;i++)
+            for (int i = 0; i < inputList.Count; i++)
             {
                 inputs.Add(new ResourceBaseRatio(inputList[i].ResourceName, inputList[i].Ratio));
             }
-            for (int i = 0 ;i < outputList.Count;i++)
+            for (int i = 0; i < outputList.Count; i++)
             {
                 outputs.Add(new ResourceBaseRatio(outputList[i].ResourceName, outputList[i].Ratio));
             }
@@ -283,158 +283,160 @@ namespace NearFutureElectrical
         }
         public void OverriddenStart()
         {
-          var range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlEditor;
-          range.minValue = 0f;
-          range.maxValue = MaximumTemperature;
+            var range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlEditor;
+            range.minValue = 0f;
+            range.maxValue = MaximumTemperature;
 
-          range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlFlight;
-          range.minValue = 0f;
-          range.maxValue = MaximumTemperature;
+            range = (UI_FloatRange)this.Fields["CurrentSafetyOverride"].uiControlFlight;
+            range.minValue = 0f;
+            range.maxValue = MaximumTemperature;
 
-          throttleCurve = new FloatCurve();
-          throttleCurve.Add(0, 0, 0, 0);
-          throttleCurve.Add(50, 20, 0, 0);
-          throttleCurve.Add(100, 100, 0, 0);
+            throttleCurve = new FloatCurve();
+            throttleCurve.Add(0, 0, 0, 0);
+            throttleCurve.Add(50, 20, 0, 0);
+            throttleCurve.Add(100, 100, 0, 0);
 
-          Actions["TogglePanelAction"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Action_TogglePanelAction");
+            Actions["TogglePanelAction"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Action_TogglePanelAction");
 
-          Events["ShowReactorControl"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Event_ShowReactorControl");
-          Events["RepairReactor"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Event_RepairReactor");
+            Events["ShowReactorControl"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Event_ShowReactorControl");
+            Events["RepairReactor"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Event_RepairReactor");
 
-          Fields["CurrentSafetyOverride"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CurrentSafetyOverride");
-          Fields["CurrentPowerPercent"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CurrentPowerPercent");
-          Fields["ReactorOutput"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput");
-          Fields["ThermalTransfer"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ThermalTransfer");
-          Fields["CoreTemp"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreTemp");
-          Fields["CoreStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreStatus");
-          Fields["FuelStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus");
+            Fields["CurrentSafetyOverride"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CurrentSafetyOverride");
+            Fields["CurrentPowerPercent"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CurrentPowerPercent");
+            Fields["ReactorOutput"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput");
+            Fields["ThermalTransfer"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ThermalTransfer");
+            Fields["CoreTemp"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreTemp");
+            Fields["CoreStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreStatus");
+            Fields["FuelStatus"].guiName = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus");
 
-          if (base.ModuleIsActive())
-              activeFlag = true;
-          else
-              activeFlag = false;
+            if (base.ModuleIsActive())
+                activeFlag = true;
+            else
+                activeFlag = false;
 
-          if (FirstLoad)
-          {
-            this.CurrentSafetyOverride = this.CriticalTemperature;
-            FirstLoad = false;
-          }
+            if (FirstLoad)
+            {
+                this.CurrentSafetyOverride = this.CriticalTemperature;
+                FirstLoad = false;
+            }
 
-          if (HighLogic.LoadedScene != GameScenes.EDITOR)
-          {
-              core = this.GetComponent<ModuleCoreHeatNoCatchup>();
+            if (HighLogic.LoadedScene != GameScenes.EDITOR)
+            {
+                core = this.GetComponent<ModuleCoreHeatNoCatchup>();
 
 
 
-              SetupCore();
-              SetupResourceRatios();
+                SetupCore();
+                SetupResourceRatios();
 
-              if (OverheatAnimation != "")
-                  overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
+                if (OverheatAnimation != "")
+                    overheatStates = Utils.SetUpAnimation(OverheatAnimation, this.part);
 
-              if (FollowThrottle)
-                  reactorEngine = this.GetComponent<FissionEngine>();
+                if (FollowThrottle)
+                    reactorEngine = this.GetComponent<FissionEngine>();
 
-          } else
-          {
-              //this.CurrentSafetyOverride = this.NominalTemperature;
-          }
+            }
+            else
+            {
+                //this.CurrentSafetyOverride = this.NominalTemperature;
+            }
         }
         public void OverriddenUpdate()
         {
-          if (HighLogic.LoadedScene == GameScenes.FLIGHT)
-          {
-              foreach (BaseField fld in base.Fields)
-              {
-                  if (fld.name == "status")
-                      fld.guiActive = false;
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            {
+                foreach (BaseField fld in base.Fields)
+                {
+                    if (fld.name == "status")
+                        fld.guiActive = false;
 
-              }
-              if (core != null)
-              {
-                  core.CoreShutdownTemp = (double)CurrentSafetyOverride+10d;
+                }
+                if (core != null)
+                {
+                    core.CoreShutdownTemp = (double)CurrentSafetyOverride + 10d;
 
-              }
-          }
+                }
+            }
         }
 
         bool activeFlag = false;
         int heatTicker = 0;
         public void OverriddenFixedUpdate()
         {
-          if (HighLogic.LoadedScene == GameScenes.FLIGHT)
-          {
-              if (UIName == "")
-                UIName = part.partInfo.title;
-              if (FollowThrottle)
-              {
-                  if (reactorEngine != null && reactorEngine.EngineActive())
-                    ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle * reactorEngine.GetThrustLimiterFraction()), CurrentPowerPercent);
-                  else
-                      ActualPowerPercent = CurrentPowerPercent;
-              }
-              else {
-                  ActualPowerPercent = CurrentPowerPercent;
-
-              }
-
-              // Update reactor core integrity readout
-              if (CoreIntegrity > 0)
-                  CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
-              else
-                  CoreStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreStatus_Meltdown");
-
-
-              // Handle core damage tracking and effects
-              HandleCoreDamage();
-              // Heat consumption occurs if reactor is on or off
-              DoHeatConsumption();
-
-              // IF REACTOR ON
-              // =============
-              if (base.ModuleIsActive())
-              {
-                if (TimewarpShutdown && TimeWarp.fetch.current_rate_index >= TimewarpShutdownFactor)
-                    ToggleResourceConverterAction(new KSPActionParam(0, KSPActionType.Activate));
-                if (base.ModuleIsActive() != activeFlag)
+            if (HighLogic.LoadedScene == GameScenes.FLIGHT)
+            {
+                if (UIName == "")
+                    UIName = part.partInfo.title;
+                if (FollowThrottle)
                 {
-                    base.lastUpdateTime = Planetarium.GetUniversalTime();
-                    heatTicker = 60;
-                    activeFlag = true;
-                   // Debug.Log("Turned On");
+                    if (reactorEngine != null && reactorEngine.EngineActive())
+                        ActualPowerPercent = Math.Max(throttleCurve.Evaluate(100 * this.vessel.ctrlState.mainThrottle * reactorEngine.GetThrustLimiterFraction()), CurrentPowerPercent);
+                    else
+                        ActualPowerPercent = CurrentPowerPercent;
+                }
+                else
+                {
+                    ActualPowerPercent = CurrentPowerPercent;
+
                 }
 
-                DoFuelConsumption();
-                DoHeatGeneration();
-
-              }
-              // IF REACTOR OFF
-              // =============
-              else
-              {
-                  if (base.ModuleIsActive() != activeFlag)
-                  {
-                      activeFlag = false;
-                      ZeroThermal();
-                      //Debug.Log("Turned Off");
-                  }
-
-                  // Update UI
-                  if (CoreIntegrity <= 0f)
-                  {
-                      FuelStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Meltdown");
-                      ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput_Meltdown");
-                  }
-                  else
-                  {
-                      FuelStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Offline");
-                      ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput_Offline");
-
-                  }
-              }
+                // Update reactor core integrity readout
+                if (CoreIntegrity > 0)
+                    CoreStatus = String.Format("{0:F2} %", CoreIntegrity);
+                else
+                    CoreStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_CoreStatus_Meltdown");
 
 
-          }
+                // Handle core damage tracking and effects
+                HandleCoreDamage();
+                // Heat consumption occurs if reactor is on or off
+                DoHeatConsumption();
+
+                // IF REACTOR ON
+                // =============
+                if (base.ModuleIsActive())
+                {
+                    if (TimewarpShutdown && TimeWarp.fetch.current_rate_index >= TimewarpShutdownFactor)
+                        ToggleResourceConverterAction(new KSPActionParam(0, KSPActionType.Activate));
+                    if (base.ModuleIsActive() != activeFlag)
+                    {
+                        base.lastUpdateTime = Planetarium.GetUniversalTime();
+                        heatTicker = 60;
+                        activeFlag = true;
+                        // Debug.Log("Turned On");
+                    }
+
+                    DoFuelConsumption();
+                    DoHeatGeneration();
+
+                }
+                // IF REACTOR OFF
+                // =============
+                else
+                {
+                    if (base.ModuleIsActive() != activeFlag)
+                    {
+                        activeFlag = false;
+                        ZeroThermal();
+                        //Debug.Log("Turned Off");
+                    }
+
+                    // Update UI
+                    if (CoreIntegrity <= 0f)
+                    {
+                        FuelStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Meltdown");
+                        ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput_Meltdown");
+                    }
+                    else
+                    {
+                        FuelStatus = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_FuelStatus_Offline");
+                        ReactorOutput = Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Field_ReactorOutput_Offline");
+
+                    }
+                }
+
+
+            }
         }
 
 
@@ -466,7 +468,7 @@ namespace NearFutureElectrical
         private void DoHeatGeneration()
         {
             // Generate heat from the reaction and apply it
-            SetHeatGeneration((ActualPowerPercent / 100f * HeatGeneration) * CoreIntegrity/100f);
+            SetHeatGeneration((ActualPowerPercent / 100f * HeatGeneration) * CoreIntegrity / 100f);
 
             if (CoreIntegrity <= 0f)
             {
@@ -497,10 +499,10 @@ namespace NearFutureElectrical
             float temperatureDiff = Mathf.Clamp((float)core.CoreTemperature - zeroPoint, 0f, NominalTemperature);
 
             // The fraction of generation that is possible.
-            float curTempScale = Mathf.Clamp(temperatureDiff / (maxPoint - zeroPoint),0f,1f);
+            float curTempScale = Mathf.Clamp(temperatureDiff / (maxPoint - zeroPoint), 0f, 1f);
 
             // Fraction showing amount of power available to
-            float powerScale = Mathf.Min(reactorThrottle, curTempScale)*coreIntegrity;
+            float powerScale = Mathf.Min(reactorThrottle, curTempScale) * coreIntegrity;
 
             AvailablePower = powerScale * maxHeatGenerationKW;
 
@@ -524,7 +526,7 @@ namespace NearFutureElectrical
             //Utils.Log("FissionReactor: START CYCLE: has " + AvailablePower.ToString() +" kW to distribute");
             float remainingPower = AvailablePower;
             // Iterate through all consumers and allocate available thermal power
-            for (int i= 0; i < consumers.Count; i++)
+            for (int i = 0; i < consumers.Count; i++)
             {
                 if (consumers[i].Status)
                 {
@@ -540,8 +542,8 @@ namespace NearFutureElectrical
 
         private List<FissionConsumer> GetOrderedConsumers()
         {
-          List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>().ToList();
-          return consumers.OrderBy(o=>o.Priority).ToList();
+            List<FissionConsumer> consumers = this.GetComponents<FissionConsumer>().ToList();
+            return consumers.OrderBy(o => o.Priority).ToList();
         }
 
         private void SetHeatGeneration(float heat)
@@ -554,14 +556,14 @@ namespace NearFutureElectrical
             if (heatTicker <= 0)
             {
                 TemperatureModifier = new FloatCurve();
-                TemperatureModifier.Add(0f, heat );
+                TemperatureModifier.Add(0f, heat);
             }
             else
             {
                 ZeroThermal();
                 heatTicker = heatTicker - 1;
             }
-            core.MaxCoolant = heat/10f;
+            core.MaxCoolant = heat / 10f;
         }
 
         private void ZeroThermal()
@@ -576,28 +578,28 @@ namespace NearFutureElectrical
         // track and set core damage
         private void HandleCoreDamage()
         {
-          // Update reactor damage
-          float critExceedance = (float)core.CoreTemperature - CriticalTemperature;
+            // Update reactor damage
+            float critExceedance = (float)core.CoreTemperature - CriticalTemperature;
 
-          // If overheated too much, damage the core
-          if (critExceedance > 0f && TimeWarp.CurrentRate < 100f)
-          {
-              // core is damaged by Rate * temp exceedance * time
-              CoreIntegrity = Mathf.MoveTowards(CoreIntegrity, 0f, CoreDamageRate * critExceedance * TimeWarp.fixedDeltaTime);
-          }
+            // If overheated too much, damage the core
+            if (critExceedance > 0f && TimeWarp.CurrentRate < 100f)
+            {
+                // core is damaged by Rate * temp exceedance * time
+                CoreIntegrity = Mathf.MoveTowards(CoreIntegrity, 0f, CoreDamageRate * critExceedance * TimeWarp.fixedDeltaTime);
+            }
 
-          // Calculate percent exceedance of nominal temp
-          float tempNetScale = 1f - Mathf.Clamp01((float)((core.CoreTemperature - NominalTemperature) / (MaximumTemperature - NominalTemperature)));
+            // Calculate percent exceedance of nominal temp
+            float tempNetScale = 1f - Mathf.Clamp01((float)((core.CoreTemperature - NominalTemperature) / (MaximumTemperature - NominalTemperature)));
 
 
-          if (OverheatAnimation != "")
-          {
-            for (int i = 0;i<overheatStates.Length;i++)
+            if (OverheatAnimation != "")
+            {
+                for (int i = 0; i < overheatStates.Length; i++)
 
-              {
-                  overheatStates[i].normalizedTime = 1f - tempNetScale;
-              }
-          }
+                {
+                    overheatStates[i].normalizedTime = 1f - tempNetScale;
+                }
+            }
         }
 
         // Set ModuleResourceConverter ratios based on an input scale
@@ -640,34 +642,34 @@ namespace NearFutureElectrical
 
         public bool TryRepairReactor()
         {
-          if (CoreIntegrity <= MinRepairPercent)
-          {
-              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreTooDamaged"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
-              return false;
-          }
-          if (!CheckEVAEngineerLevel(EngineerLevelForRepair))
-          {
-              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreTooDamaged",EngineerLevelForRepair.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
-              return false;
-          }
-          if (base.ModuleIsActive())
-          {
-              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_NotWhileRunning"),
-                  5.0f, ScreenMessageStyle.UPPER_CENTER));
-              return false;
-          }
-          if (core.CoreTemperature > MaxTempForRepair)
-          {
-              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreTooHot", MaxTempForRepair.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
-              return false;
-          }
-          if (CoreIntegrity >= MaxRepairPercent)
-          {
-              ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreAlreadyRepaired", MaxRepairPercent.ToString("F0")),
-                  5.0f, ScreenMessageStyle.UPPER_CENTER));
-              return false;
-          }
-          return true;
+            if (CoreIntegrity <= MinRepairPercent)
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreTooDamaged"), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                return false;
+            }
+            if (!CheckEVAEngineerLevel(EngineerLevelForRepair))
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreTooDamaged", EngineerLevelForRepair.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                return false;
+            }
+            if (base.ModuleIsActive())
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_NotWhileRunning"),
+                    5.0f, ScreenMessageStyle.UPPER_CENTER));
+                return false;
+            }
+            if (core.CoreTemperature > MaxTempForRepair)
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreTooHot", MaxTempForRepair.ToString("F0")), 5.0f, ScreenMessageStyle.UPPER_CENTER));
+                return false;
+            }
+            if (CoreIntegrity >= MaxRepairPercent)
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleFissionReactor_Message_Repair_CoreAlreadyRepaired", MaxRepairPercent.ToString("F0")),
+                    5.0f, ScreenMessageStyle.UPPER_CENTER));
+                return false;
+            }
+            return true;
         }
 
         // Repair the reactor to max Repair percent
@@ -681,7 +683,7 @@ namespace NearFutureElectrical
         private bool CheckEVAEngineerLevel(int level)
         {
             ProtoCrewMember kerbal = FlightGlobals.ActiveVessel.GetVesselCrew()[0];
-            if (kerbal.experienceTrait.TypeName == "Engineer" && kerbal.experienceLevel >= level)
+            if (kerbal.experienceTrait.TypeName == Localizer.Format("#autoLOC_500103") && kerbal.experienceLevel >= level)
             {
                 return true;
             }
@@ -693,7 +695,7 @@ namespace NearFutureElectrical
 
         public float GetCoreTemperature()
         {
-          return (float)core.CoreTemperature;
+            return (float)core.CoreTemperature;
         }
 
         // ####################################
