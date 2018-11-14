@@ -38,7 +38,7 @@ namespace NearFutureElectrical
 
         // Maximum heat level at which a transfer can be made
         [KSPField(isPersistant = false)]
-        public float MaxTempForTransfer = 300;
+        public float MaxTempForTransfer = 450;
 
         // Heat Flux for waste
         [KSPField(isPersistant = false)]
