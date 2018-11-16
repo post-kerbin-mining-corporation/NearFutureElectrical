@@ -275,13 +275,13 @@ namespace NearFutureElectrical
                     this.part.AddThermalFlux((double)HeatRate);
                 }
 
-                this.part.RequestResource("StoredCharge", amt);
-                this.part.RequestResource("ElectricCharge", -amt);
+                double result = this.part.RequestResource("StoredCharge", amt);
+                this.part.RequestResource("ElectricCharge", -result);
 
                 CapacitorStatus = Localizer.Format("#LOC_NFElectrical_ModuleDischargeCapacitor_Field_Status_Discharging", dischargeActual.ToString("F2"));
 
                 // if the amount returned is zero, disable discharging
-                if (CurrentCharge <= 0f)
+                if (CurrentCharge <= 0.000001f)
                 {
                     Discharging = false;
 
