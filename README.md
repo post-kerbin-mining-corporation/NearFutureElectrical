@@ -11,10 +11,12 @@ A mod pack for Kerbal Space Program, focused on delivering new electrical soluti
 
 ## Features
 
-* **Fission Reactors**:
-* **Fission Fuel**:
-* **Batteries**:
-* **Capacitors**:
+Ever wanted some futuristic energy generation that wasn't too... futuristic? I have you covered here. This pack contains:
+
+* **Fission Reactors**: Turn Uranium into power! Attach nuclear reactors to your vessel and generate large amount of electricity. Ensure that you have enough cooling capacity with radiators for your reactors to work properly.  ﻿
+* **Fission Fuel**: Store extra uranium, reprocess it and extract it from Ore with containers and reprocessors.
+* **Batteries**:Store more electric charge in larger batteries
+* **Capacitors**: Discharge for a burst of power! These parts can be charged up with normal generating capacity, and once activated will deliver a large amount of power to your ship's electricity banks. Very mass effic﻿ient!
 
 ## Dependencies
 
