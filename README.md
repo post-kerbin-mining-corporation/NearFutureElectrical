@@ -50,6 +50,16 @@ This mod includes compatibility patches for the following mods:
 
 I certainly accept pull requests. Please target all such things to the `dev` branch though!
 
+## Translations
+
+For translation instructions please see [Localization Instructions](https://github.com/ChrisAdderley/NearFutureElectrical/blob/master/GameData/NearFutureElectrical/Localization/Localization.md)
+
+* **Spanish:** KSP forum user fitiales
+* **Chinese:** KSP forum user DYZBX from the Black Domain Studio(BDS)
+* **Russian:** KSP forum user Dr. Jet
+* **Portugese:** KSP forum user GabrielGABFonesca
+* **German:** KSP forum user Three_Pounds
+
 ## Licensing
 
 The art assets in this pack (all .dds, .png and .mu files) are distributed under an All Rights Reserved license. You may not redistribute or re-use these assets without express permission from the author.

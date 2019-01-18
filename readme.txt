@@ -1,5 +1,5 @@
 ===================================
-NEAR FUTURE ELECTRICAL PACK v0.10.5
+NEAR FUTURE ELECTRICAL PACK v0.10.6
 ===================================
 
 This pack contains advanced electrical parts - capacitors, nuclear reactors and new battery packs.
@@ -42,6 +42,7 @@ This mod includes localization support, and includes translations for
 - Chinese (KSP forum user DYZBX from the Black Domain Studio(BDS))
 - Russian (KSP forum user Dr. Jet)
 - Portugese (KSP forum user GabrielGABFonesca)
+- German (KSP forum user Three_Pounds)
 
 ============
 KSP-MINI-AVC
