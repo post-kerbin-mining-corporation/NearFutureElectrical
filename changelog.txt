@@ -1,5 +1,6 @@
 v0.10.6
 -------
+- Add bulkhead profiles to missing parts (thanks Streetwind)
 - Added German translation courtesy of Three_Pounds
 
 v0.10.5
