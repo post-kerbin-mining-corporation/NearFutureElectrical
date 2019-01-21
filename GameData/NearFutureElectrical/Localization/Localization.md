@@ -30,3 +30,5 @@ There are some characters that should not be translated into another language an
 * GabrielGABFonesca (Portugese)
 * Dr. Jet (Russian)
 * DYZBX from the Black Domain Studio (Chinese)
+* GabrielGABFonesca (Portugese)
+* Three_Pounds (German)
