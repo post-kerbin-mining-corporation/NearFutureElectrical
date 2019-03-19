@@ -2,10 +2,12 @@ v1.0.0
 -------
 - Final content update
 - Updated ModuleManager to 4.0.2
-- Capacitors remodeled and retextured
-- Batteries remodeled and retextured
-- Nuclear fuel containers retextured
-- Tuned textures for reactors to be more consistent with Restock greys
+- 3.75m battery was soft-deprecated, if you need one, there is a better one in Restock+
+- Capacitors were completely remodeled and retextured
+- Batteries were completely remodeled and retextured
+- Nuclear fuel containers were retextured
+- Tuned textures for reactors to be more consistent with Restock palette
+- Capacitor module no longer uses legacy animations for indicator lights, uses ModuleColorChanger instead
 
 v0.10.6
 -------

@@ -83,10 +83,6 @@ namespace NearFutureElectrical
                     float scale = Mathf.Clamp01(CoolingScalingZero * (coreTemp / maxTemp - 1f));
                     core.AddEnergyToCore(-currentCooling * 50f * TimeWarp.fixedDeltaTime * scale);
                 }
-
-
-
-
             }
         }
     }

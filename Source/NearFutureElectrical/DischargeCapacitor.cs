@@ -52,8 +52,9 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = false)]
         public float MaximumCharge;
 
-        [KSPField(isPersistant = false)]
-        public string ChargeAnimation;
+        // The ModuleID of the ModuleColorChanger module to use for animing
+        [KSPField(isPersistant = true)]
+        public string ModuleID = "";
 
         // Capacitor Status string
         [KSPField(isPersistant = false, guiActive = true, guiName = "Status")]
@@ -65,7 +66,7 @@ namespace NearFutureElectrical
         [KSPField(isPersistant = true)]
         public double lastUpdateTime = 0;
 
-        private AnimationState[] capacityState;
+        private ModuleColorChanger colorChanger;
         private List<int> assignedGroups = new List<int>();
 
         // Discharge capacitor
@@ -160,7 +161,7 @@ namespace NearFutureElectrical
         public override void OnStart(PartModule.StartState state)
         {
             this.part.force_activate();
-            capacityState = Utils.SetUpAnimation(ChargeAnimation, this.part);
+            colorChanger = this.GetComponents<ModuleColorChanger>().Find(i => i.moduleID == ModuleID);
 
             // Set up the UI slider
             var range = (UI_FloatRange)this.Fields["dischargeActual"].uiControlEditor;
@@ -178,9 +179,9 @@ namespace NearFutureElectrical
                 FirstLoad = false;
             }
 
-            for (int i = 0; i < capacityState.Length; i++)
+            if (colorChanger != null)
             {
-                capacityState[i].normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
+              colorChanger.SetScalar( 1 - (-CurrentCharge / MaximumCharge));
             }
 
             // Prepare the localization
@@ -261,10 +262,10 @@ namespace NearFutureElectrical
 
             if (Discharging)
             {
-                for (int i = 0; i < capacityState.Length; i++)
-                {
 
-                    capacityState[i].normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
+                if (colorChanger != null)
+                {
+                  colorChanger.SetScalar( 1 - (-CurrentCharge / MaximumCharge));
                 }
 
 
@@ -289,9 +290,9 @@ namespace NearFutureElectrical
             }
             else if (Enabled && CurrentCharge < MaximumCharge)
             {
-                for (int i = 0; i < capacityState.Length; i++)
+                if (colorChanger != null)
                 {
-                    capacityState[i].normalizedTime = 1 - (-CurrentCharge / MaximumCharge);
+                  colorChanger.SetScalar( 1 - (-CurrentCharge / MaximumCharge));
                 }
                 double amt = this.part.RequestResource("ElectricCharge", TimeWarp.fixedDeltaTime * ChargeRate);
 

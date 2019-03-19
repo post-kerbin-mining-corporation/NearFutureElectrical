@@ -7,6 +7,10 @@
     "abstract"            : "This is the Near Future Electrical plugin stand-alone, for adding functionality to other mods. It contains no parts and does nothing by itself.",
     "author"              : "Nertea",
     "license"             : "MIT",
+    "resources": {
+      "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/155465-16x-near-future-technologies-16x-fixes-jan-21/",
+      "repository": "https://github.com/ChrisAdderley/NearFutureElectrical"
+    },
     "install" : [
         { "file"       : "GameData/NearFutureElectrical/Plugins/NearFutureElectrical.dll",
           "install_to" : "GameData/NearFutureElectrical/Plugins" }
