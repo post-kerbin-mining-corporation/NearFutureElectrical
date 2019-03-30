@@ -2,10 +2,13 @@ v1.0.0
 -------
 - Final content update
 - Updated ModuleManager to 4.0.2
+- Some restructuring of files and assets, ensure you delete old NFE installations
 - 3.75m battery was soft-deprecated, if you need one, there is a better one in Restock+
 - Capacitors were completely remodeled and retextured
 - Batteries were completely remodeled and retextured
 - Nuclear fuel containers were retextured
+- Nuclear reprocessor was partially remodeled and fully retextured
+- ASRTG was retextured
 - Tuned textures for reactors to be more consistent with Restock palette
 - Capacitor module no longer uses legacy animations for indicator lights, uses ModuleColorChanger instead
 
