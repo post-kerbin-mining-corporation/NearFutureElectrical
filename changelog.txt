@@ -10,7 +10,9 @@ v1.0.0
 - Nuclear reprocessor was partially remodeled and fully retextured
 - ASRTG was retextured
 - Tuned textures for reactors to be more consistent with Restock palette
+- Most textures recompressed from source with higher quality compressor
 - Capacitor module no longer uses legacy animations for indicator lights, uses ModuleColorChanger instead
+- Nuclear fuel containers now animate lights depending on amount of fuel or waste in the container
 
 v0.10.6
 -------
