@@ -134,7 +134,7 @@ namespace NearFutureElectrical
                     //flowRadiator.ChangeRadiatorTransfer(Mathf.Max(base.CurrentHeatUsed, heat) * maxFlowScalar);
 
                     float exhaustCooling = flowRadiator.ChangeRadiatorTransfer(maxFlowScalar);
-                    core.MaxCoolant = heat - exhaustCooling;
+                    core.MaxCoolant = Mathf.Clamp(heat - exhaustCooling, 0.0f, heat);
                 }
 
             }
