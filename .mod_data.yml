@@ -17,7 +17,7 @@ dependencies:  # Configure dependencies
     version: 1.0.0
     location: s3
   DynamicBatteryStorage:
-    tag: 1.4.0
+    tag: 1.4.1
     location: github
     repository: ChrisAdderley/DynamicBatteryStorage
 deploy:
