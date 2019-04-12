@@ -11,7 +11,7 @@ dependencies:  # Configure dependencies
     version: 4.0.2
     location: s3
   B9PartSwitch:
-    version: 2.6.0
+    version: 2.7.0
     location: s3
   CommunityResourcePack:
     version: 1.0.0
