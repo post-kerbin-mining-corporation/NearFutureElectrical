@@ -1,3 +1,9 @@
+v1.0.1
+------
+- KSP 1.7.x rebuild
+- Updated DynamicBatteryStorage to 1.4.1
+- Updated B9PartSwitch to 2.7.0
+
 v1.0.0
 -------
 - Final content update
