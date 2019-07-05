@@ -327,15 +327,12 @@ namespace NearFutureElectrical
           }
           else
           {
-            Debug.Log("s");
             // get available space in the target container
             double availableSpace = container.GetResourceAmount(curTransferType, true) - container.GetResourceAmount(curTransferType);
             double availableResource = this.GetResourceAmount(curTransferType);
-            Debug.Log("1");
             // transfer as much as possible
             double amount = this.part.RequestResource(curTransferType, availableSpace);
             container.part.RequestResource(curTransferType, -amount);
-            Debug.Log("2");
             ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#LOC_NFElectrical_ModuleRadioactiveStorageContainer_Message_Success", amount.ToString("F1"), curTransferType.ToString()), 5.0f, ScreenMessageStyle.UPPER_CENTER));
             transferring = false;
             curTransferType = "";
