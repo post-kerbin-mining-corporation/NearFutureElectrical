@@ -26,7 +26,7 @@ v1.0.2
      - Stock: ModuleCoreHeat (Passive heat only), ModuleResourceConverter, ModuleActiveRadiator, ModuleResourceHarvester
      - NF Suite: FissionReactor, ModuleFusionCore
   - Customize settings with DynamicBatteryStorageSettings.cfg
--  
+- Fixed an older dll being shipped with the mod 
 
 v1.0.1
 ------
