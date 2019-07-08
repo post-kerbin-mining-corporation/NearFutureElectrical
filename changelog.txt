@@ -26,7 +26,8 @@ v1.0.2
      - Stock: ModuleCoreHeat (Passive heat only), ModuleResourceConverter, ModuleActiveRadiator, ModuleResourceHarvester
      - NF Suite: FissionReactor, ModuleFusionCore
   - Customize settings with DynamicBatteryStorageSettings.cfg
-- Fixed an older dll being shipped with the mod 
+- Fixed an older dll being shipped with the mod
+- Capacitor recharge can now be enabled or disabled in the VAB 
 
 v1.0.1
 ------

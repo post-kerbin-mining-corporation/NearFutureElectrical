@@ -79,12 +79,12 @@ namespace NearFutureElectrical
       }
     }
     // charge on/off
-    [KSPEvent(guiActive = true, guiName = "Enable Recharge", active = true)]
+    [KSPEvent(guiActive = true, guiActiveEditor = true, guiName = "Enable Recharge", active = true)]
     public void Enable()
     {
       Enabled = true;
     }
-    [KSPEvent(guiActive = true, guiName = "Disable Recharge", active = false)]
+    [KSPEvent(guiActive = true, guiActiveEditor = true, guiName = "Disable Recharge", active = false)]
     public void Disable()
     {
 
@@ -238,7 +238,7 @@ namespace NearFutureElectrical
     }
 
 
-    public override void OnUpdate()
+    public void Update()
     {
 
       if (Events["Enable"].active == Enabled || Events["Disable"].active != Enabled)
@@ -247,7 +247,6 @@ namespace NearFutureElectrical
         Events["Enable"].active = !Enabled;
 
       }
-
     }
 
     public float CurrentCharge
