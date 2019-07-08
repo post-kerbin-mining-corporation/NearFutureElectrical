@@ -12,7 +12,7 @@ Required:
 - B9PartSwitch (2.8.0)
 - Community Resource Pack (1.0.0)
 - ModuleManager (4.0.2)
-- DynamicBatteryStorage (1.5.0)
+- DynamicBatteryStorage (2.0.0)
 
 Optional
 - Community Tech Tree (v2.2+)

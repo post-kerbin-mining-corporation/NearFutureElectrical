@@ -1,33 +1,35 @@
 v1.0.2
 ------
 - Updated B9PartSwitch to 2.8.0
-- Updated DynamicBatteryStorage to 1.5.0
+- Updated DynamicBatteryStorage to 2.0.0
   - Complete rebuild
-  - Mod now acts as a general power and thermal design tool as well as its previous function of power bug correction
+  - Mod now acts as a general power and thermal design tool as well as its previous functions
   - Added toolbar icon to open a Vessel Systems Management window
-  - Vessel Systems Management
-   - Allows player to view relevant Thermal and Electrical summary of the current vessel in VAB or editor
-   - Electrical mode:
-    - Shows whole-vessel power flows, separated into draw and generation
+  - Vessel Systems Management Window
+   - Allows player to view relevant Thermal and Electrical summary of the current vessel in VAB or flight
+   - Electrical summary:
+    - Shows whole-vessel power flows, separated into consumption and generation
+    - VAB panel has a tool to simulate distance effects on solar panel efficiency
+    - Estimates time to drain or time to charge batteries
     - Can drill down to part categories (eg. Solar Panels, Harvesters, etc)
     - Can drill down to individual parts
-    - Handles several new module types
+    - Handles these module types
      - Stock: ModuleDeployableSolarPanel, ModuleGenerator, ModuleResourceConverter, ModuleActiveRadiator, ModuleResourceHarvester, ModuleCommand, ModuleLight, ModuleDataTransmitter, ModuleEnginesFX, ModuleAlternator
-     - NF Suite: ModuleCurvedSolarPanel, FissionGenerator, ModuleRadioisotopeGenerator, ModuleCryoTank, ModuleAntimatterTank, ModuleChargeableEngine, ModuleDeployableCentrifuge, DischargeCapacitor
+     - NF Suite: ModuleCurvedSolarPanel, FissionGenerator, ModuleRadioisotopeGenerator, ModuleCryoTank, ModuleAntimatterTank, ModuleChargeableEngine, ModuleDeployableCentrifuge, DischargeCapacitor (partial)
      - RealBattery: RealBattery
      - Other: KopernicusSolarPanel
    - Thermal mode:
-    - Shows whole-vessel core heat flows, separated into dissipation and generation
-    - Can drill down to part categories (eg. Converters, Radiators, etc)
+    - Shows whole-vessel core heat flows, separated into draw and generation
+    - Can drill down to part categories (eg. Solar Panels, Harvesters, etc)
     - Can drill down to individual parts
-    - NOTE: does not handle non-core heat
+    - NOTE: does not handle non-core heat(eg re-entry, engines, solar)
     - NOTE: does not make a distinction between adjacent-only radiators and full-vessel radiators
     - Handles relevant module types
-     - Stock: ModuleCoreHeat (Passive heat only), ModuleResourceConverter, ModuleActiveRadiator, ModuleResourceHarvester
+     - Stock: ModuleCoreHeat (Passive heat only eg RTG), ModuleResourceConverter, ModuleActiveRadiator, ModuleResourceHarvester
      - NF Suite: FissionReactor, ModuleFusionCore
   - Customize settings with DynamicBatteryStorageSettings.cfg
 - Fixed an older dll being shipped with the mod
-- Capacitor recharge can now be enabled or disabled in the VAB 
+- Capacitor recharge can now be enabled or disabled in the VAB
 
 v1.0.1
 ------

@@ -25,7 +25,7 @@ These components are required for the mod to function and are bundled as part of
 * [ModuleManager (4.0.2)](https://github.com/sarbian/ModuleManager)
 * [B9PartSwitch (2.8.0)](https://github.com/blowfishpro/B9PartSwitch)
 * [Community Resource Pack (1.0.0)](https://github.com/BobPalmer/CommunityResourcePack)
-* [DynamicBatteryStorage (1.5.0)](https://github.com/ChrisAdderley/DynamicBatteryStorage)
+* [DynamicBatteryStorage (2.0.0)](https://github.com/ChrisAdderley/DynamicBatteryStorage)
 
 ## Installation
 
