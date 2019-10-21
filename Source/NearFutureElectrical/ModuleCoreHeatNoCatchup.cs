@@ -31,9 +31,12 @@ namespace NearFutureElectrical
         }
     public override void OnLoad(ConfigNode node)
     {
-      base.lastFlux = 0d;
-    
-      base.lastUpdateTime = Planetarium.GetUniversalTime();
+      if (HighLogic.LoadedSceneIsFlight)
+      {
+        base.lastFlux = 0d;
+
+        base.lastUpdateTime = Planetarium.GetUniversalTime();
+      }
       base.OnSave(node);
 
     }
