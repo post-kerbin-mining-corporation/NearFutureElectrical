@@ -561,6 +561,7 @@ namespace NearFutureElectrical
             else
             {
                 ZeroThermal();
+
                 heatTicker = heatTicker - 1;
             }
             core.MaxCoolant = heat / 10f;
