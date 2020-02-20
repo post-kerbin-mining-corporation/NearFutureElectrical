@@ -22,10 +22,10 @@ Ever wanted some futuristic energy generation that wasn't too... futuristic? I h
 
 ### Required
 These components are required for the mod to function and are bundled as part of any download:
-* [ModuleManager (4.1.0)](https://github.com/sarbian/ModuleManager)
-* [B9PartSwitch (2.12.1)](https://github.com/blowfishpro/B9PartSwitch)
+* [ModuleManager (4.1.3)](https://github.com/sarbian/ModuleManager)
+* [B9PartSwitch (2.13.0)](https://github.com/blowfishpro/B9PartSwitch)
 * [Community Resource Pack (1.3.0)](https://github.com/BobPalmer/CommunityResourcePack)
-* [DynamicBatteryStorage (2.0.6)](https://github.com/ChrisAdderley/DynamicBatteryStorage)
+* [DynamicBatteryStorage (2.1.5)](https://github.com/ChrisAdderley/DynamicBatteryStorage)
 
 ## Installation
 
@@ -55,8 +55,8 @@ I certainly accept pull requests. Please target all such things to the `dev` bra
 For translation instructions please see [Localization Instructions](https://github.com/ChrisAdderley/NearFutureElectrical/blob/master/GameData/NearFutureElectrical/Localization/Localization.md)
 
 * **Spanish:** KSP forum user fitiales
-* **Chinese:** KSP forum user DYZBX from the Black Domain Studio(BDS)
-* **Russian:** KSP forum user Dr. Jet
+* **Chinese:** KSP forum users DYZBX from the Black Domain Studio(BDS) and tinygrox
+* **Russian:** KSP forum users Dr. Jet and Sool3
 * **Portugese:** KSP forum user GabrielGABFonesca
 * **German:** KSP forum user Three_Pounds
 

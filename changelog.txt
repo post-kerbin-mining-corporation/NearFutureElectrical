@@ -1,3 +1,12 @@
+v1.1.1
+------
+- Marked for KSP 1.9
+- Updated B9PartSwitch to 2.13.0
+- Updated DynamicBatteryStorage to 2.1.5
+- Updated ModuleManager to 4.1.3
+- Updated Russian localization (Sool3)
+- Updated Simplified Chinese localization (tinygrox)
+
 v1.1.0
 ------
 - KSP 1.8

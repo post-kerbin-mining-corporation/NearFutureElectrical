@@ -28,7 +28,7 @@ There are some characters that should not be translated into another language an
 
 * fitiales (Spanish)
 * GabrielGABFonesca (Portugese)
-* Dr. Jet (Russian)
-* DYZBX from the Black Domain Studio (Chinese)
+* Dr. Jet, Sooll3 (Russian)
+* DYZBX from the Black Domain Studio, tinygrox (Chinese)
 * GabrielGABFonesca (Portugese)
 * Three_Pounds (German)

@@ -8,16 +8,16 @@ package:
     - changelog.txt
 dependencies:  # Configure dependencies
   ModuleManager:
-    version: 4.1.0
+    version: 4.1.3
     location: s3
   B9PartSwitch:
-    version: 2.12.1
+    version: 2.13.0
     location: s3
   CommunityResourcePack:
     version: 1.0.0
     location: s3
   DynamicBatteryStorage:
-    tag: 2.1.0
+    tag: 2.1.5
     location: github
     repository: ChrisAdderley/DynamicBatteryStorage
 deploy:

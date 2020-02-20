@@ -1,5 +1,5 @@
 ==================================
-NEAR FUTURE ELECTRICAL PACK v1.1.0
+NEAR FUTURE ELECTRICAL PACK v1.1.1
 ==================================
 
 This pack contains advanced electrical parts - capacitors, nuclear reactors and new battery packs.
@@ -9,10 +9,10 @@ DEPENDENCIES
 ============
 
 Required:
-- B9PartSwitch (2.12.1)
+- B9PartSwitch (2.13.0)
 - Community Resource Pack (1.3.0)
-- ModuleManager (4.1.0)
-- DynamicBatteryStorage (2.1.0)
+- ModuleManager (4.1.3)
+- DynamicBatteryStorage (2.1.5)
 
 Optional
 - Community Tech Tree (v2.2+)
@@ -39,8 +39,8 @@ LOCALIZATION
 
 This mod includes localization support, and includes translations for
 - Spanish (KSP forum user fitiales)
-- Chinese (KSP forum user DYZBX from the Black Domain Studio(BDS))
-- Russian (KSP forum user Dr. Jet)
+- Chinese (KSP forum users DYZBX from the Black Domain Studio(BDS) and tinygroz)
+- Russian (KSP forum users Dr. Jet and Sool3)
 - Portugese (KSP forum user GabrielGABFonesca)
 - German (KSP forum user Three_Pounds)
 
