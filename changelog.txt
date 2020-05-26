@@ -1,3 +1,9 @@
+v1.1.2
+------
+- Updated B9PartSwitch to 2.16.0
+- Updated DynamicBatteryStorage to 2.1.6
+- Updated USI compatibility patch
+
 v1.1.1
 ------
 - Marked for KSP 1.9
