@@ -9,7 +9,7 @@
     "license"             : "MIT",
     "resources": {
       "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/155465-16x-near-future-technologies-16x-fixes-jan-21/",
-      "repository": "https://github.com/ChrisAdderley/NearFutureElectrical"
+      "repository": "https://github.com/post-kerbin-mining-corporation/NearFutureElectrical"
     },
     "install" : [
         { "file"       : "GameData/NearFutureElectrical/Plugins/NearFutureElectrical.dll",
