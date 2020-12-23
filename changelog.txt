@@ -1,3 +1,10 @@
+v1.2.0
+------
+- KSP 1.11
+- Updated DynamicBatteryStorage to 2.2.1
+- Updated CRP to 1.4.2
+- Set many parts as usable in inventories roughly following stock model: most 0.625m parts, smaller 1.25m parts
+
 v1.1.3
 ------
 - KSP 1.10

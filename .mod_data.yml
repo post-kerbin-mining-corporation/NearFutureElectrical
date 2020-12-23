@@ -14,12 +14,12 @@ dependencies:  # Configure dependencies
     version: 2.17.0
     location: s3
   CommunityResourcePack:
-    version: 1.3.0
+    version: 1.4.2
     location: s3
   DynamicBatteryStorage:
-    tag: 2.1.7
+    tag: 2.2.1
     location: github
-    repository: ChrisAdderley/DynamicBatteryStorage
+    repository: post-kerbin-mining-corporation/DynamicBatteryStorage
 deploy:
   SpaceDock:
     enabled: true  # activate/deactivate this deployment script
