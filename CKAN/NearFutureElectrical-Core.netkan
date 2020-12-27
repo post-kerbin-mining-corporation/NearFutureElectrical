@@ -5,7 +5,7 @@
     "$vref"               : "#/ckan/ksp-avc/NearFutureElectrical.version",
     "name"                : "Near Future Electrical Core",
     "abstract"            : "This is the Near Future Electrical plugin stand-alone, for adding functionality to other mods. It contains no parts and does nothing by itself.",
-    "author"              : "Nertea",
+    "author"              : "Nertea (Chris Adderley)",
     "license"             : "MIT",
     "resources": {
       "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/155465-16x-near-future-technologies-16x-fixes-jan-21/",

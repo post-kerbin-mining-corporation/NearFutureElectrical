@@ -4,7 +4,7 @@
     "$kref"               : "#/ckan/spacedock/558",
     "name"                : "Near Future Electrical",
     "abstract"            : "Nuclear reactors, capacitors and more batteries that fit right in with stock",
-    "author"              : "Nertea",
+    "author"              : "Nertea (Chris Adderley)",
     "license"             : "restricted",
     "$vref"               : "#/ckan/ksp-avc/NearFutureElectrical.version",
     "resources": {

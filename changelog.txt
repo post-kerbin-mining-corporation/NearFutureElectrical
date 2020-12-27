@@ -1,3 +1,7 @@
+v1.2.1
+------
+- Fix for inventory parts in 1.10
+
 v1.2.0
 ------
 - KSP 1.11
