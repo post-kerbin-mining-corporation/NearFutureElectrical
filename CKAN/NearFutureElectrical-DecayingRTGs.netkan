@@ -5,7 +5,7 @@
     "$vref"               : "#/ckan/ksp-avc/NearFutureElectrical.version",
     "name"                : "Near Future Electrical - Decaying RTGs",
     "abstract"            : "This optional patch makes the power output of RTGs (both stock and Near Future's) shrink over time, like they would in real life.",
-    "author"              : "Nertea",
+    "author"              : "Nertea (Chris Adderley)",
     "license"             : "MIT",
     "depends" : [
         { "name" : "NearFutureElectrical" }
