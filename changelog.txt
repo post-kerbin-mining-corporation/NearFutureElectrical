@@ -1,3 +1,11 @@
+v1.2.2
+------
+- Updated DynamicBatteryStorage to 2.2.2
+- Reverted some USI patch changes 
+- RTG half life is now calculated correctly for other star systems, config value is specifically in Kerbin years. 
+- Reactor life display is now calculated correctly for other star systems
+- Some code cleanup
+
 v1.2.1
 ------
 - Fix for inventory parts in 1.10
