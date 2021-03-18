@@ -21,10 +21,10 @@ namespace NearFutureElectrical
     [KSPField(guiName = "#LOC_NFElectrical_ModuleRadioisotopeGenerator_Field_HalfLife", isPersistant = false, guiActiveEditor = true, guiActive = true, guiUnits = " y")]
     public float HalfLife = 16f;
 
-    [KSPField(guiName = "#LOC_NFElectrical_ModuleRadioisotopeGenerator_Field_ActualPower", isPersistant = false, guiActiveEditor = true, guiActive = true, guiUnits = " Ec/s")]
+    [KSPField(guiName = "#LOC_NFElectrical_ModuleRadioisotopeGenerator_Field_ActualPower", isPersistant = false, guiActiveEditor = true, guiActive = true, guiFormat = "F2", guiUnits = " Ec/s")]
     private float ActualPower = 0;
 
-    [KSPField(guiName = "#LOC_NFElectrical_ModuleRadioisotopeGenerator_Field_PercentPower", isPersistant = false, guiActiveEditor = false, guiActive = true, guiUnits = "%")]
+    [KSPField(guiName = "#LOC_NFElectrical_ModuleRadioisotopeGenerator_Field_PercentPower", isPersistant = false, guiActiveEditor = false, guiActive = true, guiFormat = "F2", guiUnits = "%")]
     public float PercentPower = 100f;
 
     // Easy mode never lets power drop below a certain %

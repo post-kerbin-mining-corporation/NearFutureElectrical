@@ -12,7 +12,7 @@ namespace NearFutureElectrical
   {
 
     public const double GRAVITY = 9.80665;
-    
+
     /// <summary>
     /// Finds all AnimationStates on a part and configures them.
     /// </summary>
@@ -52,7 +52,7 @@ namespace NearFutureElectrical
         SetActiveRecursively(child.gameObject, active);
       }
     }
-    
+
     /// <summary>
     /// Formats a time string from seconds
     /// </summary>
@@ -61,71 +61,62 @@ namespace NearFutureElectrical
     public static string FormatTimeString(double seconds)
     {
 
-      return KSPUtil.dateTimeFormatter.PrintDate(seconds, true, false);
-      //  double dayLength;
-      //  double yearLength;
-      //  double rem;
-      //  if (GameSettings.KERBIN_TIME)
-      //  {
-      //    dayLength = 6d;
-      //    yearLength = 426d;
-      //  }
-      //  else
-      //  {
-      //    dayLength = 24d;
-      //    yearLength = 365d;
-      //  }
-
-      //  int years = (int)(seconds / (3600.0d * dayLength * yearLength));
-      //  rem = seconds % (3600.0d * dayLength * yearLength);
-      //  int days = (int)(rem / (3600.0d * dayLength));
-      //  rem = rem % (3600.0d * dayLength);
-      //  int hours = (int)(rem / (3600.0d));
-      //  rem = rem % (3600.0d);
-      //  int minutes = (int)(rem / (60.0d));
-      //  rem = rem % (60.0d);
-      //  int secs = (int)rem;
-
-      //  string result = "";
-
-      //  // draw years + days
-      //  if (years > 0)
-      //  {
-      //    result += years.ToString() + "y ";
-      //    result += days.ToString() + "d ";
-      //    result += hours.ToString() + "h ";
-      //    result += minutes.ToString() + "m";
-      //  }
-      //  else if (days > 0)
-      //  {
-      //    result += days.ToString() + "d ";
-      //    result += hours.ToString() + "h ";
-      //    result += minutes.ToString() + "m ";
-      //    result += secs.ToString() + "s";
-      //  }
-      //  else if (hours > 0)
-      //  {
-      //    result += hours.ToString() + "h ";
-      //    result += minutes.ToString() + "m ";
-      //    result += secs.ToString() + "s";
-      //  }
-      //  else if (minutes > 0)
-      //  {
-      //    result += minutes.ToString() + "m ";
-      //    result += secs.ToString() + "s";
-      //  }
-      //  else if (seconds > 0)
-      //  {
-      //    result += secs.ToString() + "s";
-      //  }
-      //  else
-      //  {
-      //    result = "None";
-      //  }
+      // return KSPUtil.dateTimeFormatter.PrintTimeCompact(seconds, false);
+      double dayLength = KSPUtil.dateTimeFormatter.Hour / KSPUtil.dateTimeFormatter.Day;
+      double yearLength = KSPUtil.dateTimeFormatter.Day / KSPUtil.dateTimeFormatter.Year; ;
+      double rem;
 
 
-      //  return result;
-      //}
+      int years = (int)(seconds / (KSPUtil.dateTimeFormatter.Year));
+      rem = seconds % (KSPUtil.dateTimeFormatter.Year);
+      int days = (int)(rem / (KSPUtil.dateTimeFormatter.Day));
+      rem = rem % (KSPUtil.dateTimeFormatter.Day);
+      int hours = (int)(rem / (3600.0d));
+      rem = rem % (3600.0d);
+      int minutes = (int)(rem / (60.0d));
+      rem = rem % (60.0d);
+      int secs = (int)rem;
+
+      string result = "";
+
+      // draw years + days
+      if (years > 0)
+      {
+        result += years.ToString() + "y ";
+        result += days.ToString() + "d ";
+        result += hours.ToString() + "h ";
+        result += minutes.ToString() + "m";
+      }
+      else if (days > 0)
+      {
+        result += days.ToString() + "d ";
+        result += hours.ToString() + "h ";
+        result += minutes.ToString() + "m ";
+        result += secs.ToString() + "s";
+      }
+      else if (hours > 0)
+      {
+        result += hours.ToString() + "h ";
+        result += minutes.ToString() + "m ";
+        result += secs.ToString() + "s";
+      }
+      else if (minutes > 0)
+      {
+        result += minutes.ToString() + "m ";
+        result += secs.ToString() + "s";
+      }
+      else if (seconds > 0)
+      {
+        result += secs.ToString() + "s";
+      }
+      else
+      {
+        result = "None";
+      }
+
+
+      return result;
+
     }
     /// <summary>
     /// Turns a value in seconds into decimal current homeworld years
@@ -134,9 +125,9 @@ namespace NearFutureElectrical
     /// <returns></returns>
     public static double CalculateDecimalYears(double seconds)
     {
-      return  seconds / KSPUtil.dateTimeFormatter.Year;
+      return seconds / KSPUtil.dateTimeFormatter.Year;
     }
-    
+
     /// <summary>
     /// Converts Kerbin years into current homeworld years
     /// </summary>
@@ -152,7 +143,7 @@ namespace NearFutureElectrical
     // -------
     public static void Log(string message)
     {
-      Debug.Log($"[NearFutureElectrical]: {message}" );
+      Debug.Log($"[NearFutureElectrical]: {message}");
     }
 
     public static void LogWarn(string message)
