@@ -11,13 +11,13 @@ dependencies:  # Configure dependencies
     version: 4.1.3
     location: s3
   B9PartSwitch:
-    version: 2.17.0
+    version: 2.18.0
     location: s3
   CommunityResourcePack:
     version: 1.4.2
     location: s3
   DynamicBatteryStorage:
-    tag: 2.2.2
+    tag: 2.2.4
     location: github
     repository: post-kerbin-mining-corporation/DynamicBatteryStorage
 deploy:

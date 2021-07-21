@@ -1,3 +1,10 @@
+v1.2.3
+------
+- KSP 1.12
+- Updated B9PartSwitch to 2.18.0 
+- Updated DynamicBatteryStorage to 2.2.4
+- RadioisotopeGenerator and FissionGenerator modules now count for contract objective completion
+
 v1.2.2
 ------
 - Updated DynamicBatteryStorage to 2.2.2
