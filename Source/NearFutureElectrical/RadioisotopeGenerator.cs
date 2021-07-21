@@ -11,7 +11,7 @@ using KSP.Localization;
 
 namespace NearFutureElectrical
 {
-  public class ModuleRadioisotopeGenerator : PartModule
+  public class ModuleRadioisotopeGenerator : PartModule, IContractObjectiveModule
   {
     // Power generated at max
     [KSPField(isPersistant = false)]
@@ -40,7 +40,16 @@ namespace NearFutureElectrical
 
     protected double localHalfLife = 0d;
 
-    protected  void Start()
+    public virtual string GetContractObjectiveType()
+    {
+      return "Generator";
+    }
+    public virtual bool CheckContractObjectiveValidity()
+    {
+      return true;
+    }
+
+    protected void Start()
     {
       localHalfLife = Utils.KerbinYearsToLocalYears(HalfLife);
     }
