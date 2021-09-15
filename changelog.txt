@@ -1,3 +1,17 @@
+v2.0.0
+------
+- Switched mod to SystemHeat backend:
+ - SystemHeat is now bundled
+ - All reactor parts have been soft-deprecated and remain untouched so your existing ships will continue to function normally
+ - New reactor parts are configured with SH by default
+- New/revised reactor parts
+ - : new micro 5 Ec/s reactor with 0.625m partswitch option
+ - : new micro 10 Ec/s reactor with 0.625m partswitch option
+ - : revised 0.625m, 60 Ec/s reactor with inline and compact partswitch options
+ - : revised 1.25m, 200 Ec/s reactor with inline and compact partswitch options
+ - : new 1.875m, 800 Ec/s reactor with inline and compact partswitch options
+ - : revised 2.5m, 2000 Ec/s reactor with inline and compact partswitch options
+
 v1.2.3
 ------
 - KSP 1.12

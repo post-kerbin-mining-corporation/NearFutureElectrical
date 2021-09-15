@@ -1,5 +1,5 @@
 =============================
-NEAR FUTURE ELECTRICAL v1.2.3
+NEAR FUTURE ELECTRICAL v2.0.0
 =============================
 
 This pack contains advanced electrical parts - capacitors, nuclear reactors and new battery packs.
@@ -13,6 +13,7 @@ Required:
 - Community Resource Pack (1.4.2)
 - ModuleManager (4.1.4)
 - DynamicBatteryStorage (2.2.4)
+- SystemHeat ()
 
 Optional
 - Community Tech Tree (v2.2+)
