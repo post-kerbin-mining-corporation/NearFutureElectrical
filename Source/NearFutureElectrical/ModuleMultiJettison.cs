@@ -59,18 +59,14 @@ namespace NearFutureElectrical
     private Transform[] fairingTransforms;
 
 
-    public override void OnAwake()
+
+    public override void OnStart(StartState state)
     {
       fairingTransforms = part.FindModelTransforms(fairingTransformName);
       if (fairingTransforms.Length == 0)
       {
         Debug.LogWarning($"[ModuleMultiJettision] Could not find any transforms with name {fairingTransformName} on {part.partInfo.title}");
       }
-    }
-
-    public override void OnStart(StartState state)
-    {
-
       SetStartState();
 
       Fields[nameof(fairingEnabled)].uiControlEditor.onFieldChanged = OnEditorToggleJettison;
