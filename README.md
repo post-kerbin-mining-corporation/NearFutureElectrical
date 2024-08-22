@@ -22,10 +22,10 @@ Ever wanted some futuristic energy generation that wasn't too... futuristic? I h
 
 ### Required
 These components are required for the mod to function and are bundled as part of any download:
-* [ModuleManager (4.1.4)](https://github.com/sarbian/ModuleManager)
-* [B9PartSwitch (2.18.0)](https://github.com/blowfishpro/B9PartSwitch)
+* [ModuleManager (4.2.3)](https://github.com/sarbian/ModuleManager)
+* [B9PartSwitch (2.20.0)](https://github.com/blowfishpro/B9PartSwitch)
 * [Community Resource Pack (1.4.2)](https://github.com/BobPalmer/CommunityResourcePack)
-* [DynamicBatteryStorage (2.2.4)](https://github.com/ChrisAdderley/DynamicBatteryStorage)
+* [DynamicBatteryStorage (2.3.1)](https://github.com/ChrisAdderley/DynamicBatteryStorage)
 
 ## Installation
 

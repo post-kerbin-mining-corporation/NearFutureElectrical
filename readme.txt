@@ -9,11 +9,11 @@ DEPENDENCIES
 ============
 
 Required:
-- B9PartSwitch (2.18.0)
+- B9PartSwitch (2.20.0)
 - Community Resource Pack (1.4.2)
-- ModuleManager (4.1.4)
-- DynamicBatteryStorage (2.2.4)
-- SystemHeat ()
+- ModuleManager (4.2.3)
+- DynamicBatteryStorage (2.3.2)
+- SystemHeat (0.7.1)
 
 Optional
 - Community Tech Tree (v2.2+)
