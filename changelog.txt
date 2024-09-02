@@ -1,5 +1,8 @@
 v2.0.0
 ------
+- Updated ModuleManager to 4.2.3
+- Updated B9PartSwitch to 2.20.0 
+- Updated DynamicBatteryStorage to 2.3.3
 - ALL PREVIOUS reactor, processing and fuel parts have been soft-deprecated. They will be deleted in < 10 years
 - Switched mod to SystemHeat backend:
  - New reactor parts run on the SystemHeat reactor model, which is very similar but uses a different heat system
