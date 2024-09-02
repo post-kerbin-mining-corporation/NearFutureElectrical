@@ -84,6 +84,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModuleCoreHeatNoCatchup.cs" />
+    <Compile Include="ModuleDataLogger.cs" />
+    <Compile Include="ModuleMultiJettison.cs" />
     <Compile Include="ModuleUpdateOverride.cs" />
     <Compile Include="UI\CapacitorUIEntry.cs" />
     <Compile Include="UI\DischargeCapacitorUI.cs">

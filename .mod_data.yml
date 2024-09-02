@@ -21,7 +21,7 @@ dependencies:  # Configure dependencies
     location: github
     repository: post-kerbin-mining-corporation/DynamicBatteryStorage
   SystemHeat:
-    tag: 0.7.3
+    tag: 0.7.4
     location: github
     repository: post-kerbin-mining-corporation/DynamicBatteryStorage
 deploy:

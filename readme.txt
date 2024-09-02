@@ -12,8 +12,8 @@ Required:
 - B9PartSwitch (2.20.0)
 - Community Resource Pack (1.4.2)
 - ModuleManager (4.2.3)
-- DynamicBatteryStorage (2.3.2)
-- SystemHeat (0.7.1)
+- DynamicBatteryStorage (2.3.3)
+- SystemHeat (0.7.4)
 
 Optional
 - Community Tech Tree (v2.2+)

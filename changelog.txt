@@ -3,7 +3,12 @@ v2.0.0
 - ALL PREVIOUS reactor, processing and fuel parts have been soft-deprecated. They will be deleted in < 10 years
 - Switched mod to SystemHeat backend:
  - New reactor parts run on the SystemHeat reactor model, which is very similar but uses a different heat system
- - SystemHeat is now bundled (0.7.3) 
+ - SystemHeat is now bundled (0.7.4) 
+- Adjusted overall balance paradigm for nuclear parts (only applies to new parts)
+ - Reactors now have ~25y idle life
+ - Minimum reactor throttle reduced from 25 to 10%
+ - Reactor thermal efficiency tweaked; now caps out at ~37% and maps to the approximate conversion technology
+ - Power-mass ratios are tuned to range from 190 to 300 EC/t
 - New/revised parts
  - MN-1 'SNAK' Fission Reactor : new micro 5 Ec/s reactor with 0.625m partswitch option
  - MN-2 'Kerbopower' Fission Reactor: new micro 10 Ec/s reactor with 0.625m partswitch option
