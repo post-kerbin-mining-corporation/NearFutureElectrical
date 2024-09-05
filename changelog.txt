@@ -1,3 +1,31 @@
+v2.0.0
+------
+- Updated ModuleManager to 4.2.3
+- Updated B9PartSwitch to 2.20.0 
+- Updated DynamicBatteryStorage to 2.3.3
+- ALL PREVIOUS reactor, processing and fuel parts have been soft-deprecated. They will be deleted in < 10 years
+- Switched mod to SystemHeat backend:
+ - New reactor parts run on the SystemHeat reactor model, which is very similar but uses a different heat system
+ - SystemHeat is now bundled (0.7.4) 
+- Adjusted overall balance paradigm for nuclear parts (only applies to new parts)
+ - Reactors now have ~25y idle life
+ - Minimum reactor throttle reduced from 25 to 10%
+ - Reactor thermal efficiency tweaked; now caps out at ~37% and maps to the approximate conversion technology
+ - Power-mass ratios are tuned to range from 190 to 300 EC/t
+- New/revised parts
+ - MN-1 'SNAK' Fission Reactor : new micro 5 Ec/s reactor with 0.625m partswitch option
+ - MN-2 'Kerbopower' Fission Reactor: new micro 10 Ec/s reactor with 0.625m partswitch option
+ - MX-0 'Toaster' Fission Reactor: revised 0.625m, 60 Ec/s reactor with inline and compact partswitch options
+ - MX-1 'Garnet' Fission Reactor: revised 1.25m, 200 Ec/s reactor with inline and compact partswitch options
+ - MX-1B 'Prometheus' Fission Reactor: new 1.875m, 800 Ec/s reactor with inline and compact partswitch options
+ - MX-2C 'Hyperion' Fission Reactor: revised 2.5m, 2000 Ec/s reactor with inline and compact partswitch options
+ - MX-2L 'Excalibur' Fission Reactor: revised 2.5m, 2000 Ec/s reactor with inline and compact partswitch options
+ - MX-3L 'Hermes' Fission Reactor: revised 3.75m, 2000 Ec/s reactor with inline and compact partswitch options
+ - PB-SRG Advanced Radioisotope Generator: evolutionary PB-NUK-III with similar mass ratios but much better costs
+ - PB-NUK-II Radioisotope Generator: 2 scaled up PB-NUK with ~10% bonus on ratios
+ - PB-NUK-III Radioisotope Generator: evolutionary PB-NUK with ~10% bonus on ratios
+ - PB-ACK Radioisotope Generator: small entry level RTG with lower power generation than the stock one. Appears at 1 lower tech level
+
 v1.2.3
 ------
 - KSP 1.12
