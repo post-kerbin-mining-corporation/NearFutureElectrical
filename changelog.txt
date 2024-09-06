@@ -1,3 +1,8 @@
+v2.0.1
+------
+- Fixed an issue where thermal output was not specified in the right context in configs, leading to low outputs
+- Fixed a CTT patch issue that I THOUGHT was in the main release
+
 v2.0.0
 ------
 - Updated ModuleManager to 4.2.3
