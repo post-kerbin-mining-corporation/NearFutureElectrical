@@ -16,7 +16,8 @@
         { "name" : "CommunityResourcePack" },
         { "name" : "NearFutureElectrical-Core" },
         { "name" : "ModuleManager" },
-        { "name" : "DynamicBatteryStorage" }
+        { "name" : "DynamicBatteryStorage" },
+        { "name" : "SystemHeat" }
     ],
     "recommends": [
         { "name" : "CommunityTechTree" }
