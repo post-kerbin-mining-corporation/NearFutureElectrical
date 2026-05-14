@@ -85,6 +85,7 @@ namespace NearFutureElectrical.UI
 
         // Stock toolbar button
         private static ApplicationLauncherButton stockToolbarButton = null;
+        private bool isCleaningUp = false;
 
 
         // Set up the GUI styles
@@ -329,7 +330,7 @@ namespace NearFutureElectrical.UI
             FindCapacitors();
             if (stockToolbarButton == null)
             {
-                if (capacitorList.Count > 0)
+                if (capacitorList.Count > 0 && ApplicationLauncher.Instance != null)
                 {
                     stockToolbarButton = ApplicationLauncher.Instance.AddModApplication(
                     OnToolbarButtonToggle,
@@ -353,8 +354,7 @@ namespace NearFutureElectrical.UI
                 else
                 {
                     showCapWindow = false;
-                    GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
-                    ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
+                    RemoveToolbarButton();
                 }
             }
 
@@ -363,14 +363,29 @@ namespace NearFutureElectrical.UI
         // Stock toolbar handling methods
         public void OnDestroy()
         {
+            if (isCleaningUp)
+                return;
 
-            // Remove the stock toolbar button
-            GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
-            if (stockToolbarButton != null)
+            isCleaningUp = true;
+            RemoveLauncherCallbacks();
+            RemoveToolbarButton();
+        }
+
+        private void RemoveLauncherCallbacks()
+        {
+            if (GameEvents.onGUIApplicationLauncherReady != null)
+                GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
+            if (GameEvents.onGUIApplicationLauncherDestroyed != null)
+                GameEvents.onGUIApplicationLauncherDestroyed.Remove(OnGUIAppLauncherDestroyed);
+        }
+
+        private void RemoveToolbarButton()
+        {
+            if (stockToolbarButton != null && ApplicationLauncher.Instance != null)
             {
                 ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
             }
-
+            stockToolbarButton = null;
         }
 
         private void OnToolbarButtonToggle()
@@ -383,7 +398,13 @@ namespace NearFutureElectrical.UI
 
         void OnGUIAppLauncherReady()
         {
-            if (ApplicationLauncher.Ready && stockToolbarButton == null && capacitorList.Count > 0)
+            if (isCleaningUp)
+                return;
+
+            if (capacitorList == null && FlightGlobals.ActiveVessel != null)
+                FindCapacitors();
+
+            if (ApplicationLauncher.Ready && ApplicationLauncher.Instance != null && stockToolbarButton == null && capacitorList != null && capacitorList.Count > 0)
             {
                 stockToolbarButton = ApplicationLauncher.Instance.AddModApplication(
                     OnToolbarButtonToggle,
@@ -399,12 +420,10 @@ namespace NearFutureElectrical.UI
 
         void OnGUIAppLauncherDestroyed()
         {
-            if (stockToolbarButton != null)
-            {
+            if (isCleaningUp)
+                return;
 
-                ApplicationLauncher.Instance.RemoveModApplication(stockToolbarButton);
-                stockToolbarButton = null;
-            }
+            RemoveToolbarButton();
         }
 
         void onAppLaunchToggleOff()

@@ -29,18 +29,16 @@ namespace NearFutureElectrical
             base.OnSave(node);
 
         }
-    public override void OnLoad(ConfigNode node)
-    {
-      if (HighLogic.LoadedSceneIsFlight)
-      {
-        base.lastFlux = 0d;
-
-        base.lastUpdateTime = Planetarium.GetUniversalTime();
-      }
-      base.OnSave(node);
-
-    }
-    void Update()
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                base.lastFlux = 0d;
+                base.lastUpdateTime = Planetarium.GetUniversalTime();
+            }
+        }
+        void Update()
         {
             //base.lastUpdateTime = Planetarium.GetUniversalTime() - 0.5d;
             //Debug.Log(String.Format("lastflux: {0}, {1} thermalE {2}", lastFlux, lastUpdateTime, base.CoreThermalEnergy));
